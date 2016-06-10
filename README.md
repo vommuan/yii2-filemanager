@@ -31,23 +31,35 @@ Installation
 ------------
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Either run
+Add
 
 ```
-php composer.phar require --prefer-dist pendalf89/yii2-filemanager "*"
+{
+	"type": "git",
+	"url": "https://github.com/vommuan/yii2-filemanager"
+}
+```
+
+to the repositories section of your `composer.json` file.
+
+Then run
+
+```
+php composer.phar require vommuan/yii2-filemanager "@dev"
 ```
 
 or add
 
 ```
-"pendalf89/yii2-filemanager": "*"
+"vommuan/yii2-filemanager": "@dev"
 ```
 
 to the require section of your `composer.json` file.
 
 Apply migration
-```sh
-yii migrate --migrationPath=vendor/pendalf89/yii2-filemanager/migrations
+
+```
+yii migrate --migrationPath=@vendor/vommuan/yii2-filemanager/migrations/
 ```
 
 Configuration:
