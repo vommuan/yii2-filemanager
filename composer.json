@@ -14,7 +14,7 @@
             "email": "vommuan@gmail.com",
             "homepage": "http://itdevweb.com",
             "role": "Contributor"
-        },
+        }
     ],
     "minimum-stability": "stable",
     "require": {
