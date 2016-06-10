@@ -1,13 +1,13 @@
 <?php
 
-use pendalf89\filemanager\assets\FilemanagerAsset;
-use pendalf89\filemanager\Module;
+use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\Module;
 use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel pendalf89\filemanager\models\Mediafile */
+/* @var $searchModel vommuan\filemanager\models\Mediafile */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 ?>

@@ -67,7 +67,7 @@ Configuration:
 ```php
 'modules' => [
     'filemanager' => [
-        'class' => 'pendalf89\filemanager\Module',
+        'class' => 'vommuan\filemanager\Module',
         // Upload routes
         'routes' => [
             // Base absolute path to web directory
@@ -120,7 +120,7 @@ Usage
 Simple standalone field:
 
 ```php
-use pendalf89\filemanager\widgets\FileInput;
+use vommuan\filemanager\widgets\FileInput;
 
 echo $form->field($model, 'original_thumbnail')->widget(FileInput::className(), [
     'buttonTag' => 'button',
@@ -168,7 +168,7 @@ echo FileInput::widget([
 
 With TinyMCE:
 ```php
-use pendalf89\filemanager\widgets\TinyMCE;
+use vommuan\filemanager\widgets\TinyMCE;
 
 <?= $form->field($model, 'content')->widget(TinyMCE::className(), [
     'clientOptions' => [
@@ -187,7 +187,7 @@ use pendalf89\filemanager\widgets\TinyMCE;
 In model you must set mediafile behavior like this example:
 
 ```php
-use pendalf89\filemanager\behaviors\MediafileBehavior;
+use vommuan\filemanager\behaviors\MediafileBehavior;
 
 public function behaviors()
 {
@@ -207,7 +207,7 @@ Than, you may get mediafile from your owner model.
 See example:
 
 ```php
-use pendalf89\filemanager\models\Mediafile;
+use vommuan\filemanager\models\Mediafile;
 
 $model = Post::findOne(1);
 $mediafile = Mediafile::loadOneByOwner('post', $model->id, 'thumbnail');

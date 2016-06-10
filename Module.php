@@ -1,12 +1,12 @@
 <?php
 
-namespace pendalf89\filemanager;
+namespace vommuan\filemanager;
 
 use Yii;
 
 class Module extends \yii\base\Module
 {
-    public $controllerNamespace = 'pendalf89\filemanager\controllers';
+    public $controllerNamespace = 'vommuan\filemanager\controllers';
 
     /**
      *  Set true if you want to rename files if the name is already in use 
@@ -66,7 +66,7 @@ class Module extends \yii\base\Module
         Yii::$app->i18n->translations['modules/filemanager/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => '@vendor/pendalf89/yii2-filemanager/messages',
+            'basePath' => '@vendor/vommuan/yii2-filemanager/messages',
             'fileMap' => [
                 'modules/filemanager/main' => 'main.php',
             ],
