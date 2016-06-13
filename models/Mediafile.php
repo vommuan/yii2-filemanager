@@ -33,7 +33,16 @@ class Mediafile extends ActiveRecord
 {
     public $file;
 
-    public static $imageFileTypes = ['image/gif', 'image/jpeg', 'image/png'];
+    public static $imageFileTypes = [
+		'image/gif',
+		'image/jpeg',
+		//'image/pjpeg',
+		'image/png',
+		//'image/svg+xml',
+		//'image/tiff',
+		//'image/vnd.microsoft.icon',
+		//'image/vnd.wap.wbmp',
+	];
 
     /**
      * @inheritdoc
@@ -112,7 +121,16 @@ class Mediafile extends ActiveRecord
             return false;
         }
     }
-
+	
+	/**
+	 * Remove start and end forward slashes
+	 * @param string $path
+	 */
+	protected function trimPath($path)
+	{
+		return trim($path, '/');
+	}
+	
     /**
      * Save just uploaded file
      * @param array $routes routes from module settings
@@ -120,14 +138,23 @@ class Mediafile extends ActiveRecord
      */
     public function saveUploadedFile(array $routes, $rename = false)
     {
-        $year = date('Y', time());
-        $month = date('m', time());
-        $structure = "{$routes['baseUrl']}/{$routes['uploadPath']}/{$year}/{$month}";
-        $basePath = Yii::getAlias($routes['basePath']);
-        $absolutePath = "{$basePath}/{$structure}";
+        $routes['basePath'] = $this->trimPath($routes['basePath']);
+        $routes['baseUrl'] = $this->trimPath($routes['baseUrl']);
+        $routes['uploadPath'] = $this->trimPath($routes['uploadPath']);
+        $routes['dirFormat'] = $this->trimPath($routes['dirFormat']);
+        
+		$structure = implode('/', [
+			$routes['baseUrl'],
+			$routes['uploadPath'],
+			date($routes['dirFormat'], time()),
+		]);
+        $absolutePath = implode('/', [
+			Yii::getAlias($routes['basePath']),
+			$structure,
+		]);
 
-        // create actual directory structure "yyyy/mm"
-        if (!file_exists($absolutePath)) {
+        // create actual directory structure
+        if (! file_exists($absolutePath)) {
             mkdir($absolutePath, 0777, true);
         }
 
@@ -137,20 +164,28 @@ class Mediafile extends ActiveRecord
         $counter = 0;
         do {
             if (0 == $counter) {
-                $filename = Inflector::slug($this->file->baseName).'.'. $this->file->extension;
+                $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
             } else {
                 //if we don't want to rename we finish the call here
                 if (false == $rename) {
                     return false;
 				}
-                $filename = Inflector::slug($this->file->baseName). $counter.'.'. $this->file->extension;
+                $filename = Inflector::slug($this->file->baseName) . $counter . '.' . $this->file->extension;
             }
-            $url = "{$structure}/{$filename}";
+            $url = implode('/', [
+				$structure,
+				$filename,
+			]);
             $counter++;
         } while (self::findByUrl($url)); // checks for existing url in db
 
         // save original uploaded file
-        $this->file->saveAs("{$absolutePath}/{$filename}");
+        $this->file->saveAs(
+			implode('/', [
+				$absolutePath,
+				$filename,
+			])
+		);
         $this->filename = $filename;
         $this->type = $this->file->type;
         $this->size = $this->file->size;
@@ -170,19 +205,19 @@ class Mediafile extends ActiveRecord
     {
         $thumbs = [];
         $basePath = Yii::getAlias($routes['basePath']);
-        $originalFile = pathinfo($this->url);
-        $dirname = $originalFile['dirname'];
-        $filename = $originalFile['filename'];
-        $extension = $originalFile['extension'];
 
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
 
         foreach ($presets as $alias => $preset) {
-            $width = $preset['size'][0];
-            $height = $preset['size'][1];
+            list ($width, $height) = $preset['size'];
             $mode = (isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND);
 
-            $thumbUrl = "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
+            $thumbUrl = implode('/', [
+				pathinfo($this->url, PATHINFO_DIRNAME),
+				pathinfo($this->url, PATHINFO_FILENAME)
+				. "-{$width}x{$height}."
+				. pathinfo($this->url, PATHINFO_EXTENSION),
+			]);
 
             Image::thumbnail("{$basePath}/{$this->url}", $width, $height, $mode)->save("{$basePath}/{$thumbUrl}");
 
@@ -212,9 +247,7 @@ class Mediafile extends ActiveRecord
 
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
 
-        $size = Module::getDefaultThumbSize();
-        $width = $size[0];
-        $height = $size[1];
+        list ($width, $height) = Module::getDefaultThumbSize();
         $thumbUrl = "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
         $basePath = Yii::getAlias($routes['basePath']);
         Image::thumbnail("{$basePath}/{$this->url}", $width, $height)->save("{$basePath}/{$thumbUrl}");
@@ -277,13 +310,11 @@ class Mediafile extends ActiveRecord
     public function getDefaultThumbUrl($baseUrl = '')
     {
         if ($this->isImage()) {
-            $size = Module::getDefaultThumbSize();
+			list ($width, $height) = Module::getDefaultThumbSize();
             $originalFile = pathinfo($this->url);
             $dirname = $originalFile['dirname'];
             $filename = $originalFile['filename'];
             $extension = $originalFile['extension'];
-            $width = $size[0];
-            $height = $size[1];
             
             return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
         }
@@ -296,13 +327,11 @@ class Mediafile extends ActiveRecord
      */
     public function getDefaultUploadThumbUrl($baseUrl = '')
     {
-        $size = Module::getDefaultThumbSize();
+        list ($width, $height) = Module::getDefaultThumbSize();
         $originalFile = pathinfo($this->url);
         $dirname = $originalFile['dirname'];
         $filename = $originalFile['filename'];
         $extension = $originalFile['extension'];
-        $width = $size[0];
-        $height = $size[1];
         
         return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
     }

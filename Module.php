@@ -30,6 +30,11 @@ class Module extends \yii\base\Module
         'basePath' => '@webroot',
         // path for uploaded files in web directory
         'uploadPath' => 'uploads',
+        /** 
+         * Directory format for uploaded files. Default yyyy/mm
+         * Read more about avaliable parameters: http://php.net/manual/en/function.date.php
+         */
+        'dirFormat' => 'Y/m',
     ];
 
     /**
