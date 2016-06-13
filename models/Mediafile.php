@@ -416,7 +416,7 @@ class Mediafile extends ActiveRecord
      */
     public function getLastChanges()
     {
-        return !empty($this->updated_at) ? $this->updated_at : $this->created_at;
+        return ! empty($this->updated_at) ? $this->updated_at : $this->created_at;
     }
 
     /**
