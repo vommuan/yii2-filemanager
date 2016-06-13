@@ -123,9 +123,9 @@ class Mediafile extends ActiveRecord
     {
         $year = date('Y', time());
         $month = date('m', time());
-        $structure = "$routes[baseUrl]/$routes[uploadPath]/$year/$month";
+        $structure = "{$routes['baseUrl']}/{$routes['uploadPath']}/{$year}/{$month}";
         $basePath = Yii::getAlias($routes['basePath']);
-        $absolutePath = "$basePath/$structure";
+        $absolutePath = "{$basePath}/{$structure}";
 
         // create actual directory structure "yyyy/mm"
         if (!file_exists($absolutePath)) {
@@ -145,12 +145,12 @@ class Mediafile extends ActiveRecord
                     return false;
                 $filename = Inflector::slug($this->file->baseName). $counter.'.'. $this->file->extension;
             }
-            $url = "$structure/$filename";
+            $url = "{$structure}/{$filename}";
             $counter++;
         } while(self::findByUrl($url)); // checks for existing url in db
 
         // save original uploaded file
-        $this->file->saveAs("$absolutePath/$filename");
+        $this->file->saveAs("{$absolutePath}/{$filename}");
         $this->filename = $filename;
         $this->type = $this->file->type;
         $this->size = $this->file->size;
@@ -182,9 +182,9 @@ class Mediafile extends ActiveRecord
             $height = $preset['size'][1];
             $mode = (isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND);
 
-            $thumbUrl = "$dirname/$filename-{$width}x{$height}.$extension";
+            $thumbUrl = "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
 
-            Image::thumbnail("$basePath/{$this->url}", $width, $height, $mode)->save("$basePath/$thumbUrl");
+            Image::thumbnail("{$basePath}/{$this->url}", $width, $height, $mode)->save("{$basePath}/{$thumbUrl}");
 
             $thumbs[$alias] = $thumbUrl;
         }
@@ -215,9 +215,9 @@ class Mediafile extends ActiveRecord
         $size = Module::getDefaultThumbSize();
         $width = $size[0];
         $height = $size[1];
-        $thumbUrl = "$dirname/$filename-{$width}x{$height}.$extension";
+        $thumbUrl = "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
         $basePath = Yii::getAlias($routes['basePath']);
-        Image::thumbnail("$basePath/{$this->url}", $width, $height)->save("$basePath/$thumbUrl");
+        Image::thumbnail("{$basePath}/{$this->url}", $width, $height)->save("{$basePath}/{$thumbUrl}");
     }
 
     /**
@@ -284,9 +284,9 @@ class Mediafile extends ActiveRecord
             $extension = $originalFile['extension'];
             $width = $size[0];
             $height = $size[1];
-            return "$dirname/$filename-{$width}x{$height}.$extension";
+            return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
         }
-        return "$baseUrl/images/file.png";
+        return "{$baseUrl}/images/file.png";
     }
     /**
      * @param $baseUrl
@@ -301,7 +301,7 @@ class Mediafile extends ActiveRecord
         $extension = $originalFile['extension'];
         $width = $size[0];
         $height = $size[1];
-        return "$dirname/$filename-{$width}x{$height}.$extension";
+        return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
     }
     /**
      * @return array thumbnails
@@ -375,10 +375,10 @@ class Mediafile extends ActiveRecord
         $basePath = Yii::getAlias($routes['basePath']);
 
         foreach ($this->getThumbs() as $thumbUrl) {
-            unlink("$basePath/$thumbUrl");
+            unlink("{$basePath}/{$thumbUrl}");
         }
 
-        unlink("$basePath/{$this->getDefaultThumbUrl()}");
+        unlink("{$basePath}/{$this->getDefaultThumbUrl()}");
     }
 
     /**
@@ -389,7 +389,7 @@ class Mediafile extends ActiveRecord
     public function deleteFile(array $routes)
     {
         $basePath = Yii::getAlias($routes['basePath']);
-        return unlink("$basePath/{$this->url}");
+        return unlink("{$basePath}/{$this->url}");
     }
 
     /**
@@ -424,7 +424,7 @@ class Mediafile extends ActiveRecord
     public function getOriginalImageSize(array $routes, $delimiter = ' × ')
     {
         $imageSizes = $this->getOriginalImageSizes($routes);
-        return "$imageSizes[0]$delimiter$imageSizes[1]";
+        return "{$imageSizes[0]}{$delimiter}{$imageSizes[1]}";
     }
 
     /**
@@ -435,7 +435,7 @@ class Mediafile extends ActiveRecord
     public function getOriginalImageSizes(array $routes)
     {
         $basePath = Yii::getAlias($routes['basePath']);
-        return getimagesize("$basePath/{$this->url}");
+        return getimagesize("{$basePath}/{$this->url}");
     }
 
     /**
