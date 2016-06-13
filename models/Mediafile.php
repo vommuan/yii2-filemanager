@@ -193,30 +193,31 @@ class Mediafile extends ActiveRecord
 	}
 	
 	/**
-	 * 
+	 * Check if current file name is exists
+	 * @param string $filename
+	 * @return bool 
 	 */
-	protected function fileNameExist($filename)
+	protected function fileNameExists($filename)
 	{
 		$url = implode('/', [
 			$this->getStructure(),
 			$filename,
 		]);
 		
-		return (self::findByUrl($url)) ? true : false;
+		return (self::findByUrl($url)) ? true : false; // checks for existing url in db
 	}
 	
 	/**
-	 * 
-	 * @param array $routes Routes from module settings
+	 * Get unique file name with index. Used when current file name is exists
 	 * @return string
 	 */
-	protected function getUniqueFileName($rename)
+	protected function getUniqueFileName()
 	{
 		$counter = 0;
 		
         do {
             $filename = Inflector::slug($this->file->baseName) . $counter++ . '.' . $this->file->extension;
-        } while ($this->fileNameExist($filename)); // checks for existing url in db
+        } while ($this->fileNameExists($filename));
         
         return $filename;
 	}
@@ -237,11 +238,11 @@ class Mediafile extends ActiveRecord
         
         //if a file with the same name already exist append a number
         $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
-		if ($this->fileNameExist($filename)) {
+		if ($this->fileNameExists($filename)) {
 			if (false === $rename) {
 				return false;
 			} else {
-				$filename = $this->getUniqueFileName($rename);
+				$filename = $this->getUniqueFileName();
 			}
 		}
 		
