@@ -103,11 +103,10 @@ class Mediafile extends ActiveRecord
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
-
             foreach ($this->owners as $owner) {
                 $owner->delete();
             }
-
+            
             return true;
         } else {
             return false;
@@ -137,17 +136,18 @@ class Mediafile extends ActiveRecord
         //if a file with the same name already exist append a number
         $counter = 0;
         do {
-            if($counter==0)
+            if (0 == $counter) {
                 $filename = Inflector::slug($this->file->baseName).'.'. $this->file->extension;
-            else{
+            } else {
                 //if we don't want to rename we finish the call here
-                if($rename == false)
+                if (false == $rename) {
                     return false;
+				}
                 $filename = Inflector::slug($this->file->baseName). $counter.'.'. $this->file->extension;
             }
             $url = "{$structure}/{$filename}";
             $counter++;
-        } while(self::findByUrl($url)); // checks for existing url in db
+        } while (self::findByUrl($url)); // checks for existing url in db
 
         // save original uploaded file
         $this->file->saveAs("{$absolutePath}/{$filename}");
@@ -284,8 +284,10 @@ class Mediafile extends ActiveRecord
             $extension = $originalFile['extension'];
             $width = $size[0];
             $height = $size[1];
+            
             return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
         }
+        
         return "{$baseUrl}/images/file.png";
     }
     /**
@@ -301,6 +303,7 @@ class Mediafile extends ActiveRecord
         $extension = $originalFile['extension'];
         $width = $size[0];
         $height = $size[1];
+        
         return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
     }
     /**
@@ -319,11 +322,11 @@ class Mediafile extends ActiveRecord
     {
         $thumbs = $this->getThumbs();
 
-        if ($alias === 'original') {
+        if ('original' === $alias) {
             return $this->url;
         }
 
-        return !empty($thumbs[$alias]) ? $thumbs[$alias] : '';
+        return ! empty($thumbs[$alias]) ? $thumbs[$alias] : '';
     }
 
     /**
@@ -363,6 +366,7 @@ class Mediafile extends ActiveRecord
             $preset = $module->thumbs[$alias];
             $list[$url] = $preset['name'] . ' ' . $preset['size'][0] . ' × ' . $preset['size'][1];
         }
+        
         return $list;
     }
 
