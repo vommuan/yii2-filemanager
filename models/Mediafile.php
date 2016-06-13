@@ -136,7 +136,7 @@ class Mediafile extends ActiveRecord
         $this->file = UploadedFile::getInstance($this, 'file');
         //if a file with the same name already exist append a number
         $counter = 0;
-        do{
+        do {
             if($counter==0)
                 $filename = Inflector::slug($this->file->baseName).'.'. $this->file->extension;
             else{
@@ -169,7 +169,7 @@ class Mediafile extends ActiveRecord
     public function createThumbs(array $routes, array $presets)
     {
         $thumbs = [];
-        $basePath = $basePath = Yii::getAlias($routes['basePath']);
+        $basePath = Yii::getAlias($routes['basePath']);
         $originalFile = pathinfo($this->url);
         $dirname = $originalFile['dirname'];
         $filename = $originalFile['filename'];
