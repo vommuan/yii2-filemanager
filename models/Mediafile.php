@@ -15,7 +15,7 @@ use vommuan\filemanager\models\Owners;
 use Imagine\Image\ImageInterface;
 
 /**
- * This is the model class for table "filemanager_mediafile".
+ * This is the model class for table "{{%filemanager_mediafile}}".
  *
  * @property integer $id
  * @property string $filename
@@ -31,6 +31,10 @@ use Imagine\Image\ImageInterface;
  */
 class Mediafile extends ActiveRecord
 {
+    private $_routes;
+    private $_absolutePath;
+    private $_structure;
+    
     public $file;
 
     public static $imageFileTypes = [
@@ -124,72 +128,137 @@ class Mediafile extends ActiveRecord
 	
 	/**
 	 * Remove start and end forward slashes
-	 * @param string $path
+	 * @param array $routes
+	 * @return string
 	 */
-	protected function trimPath($path)
+	protected function trimPaths(array $routes)
 	{
-		return trim($path, '/');
+		$output = [];
+		
+		foreach ($routes as $key => $path) {
+			$output[$key] = trim($path, '/');
+		}
+		
+		return $output;
+	}
+	
+	/**
+	 * Compute url structure for upload file and save it in model
+	 * @return string
+	 */
+	protected function getStructure()
+	{
+		if (isset($this->_structure)) {
+			return $this->_structure;
+		}
+		
+        $this->_structure = implode('/', [
+			$this->_routes['baseUrl'],
+			$this->_routes['uploadPath'],
+			date($this->_routes['dirFormat'], time()),
+		]);
+		
+		return $this->_structure;
+	}
+	
+	/**
+	 * Compute absolute path for upload file and save it in model
+	 * @return string
+	 */
+	protected function getAbsolutePath()
+	{
+		if (isset($this->_absolutePath)) {
+			return $this->_absolutePath;
+		}
+		
+        $this->_absolutePath = implode('/', [
+			Yii::getAlias($this->_routes['basePath']),
+			$this->getStructure($this->_routes),
+		]);
+		
+		return $this->_absolutePath;
+	}
+	
+	/**
+	 * Create actual structure directory for upload original files
+	 * @return void
+	 */
+	protected function createUploadDirectory()
+	{
+        if (! file_exists($this->getAbsolutePath())) {
+            return mkdir($this->getAbsolutePath(), 0777, true);
+        } else {
+			return true;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	protected function fileNameExist($filename)
+	{
+		$url = implode('/', [
+			$this->getStructure(),
+			$filename,
+		]);
+		
+		return (self::findByUrl($url)) ? true : false;
+	}
+	
+	/**
+	 * 
+	 * @param array $routes Routes from module settings
+	 * @return string
+	 */
+	protected function getUniqueFileName($rename)
+	{
+		$counter = 0;
+		
+        do {
+            $filename = Inflector::slug($this->file->baseName) . $counter++ . '.' . $this->file->extension;
+        } while ($this->fileNameExist($filename)); // checks for existing url in db
+        
+        return $filename;
 	}
 	
     /**
      * Save just uploaded file
-     * @param array $routes routes from module settings
+     * @param array $routes Routes from module settings
      * @return bool
      */
     public function saveUploadedFile(array $routes, $rename = false)
     {
-        $routes['basePath'] = $this->trimPath($routes['basePath']);
-        $routes['baseUrl'] = $this->trimPath($routes['baseUrl']);
-        $routes['uploadPath'] = $this->trimPath($routes['uploadPath']);
-        $routes['dirFormat'] = $this->trimPath($routes['dirFormat']);
+        $this->_routes = $this->trimPaths($routes);
         
-		$structure = implode('/', [
-			$routes['baseUrl'],
-			$routes['uploadPath'],
-			date($routes['dirFormat'], time()),
-		]);
-        $absolutePath = implode('/', [
-			Yii::getAlias($routes['basePath']),
-			$structure,
-		]);
-
-        // create actual directory structure
-        if (! file_exists($absolutePath)) {
-            mkdir($absolutePath, 0777, true);
-        }
-
+        $this->createUploadDirectory();
+        
         // get file instance
         $this->file = UploadedFile::getInstance($this, 'file');
+        
         //if a file with the same name already exist append a number
-        $counter = 0;
-        do {
-            if (0 == $counter) {
-                $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
-            } else {
-                //if we don't want to rename we finish the call here
-                if (false == $rename) {
-                    return false;
-				}
-                $filename = Inflector::slug($this->file->baseName) . $counter . '.' . $this->file->extension;
-            }
-            $url = implode('/', [
-				$structure,
-				$filename,
-			]);
-            $counter++;
-        } while (self::findByUrl($url)); // checks for existing url in db
-
-        // save original uploaded file
+        $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
+		if ($this->fileNameExist($filename)) {
+			if (false === $rename) {
+				return false;
+			} else {
+				$filename = $this->getUniqueFileName($rename);
+			}
+		}
+		
+		// save original uploaded file
         $this->file->saveAs(
 			implode('/', [
-				$absolutePath,
+				$this->getAbsolutePath(),
 				$filename,
 			])
 		);
         $this->filename = $filename;
         $this->type = $this->file->type;
         $this->size = $this->file->size;
-        $this->url = $url;
+        $this->url = implode('/', [
+			$this->getStructure(),
+			$filename,
+		]);;
 
         return $this->save();
     }
