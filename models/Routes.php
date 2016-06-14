@@ -4,6 +4,7 @@ namespace vommuan\filemanager\models;
 
 use Yii;
 use yii\base\Model;
+use vommuan\filemanager\Module;
 use yii\base\ErrorException;
 
 /**
@@ -11,7 +12,7 @@ use yii\base\ErrorException;
  */
 class Routes extends Model
 {
-    public $routes;
+    private $_routes;
     private $_absolutePath;
     private $_structure;
     
@@ -20,11 +21,18 @@ class Routes extends Model
      */
     public function init()
     {
-		if (! is_array($this->routes)) {
+		$this->_routes = Module::getInstance()->routes;
+		
+		if (! is_array($this->_routes)) {
 			throw new ErrorException('Routes must be an array.');
 		}
 		
 		$this->trimPaths();
+	}
+	
+	public function getRoutes()
+	{
+		return $this->_routes;
 	}
     
     /**
@@ -34,8 +42,8 @@ class Routes extends Model
 	 */
 	protected function trimPaths()
 	{
-		foreach ($this->routes as $key => $path) {
-			$this->routes[$key] = trim($path, '/');
+		foreach ($this->_routes as $key => $path) {
+			$this->_routes[$key] = trim($path, '/');
 		}
 	}
 	
@@ -50,9 +58,9 @@ class Routes extends Model
 		}
 		
         $this->_structure = implode('/', [
-			$this->routes['baseUrl'],
-			$this->routes['uploadPath'],
-			date($this->routes['dirFormat'], time()),
+			$this->_routes['baseUrl'],
+			$this->_routes['uploadPath'],
+			date($this->_routes['dirFormat'], time()),
 		]);
 		
 		return $this->_structure;
@@ -69,8 +77,8 @@ class Routes extends Model
 		}
 		
         $this->_absolutePath = implode('/', [
-			Yii::getAlias($this->routes['basePath']),
-			$this->getStructure($this->routes),
+			Yii::getAlias($this->_routes['basePath']),
+			$this->getStructure($this->_routes),
 		]);
 		
 		return $this->_absolutePath;

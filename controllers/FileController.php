@@ -45,7 +45,7 @@ class FileController extends Controller
     public function actionFilemanager()
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
-        $model = new Mediafile(['routesConfig' => $this->module->routes]);
+        $model = new Mediafile();
         $dataProvider = $model->search();
         $dataProvider->pagination->defaultPageSize = 15;
         
@@ -72,7 +72,6 @@ class FileController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $model = new Mediafile([
-			'routesConfig' => $this->module->routes,
 			'thumbsConfig' => $this->module->thumbs,
 			'rename' => $this->module->rename,
         ]);
@@ -133,7 +132,6 @@ class FileController extends Controller
         $model = Mediafile::findOne($id);
 
         if ($model->isImage()) {
-			$model->setAttributes(['routesConfig' => $this->module->routes]);
             $model->init();
             $model->deleteThumbs($routes);
         }
@@ -153,7 +151,6 @@ class FileController extends Controller
 
         foreach ($models as $model) {
             if ($model->isImage()) {
-                $model->setAttributes(['routesConfig' => $this->module->routes]);
                 $model->init();
                 $model->deleteThumbs($this->module->routes);
                 $model->createThumbs($this->module->thumbs);

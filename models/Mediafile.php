@@ -35,10 +35,6 @@ class Mediafile extends ActiveRecord
     private $_absolutePath;
     private $_structure;
     
-    /**
-     * @var array $routesConfig See routes in module config
-     */
-    public $routesConfig;
     public $thumbsConfig;
     public $rename;
     public $file;
@@ -64,9 +60,7 @@ class Mediafile extends ActiveRecord
     
     public function init()
     {
-		if (isset($this->routesConfig)) {
-			$this->_routes = new Routes(['routes' => $this->routesConfig]);
-		}
+		$this->_routes = new Routes();
 	}
 
     /**
