@@ -35,7 +35,11 @@ class Mediafile extends ActiveRecord
     private $_absolutePath;
     private $_structure;
     
+    /**
+     * @var array $routesConfig See routes in module config
+     */
     public $routesConfig;
+    public $thumbsConfig;
     public $rename;
     public $file;
 
@@ -180,7 +184,6 @@ class Mediafile extends ActiveRecord
 	
     /**
      * Save just uploaded file
-     * @param array $routes Routes from module settings
      * @return bool
      */
     public function saveUploadedFile()
@@ -217,42 +220,58 @@ class Mediafile extends ActiveRecord
 
         return $this->save();
     }
+    
+    /**
+     * Generates thumb file name
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    protected function generateThumbFileName($width, $height) {
+		return pathinfo($this->url, PATHINFO_FILENAME)
+			. '-' . $width . 'x' . $height . '.'
+			. pathinfo($this->url, PATHINFO_EXTENSION);
+	}
 
     /**
      * Create thumbs for this image
      *
-     * @param array $routes see routes in module config
      * @param array $presets thumbs presets. See in module config
      * @return bool
      */
-    public function createThumbs(array $routes, array $presets)
+    public function createThumbs(array $presets)
     {
         $thumbs = [];
-        $basePath = Yii::getAlias($routes['basePath']);
-
+        
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
+        
+        $originalFileName = implode('/', [
+			$this->_routes->absolutePath,
+			pathinfo($this->url, PATHINFO_BASENAME),
+		]);
 
         foreach ($presets as $alias => $preset) {
             list ($width, $height) = $preset['size'];
-            $mode = (isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND);
+            $mode = isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND;
+			
+            Image::thumbnail($originalFileName,	$width, $height, $mode)->save(
+				implode('/', [
+					$this->_routes->absolutePath,
+					$this->generateThumbFileName($width, $height),
+				])
+			);
 
-            $thumbUrl = implode('/', [
-				pathinfo($this->url, PATHINFO_DIRNAME),
-				pathinfo($this->url, PATHINFO_FILENAME)
-				. "-{$width}x{$height}."
-				. pathinfo($this->url, PATHINFO_EXTENSION),
+            $thumbs[$alias] = implode('/', [
+				$this->_routes->structure,
+				$this->generateThumbFileName($width, $height),
 			]);
-
-            Image::thumbnail("{$basePath}/{$this->url}", $width, $height, $mode)->save("{$basePath}/{$thumbUrl}");
-
-            $thumbs[$alias] = $thumbUrl;
         }
 
         $this->thumbs = serialize($thumbs);
         $this->detachBehavior('timestamp');
 
         // create default thumbnail
-        $this->createDefaultThumb($routes);
+        $this->createDefaultThumb($this->_routes->routes);
 
         return $this->save();
     }
@@ -264,17 +283,21 @@ class Mediafile extends ActiveRecord
      */
     public function createDefaultThumb(array $routes)
     {
-        $originalFile = pathinfo($this->url);
-        $dirname = $originalFile['dirname'];
-        $filename = $originalFile['filename'];
-        $extension = $originalFile['extension'];
-
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
 
+		$originalFileName = implode('/', [
+			$this->_routes->absolutePath,
+			pathinfo($this->url, PATHINFO_BASENAME),
+		]);
+		
         list ($width, $height) = Module::getDefaultThumbSize();
-        $thumbUrl = "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
-        $basePath = Yii::getAlias($routes['basePath']);
-        Image::thumbnail("{$basePath}/{$this->url}", $width, $height)->save("{$basePath}/{$thumbUrl}");
+        
+        Image::thumbnail($originalFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+			implode('/', [
+				$this->_routes->absolutePath,
+				$this->generateThumbFileName($width, $height),
+			])
+		);
     }
 
     /**
@@ -335,30 +358,15 @@ class Mediafile extends ActiveRecord
     {
         if ($this->isImage()) {
 			list ($width, $height) = Module::getDefaultThumbSize();
-            $originalFile = pathinfo($this->url);
-            $dirname = $originalFile['dirname'];
-            $filename = $originalFile['filename'];
-            $extension = $originalFile['extension'];
-            
-            return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
+            return implode('/', [
+				pathinfo($this->url, PATHINFO_DIRNAME),
+				$this->generateThumbFileName($width, $height),
+			]);
         }
         
         return "{$baseUrl}/images/file.png";
     }
-    /**
-     * @param $baseUrl
-     * @return string default thumbnail for image
-     */
-    public function getDefaultUploadThumbUrl($baseUrl = '')
-    {
-        list ($width, $height) = Module::getDefaultThumbSize();
-        $originalFile = pathinfo($this->url);
-        $dirname = $originalFile['dirname'];
-        $filename = $originalFile['filename'];
-        $extension = $originalFile['extension'];
-        
-        return "{$dirname}/{$filename}-{$width}x{$height}.{$extension}";
-    }
+    
     /**
      * @return array thumbnails
      */

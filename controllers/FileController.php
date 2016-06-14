@@ -45,10 +45,10 @@ class FileController extends Controller
     public function actionFilemanager()
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
-        $model = new Mediafile();
+        $model = new Mediafile(['routesConfig' => $this->module->routes]);
         $dataProvider = $model->search();
         $dataProvider->pagination->defaultPageSize = 15;
-
+        
         return $this->render('filemanager', [
             'model' => $model,
             'dataProvider' => $dataProvider,
@@ -58,7 +58,9 @@ class FileController extends Controller
     public function actionUploadmanager()
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
-        return $this->render('uploadmanager', ['model' => new Mediafile()]);
+        return $this->render('uploadmanager', [
+			'model' => new Mediafile(),
+		]);
     }
 
     /**
@@ -71,6 +73,7 @@ class FileController extends Controller
 
         $model = new Mediafile([
 			'routesConfig' => $this->module->routes,
+			'thumbsConfig' => $this->module->thumbs,
 			'rename' => $this->module->rename,
         ]);
         $routes = $this->module->routes;
@@ -79,7 +82,7 @@ class FileController extends Controller
         $bundle = FilemanagerAsset::register($this->view);
 
         if ($model->isImage()) {
-            $model->createThumbs($routes, $this->module->thumbs);
+            $model->createThumbs($this->module->thumbs);
         }
 
         $response['files'][] = [
@@ -130,6 +133,8 @@ class FileController extends Controller
         $model = Mediafile::findOne($id);
 
         if ($model->isImage()) {
+			$model->setAttributes(['routesConfig' => $this->module->routes]);
+            $model->init();
             $model->deleteThumbs($routes);
         }
 
@@ -145,12 +150,13 @@ class FileController extends Controller
     public function actionResize()
     {
         $models = Mediafile::findByTypes(Mediafile::$imageFileTypes);
-        $routes = $this->module->routes;
 
         foreach ($models as $model) {
             if ($model->isImage()) {
-                $model->deleteThumbs($routes);
-                $model->createThumbs($routes, $this->module->thumbs);
+                $model->setAttributes(['routesConfig' => $this->module->routes]);
+                $model->init();
+                $model->deleteThumbs($this->module->routes);
+                $model->createThumbs($this->module->thumbs);
             }
         }
 
