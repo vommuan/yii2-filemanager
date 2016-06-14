@@ -35,6 +35,8 @@ class Mediafile extends ActiveRecord
     private $_absolutePath;
     private $_structure;
     
+    public $routesConfig;
+    public $rename;
     public $file;
 
     public static $imageFileTypes = [
@@ -55,6 +57,13 @@ class Mediafile extends ActiveRecord
     {
         return '{{%filemanager_mediafile}}';
     }
+    
+    public function init()
+    {
+		if (isset($this->routesConfig)) {
+			$this->_routes = new Routes(['routes' => $this->routesConfig]);
+		}
+	}
 
     /**
      * @inheritdoc
@@ -174,10 +183,8 @@ class Mediafile extends ActiveRecord
      * @param array $routes Routes from module settings
      * @return bool
      */
-    public function saveUploadedFile(array $routes, $rename = false)
+    public function saveUploadedFile()
     {
-        $this->_routes = new Routes(['routes' => $routes]);
-        
         $this->createUploadDirectory();
         
         // get file instance
@@ -186,7 +193,7 @@ class Mediafile extends ActiveRecord
         //if a file with the same name already exist append a number
         $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
 		if ($this->fileNameExists($filename)) {
-			if (false === $rename) {
+			if (false === $this->rename) {
 				return false;
 			} else {
 				$filename = $this->getUniqueFileName();

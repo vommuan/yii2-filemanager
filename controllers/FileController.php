@@ -69,10 +69,13 @@ class FileController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $model = new Mediafile();
+        $model = new Mediafile([
+			'routesConfig' => $this->module->routes,
+			'rename' => $this->module->rename,
+        ]);
         $routes = $this->module->routes;
         $rename = $this->module->rename;
-        $model->saveUploadedFile($routes, $rename);
+        $model->saveUploadedFile();
         $bundle = FilemanagerAsset::register($this->view);
 
         if ($model->isImage()) {
