@@ -210,10 +210,23 @@ class Mediafile extends ActiveRecord
         $this->url = implode('/', [
 			$this->_routes->structure,
 			$filename,
-		]);;
-
+		]);
+		
         return $this->save();
     }
+    
+    /**
+	 * Create actual structure directory for thumbs files
+	 * @return void
+	 */
+	protected function createThumbsDirectory()
+	{
+        if (! file_exists($this->_routes->getThumbsAbsolutePath())) {
+            return mkdir($this->_routes->getThumbsAbsolutePath(), 0777, true);
+        } else {
+			return true;
+		}
+	}
     
     /**
      * Generates thumb file name
@@ -230,11 +243,12 @@ class Mediafile extends ActiveRecord
     /**
      * Create thumbs for this image
      *
-     * @param array $presets thumbs presets. See in module config
      * @return bool
      */
-    public function createThumbs(array $presets)
+    public function createThumbs()
     {
+        $this->createThumbsDirectory();
+        
         $thumbs = [];
         
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
@@ -244,19 +258,19 @@ class Mediafile extends ActiveRecord
 			pathinfo($this->url, PATHINFO_BASENAME),
 		]);
 
-        foreach ($presets as $alias => $preset) {
+        foreach ($this->thumbsConfig as $alias => $preset) {
             list ($width, $height) = $preset['size'];
             $mode = isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND;
 			
             Image::thumbnail($originalFileName,	$width, $height, $mode)->save(
 				implode('/', [
-					$this->_routes->absolutePath,
+					$this->_routes->getThumbsAbsolutePath(),
 					$this->generateThumbFileName($width, $height),
 				])
 			);
 
             $thumbs[$alias] = implode('/', [
-				$this->_routes->structure,
+				$this->_routes->getThumbsUrlPath(),
 				$this->generateThumbFileName($width, $height),
 			]);
         }
@@ -288,7 +302,7 @@ class Mediafile extends ActiveRecord
         
         Image::thumbnail($originalFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
 			implode('/', [
-				$this->_routes->absolutePath,
+				$this->_routes->getThumbsAbsolutePath(),
 				$this->generateThumbFileName($width, $height),
 			])
 		);
@@ -353,7 +367,7 @@ class Mediafile extends ActiveRecord
         if ($this->isImage()) {
 			list ($width, $height) = Module::getDefaultThumbSize();
             return implode('/', [
-				pathinfo($this->url, PATHINFO_DIRNAME),
+				$this->_routes->getThumbsUrlPath(),
 				$this->generateThumbFileName($width, $height),
 			]);
         }

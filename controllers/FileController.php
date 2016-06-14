@@ -81,7 +81,7 @@ class FileController extends Controller
         $bundle = FilemanagerAsset::register($this->view);
 
         if ($model->isImage()) {
-            $model->createThumbs($this->module->thumbs);
+            $model->createThumbs();
         }
 
         $response['files'][] = [
@@ -132,7 +132,6 @@ class FileController extends Controller
         $model = Mediafile::findOne($id);
 
         if ($model->isImage()) {
-            $model->init();
             $model->deleteThumbs($routes);
         }
 
@@ -151,9 +150,9 @@ class FileController extends Controller
 
         foreach ($models as $model) {
             if ($model->isImage()) {
-                $model->init();
+				$model->setAttributes(['thumbsConfig' => $this->module->thumbs]);
                 $model->deleteThumbs($this->module->routes);
-                $model->createThumbs($this->module->thumbs);
+                $model->createThumbs();
             }
         }
 

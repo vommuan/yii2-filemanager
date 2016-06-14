@@ -23,18 +23,29 @@ class Module extends \yii\base\Module
     /**
      * @var array upload routes
      */
-    public $routes = [
-        // base absolute path to web directory
-        'baseUrl' => '',
-        // base web directory url
+    public $routes = [];
+    
+    private $_defaultRoutes = [
+        /**
+         * Base web directory url
+         */
         'basePath' => '@webroot',
-        // path for uploaded files in web directory
+        
+        /**
+         * Path for uploaded files in web directory
+         */
         'uploadPath' => 'uploads',
+        
         /** 
          * Directory format for uploaded files. Default yyyy/mm
          * Read more about avaliable parameters: http://php.net/manual/en/function.date.php
          */
-        'dirFormat' => 'Y/m',
+        'dateDirFormat' => 'Y/m',
+        
+        /**
+         * Thumbs directory template. Path, where thumb files are located
+         */
+        'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}',
     ];
 
     /**
@@ -94,4 +105,9 @@ class Module extends \yii\base\Module
     {
         return self::$defaultThumbSize;
     }
+    
+    public function getDefaultRoutes()
+    {
+		return $this->_defaultRoutes;
+	}
 }
