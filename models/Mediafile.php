@@ -127,66 +127,13 @@ class Mediafile extends ActiveRecord
     }
 	
 	/**
-	 * Remove start and end forward slashes
-	 * @param array $routes
-	 * @return string
-	 */
-	protected function trimPaths(array $routes)
-	{
-		$output = [];
-		
-		foreach ($routes as $key => $path) {
-			$output[$key] = trim($path, '/');
-		}
-		
-		return $output;
-	}
-	
-	/**
-	 * Compute url structure for upload file and save it in model
-	 * @return string
-	 */
-	protected function getStructure()
-	{
-		if (isset($this->_structure)) {
-			return $this->_structure;
-		}
-		
-        $this->_structure = implode('/', [
-			$this->_routes['baseUrl'],
-			$this->_routes['uploadPath'],
-			date($this->_routes['dirFormat'], time()),
-		]);
-		
-		return $this->_structure;
-	}
-	
-	/**
-	 * Compute absolute path for upload file and save it in model
-	 * @return string
-	 */
-	protected function getAbsolutePath()
-	{
-		if (isset($this->_absolutePath)) {
-			return $this->_absolutePath;
-		}
-		
-        $this->_absolutePath = implode('/', [
-			Yii::getAlias($this->_routes['basePath']),
-			$this->getStructure($this->_routes),
-		]);
-		
-		return $this->_absolutePath;
-	}
-	
-	/**
 	 * Create actual structure directory for upload original files
 	 * @return void
 	 */
 	protected function createUploadDirectory()
 	{
-        if (! file_exists($this->getAbsolutePath())) {
-            return mkdir($this->getAbsolutePath(), 0777, true);
+        if (! file_exists($this->_routes->absolutePath)) {
+            return mkdir($this->_routes->absolutePath, 0777, true);
         } else {
 			return true;
 		}
@@ -200,7 +147,7 @@ class Mediafile extends ActiveRecord
 	protected function fileNameExists($filename)
 	{
 		$url = implode('/', [
-			$this->getStructure(),
+			$this->_routes->structure,
 			$filename,
 		]);
 		
@@ -229,7 +176,7 @@ class Mediafile extends ActiveRecord
      */
     public function saveUploadedFile(array $routes, $rename = false)
     {
-        $this->_routes = $this->trimPaths($routes);
+        $this->_routes = new Routes(['routes' => $routes]);
         
         $this->createUploadDirectory();
         
@@ -249,7 +196,7 @@ class Mediafile extends ActiveRecord
 		// save original uploaded file
         $this->file->saveAs(
 			implode('/', [
-				$this->getAbsolutePath(),
+				$this->_routes->absolutePath,
 				$filename,
 			])
 		);
@@ -257,7 +204,7 @@ class Mediafile extends ActiveRecord
         $this->type = $this->file->type;
         $this->size = $this->file->size;
         $this->url = implode('/', [
-			$this->getStructure(),
+			$this->_routes->structure,
 			$filename,
 		]);;
 
