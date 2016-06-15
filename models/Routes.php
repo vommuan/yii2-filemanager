@@ -22,11 +22,6 @@ class Routes extends Model
     public function init()
     {
 		$this->_routes = array_merge(Module::getInstance()->defaultRoutes, Module::getInstance()->routes);
-		
-		if (! is_array($this->_routes)) {
-			throw new ErrorException('Routes must be an array.');
-		}
-		
 		$this->trimPaths();
 	}
 	

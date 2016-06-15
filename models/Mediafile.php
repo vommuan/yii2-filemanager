@@ -10,6 +10,7 @@ use yii\imagine\Image;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\helpers\FileHelper;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\Owners;
 use Imagine\Image\ImageInterface;
@@ -134,20 +135,18 @@ class Mediafile extends ActiveRecord
     }
 	
 	/**
-	 * Create actual structure directory for upload original files
-	 * @return void
+	 * Get access for readonly Routes object
+	 * 
+	 * @return vommuan\filemanager\models\Routes
 	 */
-	protected function createUploadDirectory()
+	public function getRoutes()
 	{
-        if (! file_exists($this->_routes->absolutePath)) {
-            return mkdir($this->_routes->absolutePath, 0777, true);
-        } else {
-			return true;
-		}
+		return $this->_routes;
 	}
 	
 	/**
 	 * Check if current file name is exists
+	 * 
 	 * @param string $filename
 	 * @return bool 
 	 */
@@ -163,6 +162,7 @@ class Mediafile extends ActiveRecord
 	
 	/**
 	 * Get unique file name with index. Used when current file name is exists
+	 * 
 	 * @return string
 	 */
 	protected function getUniqueFileName()
@@ -178,11 +178,12 @@ class Mediafile extends ActiveRecord
 	
     /**
      * Save just uploaded file
+     * 
      * @return bool
      */
     public function saveUploadedFile()
     {
-        $this->createUploadDirectory();
+        FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
         
         // get file instance
         $this->file = UploadedFile::getInstance($this, 'file');
@@ -212,100 +213,14 @@ class Mediafile extends ActiveRecord
 			$filename,
 		]);
 		
-        return $this->save();
-    }
-    
-    /**
-	 * Create actual structure directory for thumbs files
-	 * @return void
-	 */
-	protected function createThumbsDirectory()
-	{
-        if (! file_exists($this->_routes->getThumbsAbsolutePath())) {
-            return mkdir($this->_routes->getThumbsAbsolutePath(), 0777, true);
-        } else {
-			return true;
-		}
-	}
-    
-    /**
-     * Generates thumb file name
-     * @param int $width
-     * @param int $height
-     * @return string
-     */
-    protected function generateThumbFileName($width, $height) {
-		return pathinfo($this->url, PATHINFO_FILENAME)
-			. '-' . $width . 'x' . $height . '.'
-			. pathinfo($this->url, PATHINFO_EXTENSION);
-	}
-
-    /**
-     * Create thumbs for this image
-     *
-     * @return bool
-     */
-    public function createThumbs()
-    {
-        $this->createThumbsDirectory();
+        $this->save();
         
-        $thumbs = [];
-        
-        Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
-        
-        $originalFileName = implode('/', [
-			$this->_routes->absolutePath,
-			pathinfo($this->url, PATHINFO_BASENAME),
-		]);
-
-        foreach ($this->thumbsConfig as $alias => $preset) {
-            list ($width, $height) = $preset['size'];
-            $mode = isset($preset['mode']) ? $preset['mode'] : ImageInterface::THUMBNAIL_OUTBOUND;
-			
-            Image::thumbnail($originalFileName,	$width, $height, $mode)->save(
-				implode('/', [
-					$this->_routes->getThumbsAbsolutePath(),
-					$this->generateThumbFileName($width, $height),
-				])
-			);
-
-            $thumbs[$alias] = implode('/', [
-				$this->_routes->getThumbsUrlPath(),
-				$this->generateThumbFileName($width, $height),
+        if ($this->isImage()) {
+            $thumbs = new Thumbs([
+				'mediaFile' => $this,
 			]);
+            $thumbs->createThumbs();
         }
-
-        $this->thumbs = serialize($thumbs);
-        $this->detachBehavior('timestamp');
-
-        // create default thumbnail
-        $this->createDefaultThumb($this->_routes->routes);
-
-        return $this->save();
-    }
-
-    /**
-     * Create default thumbnail
-     *
-     * @param array $routes see routes in module config
-     */
-    public function createDefaultThumb(array $routes)
-    {
-        Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
-
-		$originalFileName = implode('/', [
-			$this->_routes->absolutePath,
-			pathinfo($this->url, PATHINFO_BASENAME),
-		]);
-		
-        list ($width, $height) = Module::getDefaultThumbSize();
-        
-        Image::thumbnail($originalFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
-			implode('/', [
-				$this->_routes->getThumbsAbsolutePath(),
-				$this->generateThumbFileName($width, $height),
-			])
-		);
     }
 
     /**
@@ -367,7 +282,7 @@ class Mediafile extends ActiveRecord
         if ($this->isImage()) {
 			list ($width, $height) = Module::getDefaultThumbSize();
             return implode('/', [
-				$this->_routes->getThumbsUrlPath(),
+				$this->_routes->getThumbsUrlPath($this->url),
 				$this->generateThumbFileName($width, $height),
 			]);
         }
@@ -441,6 +356,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * Delete thumbnails for current image
+     * 
      * @param array $routes see routes in module config
      */
     public function deleteThumbs(array $routes)
@@ -456,6 +372,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * Delete file
+     * 
      * @param array $routes see routes in module config
      * @return bool
      */
@@ -467,6 +384,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * Creates data provider instance with search query applied
+     * 
      * @return ActiveDataProvider
      */
     public function search()
@@ -490,6 +408,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * This method wrap getimagesize() function
+     * 
      * @param array $routes see routes in module config
      * @param string $delimiter delimiter between width and height
      * @return string image size like '1366x768'
@@ -502,6 +421,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * This method wrap getimagesize() function
+     * 
      * @param array $routes see routes in module config
      * @return array
      */
@@ -533,6 +453,7 @@ class Mediafile extends ActiveRecord
 
     /**
      * Search models by file types
+     * 
      * @param array $types file types
      * @return array|\yii\db\ActiveRecord[]
      */

@@ -80,10 +80,6 @@ class FileController extends Controller
         $model->saveUploadedFile();
         $bundle = FilemanagerAsset::register($this->view);
 
-        if ($model->isImage()) {
-            $model->createThumbs();
-        }
-
         $response['files'][] = [
             'url'           => $model->url,
             'thumbnailUrl'  => $model->getDefaultThumbUrl($bundle->baseUrl),
