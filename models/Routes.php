@@ -29,6 +29,11 @@ class Routes extends Model
 	{
 		return $this->_routes;
 	}
+	
+	public function getBasePath()
+	{
+		return $this->renderBasePath();
+	}
     
     /**
 	 * Remove start and end forward slashes

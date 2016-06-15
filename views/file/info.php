@@ -18,7 +18,7 @@ $bundle = FilemanagerAsset::register($this);
     <li><?= $model->type ?></li>
     <li><?= Yii::$app->formatter->asDatetime($model->getLastChanges()) ?></li>
     <?php if ($model->isImage()) : ?>
-        <li><?= $model->getOriginalImageSize($this->context->module->routes) ?></li>
+        <li><?= $model->getOriginalImageSize(); ?></li>
     <?php endif; ?>
     <li><?= $model->getFileSize() ?></li>
     <li><?= Html::a(Module::t('main', 'Delete'), ['file/delete/', 'id' => $model->id],
@@ -47,7 +47,7 @@ $bundle = FilemanagerAsset::register($this);
         <div class="form-group<?= $strictThumb ? ' hidden' : '' ?>">
             <?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']) ?>
 
-            <?= Html::dropDownList('url', $model->getThumbUrl($strictThumb), $model->getImagesList($this->context->module), [
+            <?= Html::dropDownList('url', $model->getThumbUrl($strictThumb), $model->getImagesList(), [
                 'class' => 'form-control input-sm'
             ]) ?>
             <div class="help-block"></div>

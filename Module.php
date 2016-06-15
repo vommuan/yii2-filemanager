@@ -65,6 +65,13 @@ class Module extends \yii\base\Module
             'size' => [800, 600],
         ],
     ];
+    
+    private $_defaultThumbs = [
+		'default' => [
+            'name' => 'Default size',
+            'size' => [128, 128],
+        ],
+	];
 
     /**
      * @var array default thumbnail size, using in filemanager view.
@@ -109,5 +116,10 @@ class Module extends \yii\base\Module
     public function getDefaultRoutes()
     {
 		return $this->_defaultRoutes;
+	}
+	
+	public function getDefaultThumbs()
+    {
+		return $this->_defaultThumbs;
 	}
 }

@@ -9,10 +9,14 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel vommuan\filemanager\models\Mediafile */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 ?>
 
-<header id="header"><span class="glyphicon glyphicon-picture"></span> <?= Module::t('main', 'File manager') ?></header>
+<header id="header">
+	<span class="glyphicon glyphicon-picture"></span>
+	<?= Module::t('main', 'File manager');?>
+</header>
 
 <div id="filemanager" data-url-info="<?= Url::to(['file/info']) ?>">
     <?= ListView::widget([
@@ -22,7 +26,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
         'itemView' => function ($model, $key, $index, $widget) {
 			return Html::a(
 				Html::img($model->getDefaultThumbUrl($this->params['moduleBundle']->baseUrl))
-				. '<span class="checked glyphicon glyphicon-check"></span>',
+					. '<span class="checked glyphicon glyphicon-check"></span>',
 				'#mediafile',
 				['data-key' => $key]
 			);
@@ -30,10 +34,13 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
     ]);?>
 
     <div class="dashboard">
-        <p><?= Html::a('<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
-                ['file/uploadmanager'], ['class' => 'btn btn-default']) ?></p>
-        <div id="fileinfo">
-
-        </div>
+        <p>
+			<?= Html::a(
+				'<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
+                ['file/uploadmanager'],
+                ['class' => 'btn btn-default']
+            ); ?>
+        </p>
+        <div id="fileinfo"></div>
     </div>
 </div>

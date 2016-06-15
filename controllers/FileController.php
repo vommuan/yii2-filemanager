@@ -45,13 +45,11 @@ class FileController extends Controller
     public function actionFilemanager()
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
+        
         $model = new Mediafile();
-        $dataProvider = $model->search();
-        $dataProvider->pagination->defaultPageSize = 15;
         
         return $this->render('filemanager', [
-            'model' => $model,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $model->search(),
         ]);
     }
 

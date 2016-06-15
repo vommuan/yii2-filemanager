@@ -222,6 +222,20 @@ class Mediafile extends ActiveRecord
             $thumbs->createThumbs();
         }
     }
+    
+    /**
+     * Create thumbs for this image
+     *
+     * @return bool
+     */
+    public function createThumbs()
+    {
+		$thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		
+		return $thumbs->createThumbs();
+	}
 
     /**
      * Add owner to mediafiles table
@@ -279,38 +293,24 @@ class Mediafile extends ActiveRecord
      */
     public function getDefaultThumbUrl($baseUrl = '')
     {
-        if ($this->isImage()) {
-			list ($width, $height) = Module::getDefaultThumbSize();
-            return implode('/', [
-				$this->_routes->getThumbsUrlPath($this->url),
-				$this->generateThumbFileName($width, $height),
-			]);
-        }
-        
-        return "{$baseUrl}/images/file.png";
+		$thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		
+		return $thumbs->getDefaultThumbUrl($baseUrl);
     }
     
-    /**
-     * @return array thumbnails
-     */
-    public function getThumbs()
-    {
-        return unserialize($this->thumbs);
-    }
-
     /**
      * @param string $alias thumb alias
      * @return string thumb url
      */
     public function getThumbUrl($alias)
     {
-        $thumbs = $this->getThumbs();
-
-        if ('original' === $alias) {
-            return $this->url;
-        }
-
-        return ! empty($thumbs[$alias]) ? $thumbs[$alias] : '';
+        $thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		
+		return $thumbs->getThumbUrl($alias);
     }
 
     /**
@@ -320,38 +320,26 @@ class Mediafile extends ActiveRecord
      * @param array $options html options
      * @return string Html image tag
      */
-    public function getThumbImage($alias, $options=[])
+    public function getThumbImage($alias, $options = [])
     {
-        $url = $this->getThumbUrl($alias);
-
-        if (empty($url)) {
-            return '';
-        }
-
-        if (empty($options['alt'])) {
-            $options['alt'] = $this->alt;
-        }
-
-        return Html::img($url, $options);
+        $thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		
+		return $thumbs->getThumbImage($alias, $options);
     }
 
     /**
      * @param Module $module
      * @return array images list
      */
-    public function getImagesList(Module $module)
+    public function getImagesList()
     {
-        $thumbs = $this->getThumbs();
-        $list = [];
-        $originalImageSize = $this->getOriginalImageSize($module->routes);
-        $list[$this->url] = Module::t('main', 'Original') . ' ' . $originalImageSize;
-
-        foreach ($thumbs as $alias => $url) {
-            $preset = $module->thumbs[$alias];
-            $list[$url] = $preset['name'] . ' ' . $preset['size'][0] . ' × ' . $preset['size'][1];
-        }
-        
-        return $list;
+		$thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		
+		return $thumbs->getImagesList();
     }
 
     /**
@@ -361,13 +349,10 @@ class Mediafile extends ActiveRecord
      */
     public function deleteThumbs(array $routes)
     {
-        $basePath = Yii::getAlias($routes['basePath']);
-
-        foreach ($this->getThumbs() as $thumbUrl) {
-            unlink("{$basePath}/{$thumbUrl}");
-        }
-
-        unlink("{$basePath}/{$this->getDefaultThumbUrl()}");
+        $thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		$thumbs->deleteThumbs();
     }
 
     /**
@@ -389,12 +374,12 @@ class Mediafile extends ActiveRecord
      */
     public function search()
     {
-        $query = self::find()->orderBy('created_at DESC');
-
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => self::find()->orderBy('created_at DESC'),
         ]);
-
+        
+        $dataProvider->pagination->defaultPageSize = 15;
+        
         return $dataProvider;
     }
 
@@ -413,22 +398,12 @@ class Mediafile extends ActiveRecord
      * @param string $delimiter delimiter between width and height
      * @return string image size like '1366x768'
      */
-    public function getOriginalImageSize(array $routes, $delimiter = ' × ')
+    public function getOriginalImageSize($delimiter = 'x')
     {
-        $imageSizes = $this->getOriginalImageSizes($routes);
-        return "{$imageSizes[0]}{$delimiter}{$imageSizes[1]}";
-    }
-
-    /**
-     * This method wrap getimagesize() function
-     * 
-     * @param array $routes see routes in module config
-     * @return array
-     */
-    public function getOriginalImageSizes(array $routes)
-    {
-        $basePath = Yii::getAlias($routes['basePath']);
-        return getimagesize("{$basePath}/{$this->url}");
+        $thumbs = new Thumbs([
+			'mediaFile' => $this,
+		]);
+		return $thumbs->getOriginalImageSize($delimiter);
     }
 
     /**
