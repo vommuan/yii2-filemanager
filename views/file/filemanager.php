@@ -25,7 +25,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
 			return Html::a(
-				Html::img($model->getDefaultThumbUrl($this->params['moduleBundle']->baseUrl))
+				Html::img($model->thumbFiles->getDefaultThumbUrl($this->params['moduleBundle']->baseUrl))
 					. '<span class="checked glyphicon glyphicon-check"></span>',
 				'#mediafile',
 				['data-key' => $key]

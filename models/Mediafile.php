@@ -33,10 +33,8 @@ use Imagine\Image\ImageInterface;
 class Mediafile extends ActiveRecord
 {
     private $_routes;
-    private $_absolutePath;
-    private $_structure;
+    private $_thumbFiles;
     
-    public $thumbsConfig;
     public $rename;
     public $file;
 
@@ -62,6 +60,9 @@ class Mediafile extends ActiveRecord
     public function init()
     {
 		$this->_routes = new Routes();
+		$this->_thumbFiles = new Thumbs([
+			'mediaFile' => $this,
+		]);
 	}
 
     /**
@@ -145,6 +146,16 @@ class Mediafile extends ActiveRecord
 	}
 	
 	/**
+	 * Get access for readonly Thumbs object
+	 * 
+	 * @return vommuan\filemanager\models\Thumbs
+	 */
+	public function getThumbFiles()
+	{
+		return $this->_thumbFiles;
+	}
+	
+	/**
 	 * Check if current file name is exists
 	 * 
 	 * @param string $filename
@@ -216,27 +227,40 @@ class Mediafile extends ActiveRecord
         $this->save();
         
         if ($this->isImage()) {
-            $thumbs = new Thumbs([
-				'mediaFile' => $this,
-			]);
-            $thumbs->createThumbs();
+            $this->_thumbFiles->createThumbs();
         }
     }
     
     /**
-     * Create thumbs for this image
-     *
-     * @return bool
+     * @return bool if type of this media file is image, return true;
      */
-    public function createThumbs()
+    public function isImage()
     {
-		$thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
+        return in_array($this->type, self::$imageFileTypes);
+    }
+    
+    /**
+     * This method wrap getimagesize() function
+     * 
+     * @param array $routes see routes in module config
+     * @param string $delimiter delimiter between width and height
+     * @return string image size like '1366x768'
+     */
+    public function getOriginalImageSize($delimiter = 'x')
+    {
+        $imageSizes = getimagesize(
+			implode('/', [
+				$this->routes->basePath,
+				$this->url,
+			])
+		);
 		
-		return $thumbs->createThumbs();
-	}
-
+		return implode($delimiter, [
+			$imageSizes[0],
+			$imageSizes[1],
+		]);
+    }
+    
     /**
      * Add owner to mediafiles table
      *
@@ -280,82 +304,6 @@ class Mediafile extends ActiveRecord
     }
 
     /**
-     * @return bool if type of this media file is image, return true;
-     */
-    public function isImage()
-    {
-        return in_array($this->type, self::$imageFileTypes);
-    }
-
-    /**
-     * @param $baseUrl
-     * @return string default thumbnail for image
-     */
-    public function getDefaultThumbUrl($baseUrl = '')
-    {
-		$thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		
-		return $thumbs->getDefaultThumbUrl($baseUrl);
-    }
-    
-    /**
-     * @param string $alias thumb alias
-     * @return string thumb url
-     */
-    public function getThumbUrl($alias)
-    {
-        $thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		
-		return $thumbs->getThumbUrl($alias);
-    }
-
-    /**
-     * Thumbnail image html tag
-     *
-     * @param string $alias thumbnail alias
-     * @param array $options html options
-     * @return string Html image tag
-     */
-    public function getThumbImage($alias, $options = [])
-    {
-        $thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		
-		return $thumbs->getThumbImage($alias, $options);
-    }
-
-    /**
-     * @param Module $module
-     * @return array images list
-     */
-    public function getImagesList()
-    {
-		$thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		
-		return $thumbs->getImagesList();
-    }
-
-    /**
-     * Delete thumbnails for current image
-     * 
-     * @param array $routes see routes in module config
-     */
-    public function deleteThumbs(array $routes)
-    {
-        $thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		$thumbs->deleteThumbs();
-    }
-
-    /**
      * Delete file
      * 
      * @param array $routes see routes in module config
@@ -390,22 +338,7 @@ class Mediafile extends ActiveRecord
     {
         return ! empty($this->updated_at) ? $this->updated_at : $this->created_at;
     }
-
-    /**
-     * This method wrap getimagesize() function
-     * 
-     * @param array $routes see routes in module config
-     * @param string $delimiter delimiter between width and height
-     * @return string image size like '1366x768'
-     */
-    public function getOriginalImageSize($delimiter = 'x')
-    {
-        $thumbs = new Thumbs([
-			'mediaFile' => $this,
-		]);
-		return $thumbs->getOriginalImageSize($delimiter);
-    }
-
+    
     /**
      * @return string file size
      */

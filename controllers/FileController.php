@@ -70,7 +70,6 @@ class FileController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $model = new Mediafile([
-			'thumbsConfig' => $this->module->thumbs,
 			'rename' => $this->module->rename,
         ]);
         $routes = $this->module->routes;
@@ -80,7 +79,7 @@ class FileController extends Controller
 
         $response['files'][] = [
             'url'           => $model->url,
-            'thumbnailUrl'  => $model->getDefaultThumbUrl($bundle->baseUrl),
+            'thumbnailUrl'  => $model->thumbFiles->getDefaultThumbUrl($bundle->baseUrl),
             'name'          => $model->filename,
             'type'          => $model->type,
             'size'          => $model->file->size,
@@ -126,7 +125,7 @@ class FileController extends Controller
         $model = Mediafile::findOne($id);
 
         if ($model->isImage()) {
-            $model->deleteThumbs($routes);
+            $model->thumbFiles->deleteThumbs();
         }
 
         $model->deleteFile($routes);
@@ -144,9 +143,8 @@ class FileController extends Controller
 
         foreach ($models as $model) {
             if ($model->isImage()) {
-				$model->setAttributes(['thumbsConfig' => $this->module->thumbs]);
-                $model->deleteThumbs($this->module->routes);
-                $model->createThumbs();
+                $model->thumbFiles->deleteThumbs();
+                $model->thumbFiles->createThumbs();
             }
         }
 

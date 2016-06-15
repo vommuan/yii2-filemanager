@@ -153,7 +153,7 @@ class Thumbs extends Model
     {
         $thumbs = $this->getThumbs();
         $list = [];
-        $list[$this->mediaFile->url] = Module::t('main', 'Original') . ' ' . $this->getOriginalImageSize();
+        $list[$this->mediaFile->url] = Module::t('main', 'Original') . ' ' . $this->mediaFile->getOriginalImageSize();
 
         foreach ($thumbs as $alias => $url) {
             $preset = $this->_thumbsConfig[$alias];
@@ -173,27 +173,5 @@ class Thumbs extends Model
         foreach ($this->getThumbs() as $thumbUrl) {
             unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");
         }
-    }
-    
-    /**
-     * This method wrap getimagesize() function
-     * 
-     * @param array $routes see routes in module config
-     * @param string $delimiter delimiter between width and height
-     * @return string image size like '1366x768'
-     */
-    public function getOriginalImageSize($delimiter = 'x')
-    {
-        $imageSizes = getimagesize(
-			implode('/', [
-				$this->mediaFile->routes->basePath,
-				$this->mediaFile->url,
-			])
-		);
-		
-		return implode($delimiter, [
-			$imageSizes[0],
-			$imageSizes[1],
-		]);
     }
 }
