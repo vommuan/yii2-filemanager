@@ -1,6 +1,6 @@
 # Yii2 file manager
 
-This module is based on [pendalf89/yii2-filemanage](https://github.com/PendalF89/yii2-filemanager).
+This module is based on [pendalf89/yii2-filemanager](https://github.com/PendalF89/yii2-filemanager).
 This module provide interface to collect and access all mediafiles in one place. Inspired by WordPress file manager.
 
 ## Features
