@@ -17,14 +17,14 @@ use Imagine\Image\ImageInterface;
 class Thumbs extends Model
 {
     public $mediaFile;
-    private $_thumbsConfig;
+    private $_config;
 
     /**
      * @inheritdoc
      */
     public function init()
     {
-        $this->_thumbsConfig = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
+        $this->_config = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
         
         if (! ($this->mediaFile instanceof Mediafile)) {
             throw new ErrorException('Error class initialization.');
@@ -38,7 +38,7 @@ class Thumbs extends Model
      * @param int $height
      * @return string
      */
-    protected function generateThumbFileName($width, $height) {
+    protected function generateFileName($width, $height) {
         return pathinfo($this->mediaFile->url, PATHINFO_FILENAME)
             . '-' . $width . 'x' . $height . '.'
             . pathinfo($this->mediaFile->url, PATHINFO_EXTENSION);
@@ -49,7 +49,7 @@ class Thumbs extends Model
      *
      * @return bool
      */
-    public function createThumbs()
+    public function create()
     {
         FileHelper::createDirectory($this->mediaFile->routes->getThumbsAbsolutePath(), 0777, true);
         
@@ -62,18 +62,18 @@ class Thumbs extends Model
             pathinfo($this->mediaFile->url, PATHINFO_BASENAME),
         ]);
 
-        foreach ($this->_thumbsConfig as $alias => $preset) {
+        foreach ($this->_config as $alias => $preset) {
             list ($width, $height) = $preset['size'];
             Image::thumbnail($originalFileName,    $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
                 implode('/', [
                     $this->mediaFile->routes->getThumbsAbsolutePath(),
-                    $this->generateThumbFileName($width, $height),
+                    $this->generateFileName($width, $height),
                 ])
             );
 
             $thumbs[$alias] = implode('/', [
                 $this->mediaFile->routes->getThumbsUrlPath(),
-                $this->generateThumbFileName($width, $height),
+                $this->generateFileName($width, $height),
             ]);
         }
 
@@ -87,10 +87,10 @@ class Thumbs extends Model
      * @param $baseUrl
      * @return string default thumbnail for image
      */
-    public function getDefaultThumbUrl($baseUrl = '')
+    public function getDefaultUrl($baseUrl = '')
     {
         if ($this->mediaFile->isImage()) {
-            return $this->getThumbUrl('default');
+            return $this->getUrl('default');
         }
         
         return "{$baseUrl}/images/file.png";
@@ -99,7 +99,7 @@ class Thumbs extends Model
     /**
      * @return array thumbnails
      */
-    public function getThumbs()
+    protected function getThumbs()
     {
         return unserialize($this->mediaFile->thumbs);
     }
@@ -108,7 +108,7 @@ class Thumbs extends Model
      * @param string $alias thumb alias
      * @return string thumb url
      */
-    public function getThumbUrl($alias)
+    public function getUrl($alias)
     {
         $thumbs = $this->getThumbs();
 
@@ -126,9 +126,9 @@ class Thumbs extends Model
      * @param array $options html options
      * @return string Html image tag
      */
-    public function getThumbImage($alias, $options = [])
+    public function getImage($alias, $options = [])
     {
-        $url = $this->getThumbUrl($alias);
+        $url = $this->getUrl($alias);
 
         if (empty($url)) {
             return '';
@@ -156,7 +156,7 @@ class Thumbs extends Model
         $list[$this->mediaFile->url] = Module::t('main', 'Original') . ' ' . $this->mediaFile->getOriginalImageSize();
 
         foreach ($thumbs as $alias => $url) {
-            $preset = $this->_thumbsConfig[$alias];
+            $preset = $this->_config[$alias];
             $list[$url] = $preset['name'] . ' ' . $preset['size'][0] . 'x' . $preset['size'][1];
         }
         
@@ -168,7 +168,7 @@ class Thumbs extends Model
      * 
      * @param array $routes see routes in module config
      */
-    public function deleteThumbs()
+    public function delete()
     {
         foreach ($this->getThumbs() as $thumbUrl) {
             unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");

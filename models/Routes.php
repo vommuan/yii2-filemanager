@@ -12,7 +12,7 @@ use yii\base\ErrorException;
  */
 class Routes extends Model
 {
-    private $_routes;
+    private $_config;
     private $_absolutePath;
     private $_structure;
     
@@ -21,18 +21,8 @@ class Routes extends Model
      */
     public function init()
     {
-        $this->_routes = array_merge(Module::getInstance()->defaultRoutes, Module::getInstance()->routes);
+        $this->_config = array_merge(Module::getInstance()->defaultRoutes, Module::getInstance()->routes);
         $this->trimPaths();
-    }
-    
-    public function getRoutes()
-    {
-        return $this->_routes;
-    }
-    
-    public function getBasePath()
-    {
-        return $this->renderBasePath();
     }
     
     /**
@@ -41,11 +31,21 @@ class Routes extends Model
      * @param array $routes
      * @return string
      */
-    protected function trimPaths()
+    private function trimPaths()
     {
-        foreach ($this->_routes as $key => $path) {
-            $this->_routes[$key] = trim($path, '/');
+        foreach ($this->_config as $key => $path) {
+            $this->_config[$key] = trim($path, '/');
         }
+    }
+    
+    /**
+     * Get base path of web directory
+     * 
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->renderBasePath();
     }
     
     /**
@@ -87,13 +87,13 @@ class Routes extends Model
     }
     
     /**
-     * Render absolute base path
+     * Render absolute base path of web directory
      * 
      * @return string
      */
     protected function renderBasePath()
     {
-        return Yii::getAlias($this->_routes['basePath']);
+        return Yii::getAlias($this->_config['basePath']);
     }
     
     /**
@@ -103,7 +103,7 @@ class Routes extends Model
      */
     protected function renderUploadPath()
     {
-        return $this->_routes['uploadPath'];
+        return $this->_config['uploadPath'];
     }
     
     /**
@@ -113,7 +113,7 @@ class Routes extends Model
      */
     protected function renderDateDirFormat()
     {
-        return date($this->_routes['dateDirFormat'], time());
+        return date($this->_config['dateDirFormat'], time());
     }
     
     /**
@@ -131,7 +131,7 @@ class Routes extends Model
                 $this->renderUploadPath(),
                 (isset($dateDir) ? $dateDir : $this->renderDateDirFormat()),
             ], 
-            $this->_routes['thumbsDirTemplate']
+            $this->_config['thumbsDirTemplate']
         );
     }
     
@@ -162,7 +162,7 @@ class Routes extends Model
                 return trim($value, '/');
             },
             array_filter(
-                preg_split('/\{.*?\}/', $this->_routes['thumbsDirTemplate']),
+                preg_split('/\{.*?\}/', $this->_config['thumbsDirTemplate']),
                 function($value) {
                     if ('' === trim($value, '/')) {
                         return false;

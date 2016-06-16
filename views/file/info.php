@@ -12,7 +12,7 @@ use vommuan\filemanager\Module;
 $bundle = FilemanagerAsset::register($this);
 ?>
 
-<?= Html::img($model->thumbFiles->getDefaultThumbUrl($bundle->baseUrl)) ?>
+<?= Html::img($model->thumbFiles->getDefaultUrl($bundle->baseUrl)) ?>
 
 <ul class="detail">
     <li><?= $model->type ?></li>
@@ -47,7 +47,7 @@ $bundle = FilemanagerAsset::register($this);
         <div class="form-group<?= $strictThumb ? ' hidden' : '' ?>">
             <?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']) ?>
 
-            <?= Html::dropDownList('url', $model->thumbFiles->getThumbUrl($strictThumb), $model->thumbFiles->getImagesList(), [
+            <?= Html::dropDownList('url', $model->thumbFiles->getUrl($strictThumb), $model->thumbFiles->getImagesList(), [
                 'class' => 'form-control input-sm'
             ]) ?>
             <div class="help-block"></div>

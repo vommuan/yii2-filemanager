@@ -56,6 +56,7 @@ class FileController extends Controller
     public function actionUploadmanager()
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
+        
         return $this->render('uploadmanager', [
             'model' => new Mediafile(),
         ]);
@@ -72,14 +73,13 @@ class FileController extends Controller
         $model = new Mediafile([
             'rename' => $this->module->rename,
         ]);
-        $routes = $this->module->routes;
-        $rename = $this->module->rename;
+        
         $model->saveUploadedFile();
         $bundle = FilemanagerAsset::register($this->view);
 
         $response['files'][] = [
             'url'           => $model->url,
-            'thumbnailUrl'  => $model->thumbFiles->getDefaultThumbUrl($bundle->baseUrl),
+            'thumbnailUrl'  => $model->thumbFiles->getDefaultUrl($bundle->baseUrl),
             'name'          => $model->filename,
             'type'          => $model->type,
             'size'          => $model->file->size,
@@ -120,15 +120,14 @@ class FileController extends Controller
     public function actionDelete($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $routes = $this->module->routes;
 
         $model = Mediafile::findOne($id);
 
         if ($model->isImage()) {
-            $model->thumbFiles->deleteThumbs();
+            $model->thumbFiles->delete();
         }
 
-        $model->deleteFile($routes);
+        $model->deleteFile();
         $model->delete();
 
         return ['success' => 'true'];
@@ -143,8 +142,8 @@ class FileController extends Controller
 
         foreach ($models as $model) {
             if ($model->isImage()) {
-                $model->thumbFiles->deleteThumbs();
-                $model->thumbFiles->createThumbs();
+                $model->thumbFiles->delete();
+                $model->thumbFiles->create();
             }
         }
 

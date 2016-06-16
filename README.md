@@ -214,7 +214,7 @@ $mediafile = Mediafile::loadOneByOwner('post', $model->id, 'thumbnail');
 
 // Ok, we have mediafile object! Let's do something with him:
 // return url for small thumbnail, for example: '/uploads/2014/12/flying-cats.jpg'
-echo $mediafile->thumbFiles->getThumbUrl('small');
+echo $mediafile->thumbFiles->getUrl('small');
 // return image tag for thumbnail, for example: '<img src="/uploads/2014/12/flying-cats.jpg" alt="Летающие коты">'
-echo $mediafile->thumbFiles->getThumbImage('small'); // return url for small thumbnail
+echo $mediafile->thumbFiles->getImage('small'); // return url for small thumbnail
 ```

@@ -227,7 +227,7 @@ class Mediafile extends ActiveRecord
         $this->save();
         
         if ($this->isImage()) {
-            $this->_thumbFiles->createThumbs();
+            $this->_thumbFiles->create();
         }
     }
     
@@ -250,7 +250,7 @@ class Mediafile extends ActiveRecord
     {
         $imageSizes = getimagesize(
             implode('/', [
-                $this->routes->basePath,
+                $this->_routes->basePath,
                 $this->url,
             ])
         );
@@ -309,10 +309,9 @@ class Mediafile extends ActiveRecord
      * @param array $routes see routes in module config
      * @return bool
      */
-    public function deleteFile(array $routes)
+    public function deleteFile()
     {
-        $basePath = Yii::getAlias($routes['basePath']);
-        return unlink("{$basePath}/{$this->url}");
+        return unlink("{$this->_routes->basePath}/{$this->url}");
     }
 
     /**
