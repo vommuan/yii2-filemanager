@@ -6,7 +6,7 @@ This module provide interface to collect and access all mediafiles in one place.
 ## Features
 
 * Integrated with TinyMCE editor.
-* Automatically create actually directory for uploaded files like "2014/12". Or you can castomise it in module settings.
+* Automatically create actually directory for uploaded files like "2014/12". Or you can castomize it in module settings.
 * Automatically create thumbs for uploaded images
 * Unlimited number of sets of miniatures
 * All media files are stored in a database that allows you to attach to your object does not link to the image, and the id of the media file. This provides greater flexibility since in the future will be easy to change the size of thumbnails.
