@@ -9,15 +9,15 @@ class Module extends \yii\base\Module
     public $controllerNamespace = 'vommuan\filemanager\controllers';
 
     /**
-     *  Set true if you want to rename files if the name is already in use 
+     * Set true if you want to rename files if the name is already in use 
      * @var boolean 
      */
     public $rename = false;
     
      /**
-     *  Set true to enable autoupload
-     * @var boolean 
-     */
+      * Set true to enable autoupload
+      * @var boolean 
+      */
     public $autoUpload = false;
     
     /**
