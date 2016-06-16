@@ -57,8 +57,8 @@ class FileController extends Controller
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
         return $this->render('uploadmanager', [
-			'model' => new Mediafile(),
-		]);
+            'model' => new Mediafile(),
+        ]);
     }
 
     /**
@@ -70,7 +70,7 @@ class FileController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $model = new Mediafile([
-			'rename' => $this->module->rename,
+            'rename' => $this->module->rename,
         ]);
         $routes = $this->module->routes;
         $rename = $this->module->rename;

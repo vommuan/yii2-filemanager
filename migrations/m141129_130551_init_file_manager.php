@@ -7,10 +7,10 @@ class m141129_130551_init_file_manager extends Migration
     public function safeUp()
     {
         $tableOptions = null;
-		if ($this->db->driverName === 'mysql') {
-			// http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
-			$tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
-		}
+        if ($this->db->driverName === 'mysql') {
+            // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
+            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+        }
         
         $this->createTable('{{%filemanager_mediafile}}', [
             'id' => $this->primaryKey(),
@@ -33,15 +33,15 @@ class m141129_130551_init_file_manager extends Migration
         ], $tableOptions);
         
         $this->addPrimaryKey('pk_filemanager_owners', '{{%filemanager_owners}}', [
-			'mediafile_id',
-			'owner_id',
-			'owner',
-			'owner_attribute',
+            'mediafile_id',
+            'owner_id',
+            'owner',
+            'owner_attribute',
         ]);
         
         $this->addForeignKey(
-			'fk_filemanager_owners', 
-			'{{%filemanager_owners}}',
+            'fk_filemanager_owners', 
+            '{{%filemanager_owners}}',
             'mediafile_id',
             '{{%filemanager_mediafile}}',
             'id',

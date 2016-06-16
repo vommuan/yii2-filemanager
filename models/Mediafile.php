@@ -39,15 +39,15 @@ class Mediafile extends ActiveRecord
     public $file;
 
     public static $imageFileTypes = [
-		'image/gif',
-		'image/jpeg',
-		//'image/pjpeg',
-		'image/png',
-		//'image/svg+xml',
-		//'image/tiff',
-		//'image/vnd.microsoft.icon',
-		//'image/vnd.wap.wbmp',
-	];
+        'image/gif',
+        'image/jpeg',
+        //'image/pjpeg',
+        'image/png',
+        //'image/svg+xml',
+        //'image/tiff',
+        //'image/vnd.microsoft.icon',
+        //'image/vnd.wap.wbmp',
+    ];
 
     /**
      * @inheritdoc
@@ -59,11 +59,11 @@ class Mediafile extends ActiveRecord
     
     public function init()
     {
-		$this->_routes = new Routes();
-		$this->_thumbFiles = new Thumbs([
-			'mediaFile' => $this,
-		]);
-	}
+        $this->_routes = new Routes();
+        $this->_thumbFiles = new Thumbs([
+            'mediaFile' => $this,
+        ]);
+    }
 
     /**
      * @inheritdoc
@@ -134,59 +134,59 @@ class Mediafile extends ActiveRecord
             return false;
         }
     }
-	
-	/**
-	 * Get access for readonly Routes object
-	 * 
-	 * @return vommuan\filemanager\models\Routes
-	 */
-	public function getRoutes()
-	{
-		return $this->_routes;
-	}
-	
-	/**
-	 * Get access for readonly Thumbs object
-	 * 
-	 * @return vommuan\filemanager\models\Thumbs
-	 */
-	public function getThumbFiles()
-	{
-		return $this->_thumbFiles;
-	}
-	
-	/**
-	 * Check if current file name is exists
-	 * 
-	 * @param string $filename
-	 * @return bool 
-	 */
-	protected function fileNameExists($filename)
-	{
-		$url = implode('/', [
-			$this->_routes->structure,
-			$filename,
-		]);
-		
-		return (self::findByUrl($url)) ? true : false; // checks for existing url in db
-	}
-	
-	/**
-	 * Get unique file name with index. Used when current file name is exists
-	 * 
-	 * @return string
-	 */
-	protected function getUniqueFileName()
-	{
-		$counter = 0;
-		
+    
+    /**
+     * Get access for readonly Routes object
+     * 
+     * @return vommuan\filemanager\models\Routes
+     */
+    public function getRoutes()
+    {
+        return $this->_routes;
+    }
+    
+    /**
+     * Get access for readonly Thumbs object
+     * 
+     * @return vommuan\filemanager\models\Thumbs
+     */
+    public function getThumbFiles()
+    {
+        return $this->_thumbFiles;
+    }
+    
+    /**
+     * Check if current file name is exists
+     * 
+     * @param string $filename
+     * @return bool 
+     */
+    protected function fileNameExists($filename)
+    {
+        $url = implode('/', [
+            $this->_routes->structure,
+            $filename,
+        ]);
+        
+        return (self::findByUrl($url)) ? true : false; // checks for existing url in db
+    }
+    
+    /**
+     * Get unique file name with index. Used when current file name is exists
+     * 
+     * @return string
+     */
+    protected function getUniqueFileName()
+    {
+        $counter = 0;
+        
         do {
             $filename = Inflector::slug($this->file->baseName) . $counter++ . '.' . $this->file->extension;
         } while ($this->fileNameExists($filename));
         
         return $filename;
-	}
-	
+    }
+    
     /**
      * Save just uploaded file
      * 
@@ -201,29 +201,29 @@ class Mediafile extends ActiveRecord
         
         //if a file with the same name already exist append a number
         $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
-		if ($this->fileNameExists($filename)) {
-			if (false === $this->rename) {
-				return false;
-			} else {
-				$filename = $this->getUniqueFileName();
-			}
-		}
-		
-		// save original uploaded file
+        if ($this->fileNameExists($filename)) {
+            if (false === $this->rename) {
+                return false;
+            } else {
+                $filename = $this->getUniqueFileName();
+            }
+        }
+        
+        // save original uploaded file
         $this->file->saveAs(
-			implode('/', [
-				$this->_routes->absolutePath,
-				$filename,
-			])
-		);
+            implode('/', [
+                $this->_routes->absolutePath,
+                $filename,
+            ])
+        );
         $this->filename = $filename;
         $this->type = $this->file->type;
         $this->size = $this->file->size;
         $this->url = implode('/', [
-			$this->_routes->structure,
-			$filename,
-		]);
-		
+            $this->_routes->structure,
+            $filename,
+        ]);
+        
         $this->save();
         
         if ($this->isImage()) {
@@ -249,16 +249,16 @@ class Mediafile extends ActiveRecord
     public function getOriginalImageSize($delimiter = 'x')
     {
         $imageSizes = getimagesize(
-			implode('/', [
-				$this->routes->basePath,
-				$this->url,
-			])
-		);
-		
-		return implode($delimiter, [
-			$imageSizes[0],
-			$imageSizes[1],
-		]);
+            implode('/', [
+                $this->routes->basePath,
+                $this->url,
+            ])
+        );
+        
+        return implode($delimiter, [
+            $imageSizes[0],
+            $imageSizes[1],
+        ]);
     }
     
     /**

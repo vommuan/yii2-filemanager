@@ -16,21 +16,21 @@ use Imagine\Image\ImageInterface;
  */
 class Thumbs extends Model
 {
-	public $mediaFile;
-	private $_thumbsConfig;
+    public $mediaFile;
+    private $_thumbsConfig;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		$this->_thumbsConfig = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
-		
-		if (! ($this->mediaFile instanceof Mediafile)) {
-			throw new ErrorException('Error class initialization.');
-		}
-	}
-	
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->_thumbsConfig = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
+        
+        if (! ($this->mediaFile instanceof Mediafile)) {
+            throw new ErrorException('Error class initialization.');
+        }
+    }
+    
     /**
      * Generates thumb file name
      * 
@@ -39,10 +39,10 @@ class Thumbs extends Model
      * @return string
      */
     protected function generateThumbFileName($width, $height) {
-		return pathinfo($this->mediaFile->url, PATHINFO_FILENAME)
-			. '-' . $width . 'x' . $height . '.'
-			. pathinfo($this->mediaFile->url, PATHINFO_EXTENSION);
-	}
+        return pathinfo($this->mediaFile->url, PATHINFO_FILENAME)
+            . '-' . $width . 'x' . $height . '.'
+            . pathinfo($this->mediaFile->url, PATHINFO_EXTENSION);
+    }
 
     /**
      * Create thumbs for this image
@@ -58,23 +58,23 @@ class Thumbs extends Model
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
         
         $originalFileName = implode('/', [
-			$this->mediaFile->routes->absolutePath,
-			pathinfo($this->mediaFile->url, PATHINFO_BASENAME),
-		]);
+            $this->mediaFile->routes->absolutePath,
+            pathinfo($this->mediaFile->url, PATHINFO_BASENAME),
+        ]);
 
         foreach ($this->_thumbsConfig as $alias => $preset) {
             list ($width, $height) = $preset['size'];
-            Image::thumbnail($originalFileName,	$width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
-				implode('/', [
-					$this->mediaFile->routes->getThumbsAbsolutePath(),
-					$this->generateThumbFileName($width, $height),
-				])
-			);
+            Image::thumbnail($originalFileName,    $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+                implode('/', [
+                    $this->mediaFile->routes->getThumbsAbsolutePath(),
+                    $this->generateThumbFileName($width, $height),
+                ])
+            );
 
             $thumbs[$alias] = implode('/', [
-				$this->mediaFile->routes->getThumbsUrlPath(),
-				$this->generateThumbFileName($width, $height),
-			]);
+                $this->mediaFile->routes->getThumbsUrlPath(),
+                $this->generateThumbFileName($width, $height),
+            ]);
         }
 
         $this->mediaFile->thumbs = serialize($thumbs);
@@ -90,7 +90,7 @@ class Thumbs extends Model
     public function getDefaultThumbUrl($baseUrl = '')
     {
         if ($this->mediaFile->isImage()) {
-			return $this->getThumbUrl('default');
+            return $this->getThumbUrl('default');
         }
         
         return "{$baseUrl}/images/file.png";
@@ -133,15 +133,15 @@ class Thumbs extends Model
         if (empty($url)) {
             return '';
         }
-		
-		$options = array_merge(
-			[
-				// default options
-				'alt' => $this->mediaFile->alt,
-			], 
-			$options
-		);
-		
+        
+        $options = array_merge(
+            [
+                // default options
+                'alt' => $this->mediaFile->alt,
+            ], 
+            $options
+        );
+        
         return Html::img($url, $options);
     }
 
