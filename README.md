@@ -18,22 +18,26 @@ The preferred way to install this extension is through [composer](http://getcomp
 
 Add
 
-`
+```
 {
 	"type": "git",
 	"url": "https://github.com/vommuan/yii2-filemanager"
 }
-`
+```
 
 to the repositories section of your `composer.json` file.
 
 Then run 
 
-`php composer.phar require vommuan/yii2-filemanager "@dev"`
+```
+php composer.phar require vommuan/yii2-filemanager "@dev"
+```
 
 or add 
 
-`"vommuan/yii2-filemanager": "@dev"`
+```
+"vommuan/yii2-filemanager": "@dev"
+```
 
 to the require section of your `composer.json` file.
 
@@ -91,7 +95,7 @@ yii migrate --migrationPath=@vendor/vommuan/yii2-filemanager/migrations/
 
 Default values:
 
-`
+```php
 'routes' => [
 	// Base web directory url
 	'basePath' => '@webroot',
@@ -105,7 +109,7 @@ Default values:
 	// Thumbs directory template. Path, where thumb files are located
 	'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}',
 ],
-`
+```
 
 If some of these parameters is not defined, default values will be used.
 
@@ -117,11 +121,17 @@ Base web directory url. It used for generate absolute path to web directory. It 
 
 For example:
 
-`'basePath' => '@webroot'`
+````php
+'basePath' => '@webroot'
+````
 
-`'basePath' => '@frontend/web'`
+```php
+'basePath' => '@frontend/web'
+```
 
-`'basePath' => 'system/upload/directory'`
+```php
+'basePath' => 'system/upload/directory'
+```
 
 #### uploadPath
 
@@ -129,9 +139,13 @@ Path for uploaded files in web directory. It renders without changes.
 
 For example:
 
-`'uploadPath' => 'uploads'`
+```php
+'uploadPath' => 'uploads'
+```
 
-`'uploadPath' => 'files/upload'`
+```php
+'uploadPath' => 'files/upload'
+```
 
 #### dateDirFormat
 
@@ -139,11 +153,17 @@ Directory format for uploaded files. Makes directory recursively. It renders by 
 
 For example:
 
-`'dateDirFormat' => 'Y/m'`
+```php
+'dateDirFormat' => 'Y/m'
+```
 
-`'dateDirFormat' => 'Y/m/d'`
+```php
+'dateDirFormat' => 'Y/m/d'
+```
 
-`'dateDirFormat' => 'Y-m'`
+```php
+'dateDirFormat' => 'Y-m'
+```
 
 #### thumbsDirTemplate
 
@@ -153,11 +173,17 @@ Parameters `{uploadPath}` and `{dateDirFormat}` are replaced by appropriate valu
 
 For example:
 
-`'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}'`
+```php
+'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}'
+```
 
-`'thumbsDirTemplate' => '{uploadPath}/thumbs/{dateDirFormat}'`
+```php
+'thumbsDirTemplate' => '{uploadPath}/thumbs/{dateDirFormat}'
+```
 
-`'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}/thumbs'`
+```php
+'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}/thumbs'
+```
 
 ### Configuration. Thumbs
 
@@ -165,7 +191,7 @@ Thumbnails are resized in "outbound" mode.
 
 Default configuration:
 
-`
+```php
 'thumbs' => [
 	'small' => [
 		'name' => 'Small size',
@@ -180,18 +206,18 @@ Default configuration:
 		'size' => [800, 600],
 	],
 ],
-`
+```
 
 Structure of thumbs configuration:
 
-`
+```php
 'thumbs' => [
 	'<alias>' => [
 		'name' => 'Name of alias',
 		'size' => ['<width>', '<height>'],
 	],
 ],
-`
+```
 
 Alias `default` is reserved by module for displaying uploaded images. If you set it, it will be rewrite by module default settings.
 
@@ -203,13 +229,17 @@ Set true if you want to rename files if the name is already in use. Default valu
 
 For example:
 
-`'rename' => true`
+```php
+'rename' => true
+```
 
 #### autoUpload
 
 Set true to enable autoupload. Default value: `false`.
 
-`'autoUpload' => true`
+```php
+'autoUpload' => true
+```
 
 ## Usage
 
