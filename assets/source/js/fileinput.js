@@ -27,8 +27,8 @@ function filemanagerTinyMCE(callback, value, meta) {
 function getFormData(form) {
     var formArray = form.serializeArray(),
         modelMap = {
-            'Mediafile[alt]': 'alt',
-            'Mediafile[description]': 'description',
+            'MediaFile[alt]': 'alt',
+            'MediaFile[description]': 'description',
             url: 'url',
             id: 'id'
         },

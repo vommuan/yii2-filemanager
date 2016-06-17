@@ -324,13 +324,13 @@ use vommuan\filemanager\widgets\TinyMCE;
 In model you must set mediafile behavior like this example:
 
 ```php
-use vommuan\filemanager\behaviors\MediafileBehavior;
+use vommuan\filemanager\behaviors\MediaFileBehavior;
 
 public function behaviors()
 {
     return [
         'mediafile' => [
-            'class' => MediafileBehavior::className(),
+            'class' => MediaFileBehavior::className(),
             'name' => 'post',
             'attributes' => [
                 'thumbnail',
@@ -344,15 +344,15 @@ Than, you may get mediafile from your owner model.
 See example:
 
 ```php
-use vommuan\filemanager\models\Mediafile;
+use vommuan\filemanager\models\MediaFile;
 
 $model = Post::findOne(1);
-$mediafile = Mediafile::loadOneByOwner('post', $model->id, 'thumbnail');
+$mediaFile = MediaFile::loadOneByOwner('post', $model->id, 'thumbnail');
 
 // Ok, we have mediafile object! Let's do something with him:
 // return url for small thumbnail, for example: '/uploads/2014/12/flying-cats.jpg'
-echo $mediafile->thumbFiles->getUrl('small');
+echo $mediaFile->thumbFiles->getUrl('small');
 
 // return image tag for thumbnail, for example: '<img src="/uploads/2014/12/flying-cats.jpg" alt="Flying cats">'
-echo $mediafile->thumbFiles->getImage('small'); // return url for small thumbnail
+echo $mediaFile->thumbFiles->getImage('small'); // return url for small thumbnail
 ```

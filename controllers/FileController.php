@@ -7,7 +7,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Mediafile;
+use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use yii\helpers\Url;
 
@@ -46,7 +46,7 @@ class FileController extends Controller
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
         
-        $model = new Mediafile();
+        $model = new MediaFile();
         
         return $this->render('filemanager', [
             'dataProvider' => $model->search(),
@@ -58,7 +58,7 @@ class FileController extends Controller
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
         
         return $this->render('uploadmanager', [
-            'model' => new Mediafile(),
+            'model' => new MediaFile(),
         ]);
     }
 
@@ -70,7 +70,7 @@ class FileController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $model = new Mediafile([
+        $model = new MediaFile([
             'rename' => $this->module->rename,
         ]);
         
@@ -97,7 +97,7 @@ class FileController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = Mediafile::findOne($id);
+        $model = MediaFile::findOne($id);
         $message = Module::t('main', 'Changes not saved.');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -121,7 +121,7 @@ class FileController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $model = Mediafile::findOne($id);
+        $model = MediaFile::findOne($id);
 
         if ($model->isImage()) {
             $model->thumbFiles->delete();
@@ -138,7 +138,7 @@ class FileController extends Controller
      */
     public function actionResize()
     {
-        $models = Mediafile::findByTypes(Mediafile::$imageFileTypes);
+        $models = MediaFile::findByTypes(MediaFile::$imageFileTypes);
 
         foreach ($models as $model) {
             if ($model->isImage()) {
@@ -158,7 +158,7 @@ class FileController extends Controller
      */
     public function actionInfo($id, $strictThumb = null)
     {
-        $model = Mediafile::findOne($id);
+        $model = MediaFile::findOne($id);
         return $this->renderPartial('info', [
             'model' => $model,
             'strictThumb' => $strictThumb,

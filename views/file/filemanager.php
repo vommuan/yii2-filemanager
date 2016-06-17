@@ -7,7 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel vommuan\filemanager\models\Mediafile */
+/* @var $searchModel vommuan\filemanager\models\MediaFile */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);

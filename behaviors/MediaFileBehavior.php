@@ -4,9 +4,9 @@ namespace vommuan\filemanager\behaviors;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
-use vommuan\filemanager\models\Mediafile;
+use vommuan\filemanager\models\MediaFile;
 
-class MediafileBehavior extends Behavior
+class MediaFileBehavior extends Behavior
 {
     /**
      * @var string owner name
@@ -49,7 +49,7 @@ class MediafileBehavior extends Behavior
     public function updateOwners()
     {
         foreach ($this->attributes as $attr) {
-            Mediafile::removeOwner($this->owner->primaryKey, $this->name, $attr);
+            MediaFile::removeOwner($this->owner->primaryKey, $this->name, $attr);
 
             if ($mediafile = $this->loadModel($this->owner->$attr)) {
                 $mediafile->addOwner($this->owner->primaryKey, $this->name, $attr);
@@ -63,17 +63,17 @@ class MediafileBehavior extends Behavior
     public function deleteOwners()
     {
         foreach ($this->attributes as $attr) {
-            Mediafile::removeOwner($this->owner->primaryKey, $this->name, $attr);
+            MediaFile::removeOwner($this->owner->primaryKey, $this->name, $attr);
         }
     }
 
     /**
      * Load model by id
      * @param int $id
-     * @return Mediafile
+     * @return MediaFile
      */
     private function loadModel($id)
     {
-        return Mediafile::findOne($id);
+        return MediaFile::findOne($id);
     }
 }

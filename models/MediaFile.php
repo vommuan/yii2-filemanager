@@ -30,7 +30,7 @@ use Imagine\Image\ImageInterface;
  * @property integer $updated_at
  * @property Owners[] $owners
  */
-class Mediafile extends ActiveRecord
+class MediaFile extends ActiveRecord
 {
     private $_routes;
     private $_thumbFiles;

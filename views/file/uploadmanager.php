@@ -4,7 +4,7 @@ use vommuan\filemanager\Module;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $searchModel vommuan\filemanager\models\Mediafile */
+/* @var $searchModel vommuan\filemanager\models\MediaFile */
 
 ?>
 

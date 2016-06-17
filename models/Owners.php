@@ -12,7 +12,7 @@ use Yii;
  * @property string $owner
  * @property string $owner_attribute
  *
- * @property Mediafile $mediafile
+ * @property MediaFile $mediafile
  */
 class Owners extends \yii\db\ActiveRecord
 {
@@ -41,6 +41,6 @@ class Owners extends \yii\db\ActiveRecord
      */
     public function getMediafile()
     {
-        return $this->hasOne(Mediafile::className(), ['id' => 'mediafile_id']);
+        return $this->hasOne(MediaFile::className(), ['id' => 'mediafile_id']);
     }
 }

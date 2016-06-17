@@ -26,7 +26,7 @@ class Thumbs extends Model
     {
         $this->_config = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
         
-        if (! ($this->mediaFile instanceof Mediafile)) {
+        if (! ($this->mediaFile instanceof MediaFile)) {
             throw new ErrorException('Error class initialization.');
         }
     }
