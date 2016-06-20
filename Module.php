@@ -1,5 +1,4 @@
 <?php
-
 namespace vommuan\filemanager;
 
 use Yii;
@@ -77,6 +76,11 @@ class Module extends \yii\base\Module
      * @var array default thumbnail size, using in filemanager view.
      */
     private static $defaultThumbSize = [128, 128];
+    
+    /**
+     * @var array max image sizes, [width, height]
+     */
+    public $maxImageSizes;
 
     public function init()
     {

@@ -6,6 +6,7 @@ use Yii;
 use yii\web\UploadedFile;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\base\ErrorException;
 use yii\imagine\Image;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -188,6 +189,43 @@ class MediaFile extends ActiveRecord
     }
     
     /**
+     * Crop image into max sizes with saving proportions
+     * 
+     * @return void
+     */
+    protected function cropImage()
+    {
+        $maxSizes = Module::getInstance()->maxImageSizes;
+        
+        if (! is_array($maxSizes) || count($maxSizes) < 2) {
+			throw new ErrorException('Error module "vommuan\\filemanager\\' . Module::className() . '" settings: maxImageSizes');
+		}
+		
+		$fileName = implode('/', [
+			$this->_routes->basePath,
+			$this->url,
+		]);
+		
+		$originSizes = getimagesize($fileName);
+        
+        // if original image sizes less or equal than max image sizes in settings
+        if ($originSizes[0] <= $maxSizes[0] && $originSizes[1] <= $maxSizes[1]) {
+			return;
+		}
+        
+        $originProportions = $originSizes[0] / $originSizes[1];
+		$newWidth = $maxSizes[0];
+		$newHeight = $newWidth / $originProportions;
+		
+		if ($maxSizes[1] < $newHeight) {
+			$newHeight = $maxSizes[1];
+			$newWidth = $newHeight * $originProportions;
+		}
+		
+		Image::thumbnail($fileName, round($newWidth), round($newHeight))->save($fileName);
+	}
+    
+    /**
      * Save just uploaded file
      * 
      * @return bool
@@ -227,6 +265,10 @@ class MediaFile extends ActiveRecord
         $this->save();
         
         if ($this->isImage()) {
+			if (isset(Module::getInstance()->maxImageSizes)) {
+				$this->cropImage();
+			}
+			
             $this->_thumbFiles->create();
         }
     }
