@@ -268,7 +268,7 @@ echo $form->field($model, 'original_thumbnail')->widget(FileInput::className(), 
     
     // JavaScript function, which will be called before insert file data to input.
     // Argument data contains file data.
-    // data example: [alt: "Ведьма с кошкой", description: "123", url: "/uploads/2014/12/vedma-100x100.jpeg", id: "45"]
+    // data example: [alt: "Four cats", description: "123", url: "/uploads/2014/12/cats-100x100.jpeg", id: "45"]
     'callbackBeforeInsert' => 'function(e, data) {
         console.log( data );
     }',
@@ -295,7 +295,7 @@ echo FileInput::widget([
     
     // JavaScript function, which will be called before insert file data to input.
     // Argument data contains file data.
-    // data example: [alt: "Ведьма с кошкой", description: "123", url: "/uploads/2014/12/vedma-100x100.jpeg", id: "45"]
+    // data example: [alt: "Four cats", description: "123", url: "/uploads/2014/12/cats-100x100.jpeg", id: "45"]
     'callbackBeforeInsert' => 'function(e, data) {
         console.log( data );
     }',
@@ -352,7 +352,4 @@ $mediaFile = MediaFile::loadOneByOwner('post', $model->id, 'thumbnail');
 // Ok, we have mediafile object! Let's do something with him:
 // return url for small thumbnail, for example: '/uploads/2014/12/flying-cats.jpg'
 echo $mediaFile->thumbFiles->getUrl('small');
-
-// return image tag for thumbnail, for example: '<img src="/uploads/2014/12/flying-cats.jpg" alt="Flying cats">'
-echo $mediaFile->thumbFiles->getImage('small'); // return url for small thumbnail
 ```

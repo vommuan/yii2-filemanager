@@ -7,7 +7,6 @@ use yii\base\Model;
 use vommuan\filemanager\Module;
 use yii\base\ErrorException;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
 use yii\imagine\Image;
 use Imagine\Image\ImageInterface;
 
@@ -117,32 +116,6 @@ class Thumbs extends Model
         }
 
         return ! empty($thumbs[$alias]) ? $thumbs[$alias] : '';
-    }
-
-    /**
-     * Thumbnail image html tag
-     *
-     * @param string $alias thumbnail alias
-     * @param array $options html options
-     * @return string Html image tag
-     */
-    public function getImage($alias, $options = [])
-    {
-        $url = $this->getUrl($alias);
-
-        if (empty($url)) {
-            return '';
-        }
-        
-        $options = array_merge(
-            [
-                // default options
-                'alt' => $this->mediaFile->alt,
-            ], 
-            $options
-        );
-        
-        return Html::img($url, $options);
     }
 
     /**
