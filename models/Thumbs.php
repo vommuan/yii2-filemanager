@@ -64,7 +64,7 @@ class Thumbs extends Model
 
         foreach ($this->_config as $alias => $preset) {
             list ($width, $height) = $preset['size'];
-            Image::thumbnail($originalFileName,    $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+            Image::thumbnail($originalFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
                 implode('/', [
                     $this->mediaFile->routes->getThumbsAbsolutePath(),
                     $this->generateFileName($width, $height),
