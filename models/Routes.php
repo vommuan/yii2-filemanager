@@ -5,7 +5,6 @@ namespace vommuan\filemanager\models;
 use Yii;
 use yii\base\Model;
 use vommuan\filemanager\Module;
-use yii\base\ErrorException;
 
 /**
  * This is the helper model class for route paths

@@ -1,5 +1,4 @@
 <?php
-
 namespace vommuan\filemanager\models;
 
 use Yii;
@@ -9,12 +8,10 @@ use yii\db\ActiveRecord;
 use yii\base\ErrorException;
 use yii\imagine\Image;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\helpers\FileHelper;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\Owners;
-use Imagine\Image\ImageInterface;
 
 /**
  * This is the model class for table "{{%filemanager_mediafile}}".
