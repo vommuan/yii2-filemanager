@@ -234,6 +234,9 @@ class MediaFile extends ActiveRecord
 		}
 		
 		Image::thumbnail($fileName, round($newSizes[0]), round($newSizes[1]))->save($fileName);
+		
+		$this->size = filesize($fileName);
+		$this->save();
 	}
     
     /**

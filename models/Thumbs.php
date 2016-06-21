@@ -1,5 +1,4 @@
 <?php
-
 namespace vommuan\filemanager\models;
 
 use Yii;
