@@ -73,11 +73,6 @@ class Module extends \yii\base\Module
     ];
 
     /**
-     * @var array default thumbnail size, using in filemanager view.
-     */
-    private static $defaultThumbSize = [128, 128];
-    
-    /**
      * @var array max image sizes, [width, height]
      */
     public $maxImageSizes;
@@ -114,14 +109,6 @@ class Module extends \yii\base\Module
         return Yii::t("modules/filemanager/$category", $message, $params, $language);
     }
 
-    /**
-     * @return array default thumbnail size. Using in filemanager view.
-     */
-    public static function getDefaultThumbSize()
-    {
-        return self::$defaultThumbSize;
-    }
-    
     public function getDefaultRoutes()
     {
         return $this->_defaultRoutes;
