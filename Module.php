@@ -81,6 +81,11 @@ class Module extends \yii\base\Module
      * @var array max image sizes, [width, height]
      */
     public $maxImageSizes;
+    
+    /**
+     * @var boolean ignore image rotate for setting max sizes
+     */
+    public $ignoreImageRotate = false;
 
     public function init()
     {

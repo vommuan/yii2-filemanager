@@ -190,14 +190,16 @@ class MediaFile extends ActiveRecord
     
     /**
      * Crop image into max sizes with saving proportions
+     * Array indexes: 0 - width, 1 - height
      * 
      * @return void
      */
     protected function cropImage()
     {
         $maxSizes = Module::getInstance()->maxImageSizes;
+        $ignoreRotate = Module::getInstance()->ignoreImageRotate;
         
-        if (! is_array($maxSizes) || count($maxSizes) < 2) {
+        if (! is_array($maxSizes) || count($maxSizes) != 2) {
 			throw new ErrorException('Error module "vommuan\\filemanager\\' . Module::className() . '" settings: maxImageSizes');
 		}
 		
@@ -206,23 +208,35 @@ class MediaFile extends ActiveRecord
 			$this->url,
 		]);
 		
-		$originSizes = getimagesize($fileName);
-        
+		$originSizes = array_slice(getimagesize($fileName), 0, 2);
+		
+		if ($ignoreRotate) {
+			$isVertical = ($originSizes[0] < $originSizes[1]) ? true : false;
+			sort($originSizes, SORT_NUMERIC);
+			sort($maxSizes, SORT_NUMERIC);
+		}
+		
         // if original image sizes less or equal than max image sizes in settings
         if ($originSizes[0] <= $maxSizes[0] && $originSizes[1] <= $maxSizes[1]) {
 			return;
 		}
+		
+		$newSizes = [];
         
         $originProportions = $originSizes[0] / $originSizes[1];
-		$newWidth = $maxSizes[0];
-		$newHeight = $newWidth / $originProportions;
+		$newSizes[0] = $maxSizes[0];
+		$newSizes[1] = $newSizes[0] / $originProportions;
 		
-		if ($maxSizes[1] < $newHeight) {
-			$newHeight = $maxSizes[1];
-			$newWidth = $newHeight * $originProportions;
+		if ($maxSizes[1] < $newSizes[1]) {
+			$newSizes[1] = $maxSizes[1];
+			$newSizes[0] = $newSizes[1] * $originProportions;
 		}
 		
-		Image::thumbnail($fileName, round($newWidth), round($newHeight))->save($fileName);
+		if ($ignoreRotate && ! $isVertical) {
+			rsort($newSizes);
+		}
+		
+		Image::thumbnail($fileName, round($newSizes[0]), round($newSizes[1]))->save($fileName);
 	}
     
     /**
