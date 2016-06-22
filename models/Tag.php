@@ -16,13 +16,13 @@ use Imagine\Image\ImageInterface;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "filemanager_tag".
+ * This is the model class for table "{{%filemanager_tag}}".
  *
  * @property integer $id
  * @property string $name
  *
  * relations
- * @property Mediafile[] $mediafiles
+ * @property MediaFile[] $mediafiles
  */
 class Tag extends ActiveRecord
 {
@@ -31,7 +31,7 @@ class Tag extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'filemanager_tag';
+        return '{{%filemanager_tag}}';
     }
 
     /**
@@ -60,8 +60,8 @@ class Tag extends ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getMediafiles() {
-        return $this->hasMany(Mediafile::className(), ['id' => 'mediafile_id'])
-            ->viaTable('filemanager_mediafile_tag', ['tag_id' => 'id']);
+        return $this->hasMany(MediaFile::className(), ['id' => 'mediafile_id'])
+            ->viaTable('{{%filemanager_mediafile_tag}}', ['tag_id' => 'id']);
     }
 
 	/**
