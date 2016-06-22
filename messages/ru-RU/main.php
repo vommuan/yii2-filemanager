@@ -29,4 +29,7 @@ return [
     'Changes not saved.' => 'Изменения не сохранены.',
     'Changes saved!' => 'Изменения сохранены!',
     'Select image size' => 'Выберите размер изображения',
+    'Tag' => 'Тег',
+    'Tags' => 'Теги',
+    'Search' => 'Найти',
 ];

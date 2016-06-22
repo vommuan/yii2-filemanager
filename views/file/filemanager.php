@@ -2,12 +2,14 @@
 
 use vommuan\filemanager\assets\FilemanagerAsset;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\Tag;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $searchModel vommuan\filemanager\models\MediaFile */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);
@@ -19,9 +21,11 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 </header>
 
 <div id="filemanager" data-url-info="<?= Url::to(['file/info']) ?>">
+
+	<?php $searchForm = $this->render('_search_form', ['model' => $model]) ?>
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
-        'layout' => '<div class="items">{items}</div>{pager}',
+        'layout' => $searchForm . '<div class="items">{items}</div>{pager}',
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
             return Html::a(

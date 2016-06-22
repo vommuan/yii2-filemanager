@@ -1,5 +1,4 @@
 <?php
-
 namespace vommuan\filemanager\controllers;
 
 use Yii;
@@ -8,6 +7,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
+use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use yii\helpers\Url;
 
@@ -46,10 +46,11 @@ class FileController extends Controller
     {
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
         
-        $model = new MediaFile();
-        
+		$model = new MediaFileSearch();
+
         return $this->render('filemanager', [
-            'dataProvider' => $model->search(),
+			'model' => $model,
+            'dataProvider' => $model->search(Yii::$app->request->queryParams),
         ]);
     }
 
@@ -73,6 +74,12 @@ class FileController extends Controller
         $model = new MediaFile([
             'rename' => $this->module->rename,
         ]);
+
+        $tagIds = Yii::$app->request->post('tagIds');
+
+	    if ($tagIds !== 'undefined') {
+		    $model->setTagIds(explode(',', $tagIds));
+	    }
         
         $model->saveUploadedFile();
         $bundle = FilemanagerAsset::register($this->view);
@@ -106,7 +113,8 @@ class FileController extends Controller
 
         Yii::$app->session->setFlash('mediafileUpdateResult', $message);
 
-        return $this->renderPartial('info', [
+        Yii::$app->assetManager->bundles = false;
+        return $this->renderAjax('info', [
             'model' => $model,
             'strictThumb' => null,
         ]);
@@ -159,7 +167,8 @@ class FileController extends Controller
     public function actionInfo($id, $strictThumb = null)
     {
         $model = MediaFile::findOne($id);
-        return $this->renderPartial('info', [
+        Yii::$app->assetManager->bundles = false;
+        return $this->renderAjax('info', [
             'model' => $model,
             'strictThumb' => $strictThumb,
         ]);

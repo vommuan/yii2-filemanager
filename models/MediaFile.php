@@ -27,6 +27,7 @@ use vommuan\filemanager\models\Owners;
  * @property integer $created_at
  * @property integer $updated_at
  * @property Owners[] $owners
+ * @property Tag[] $tags
  */
 class MediaFile extends ActiveRecord
 {
@@ -48,19 +49,69 @@ class MediaFile extends ActiveRecord
     ];
 
     /**
+     * @var array|null
+     */
+    protected $tagIds = null;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%filemanager_mediafile}}';
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->_routes = new Routes();
         $this->_thumbFiles = new Thumbs([
             'mediaFile' => $this,
         ]);
+
+        $linkTags = function ($event) {
+            if ($this->tagIds === null) {
+                return;
+            }
+            if (!is_array($this->tagIds)) {
+                $this->tagIds = [];
+            }
+            $whereIds = $models = $newTagIds = [];
+            foreach ($this->tagIds as $tagId) {
+                if (empty($tagId)) {
+                    continue;
+                }
+                if (preg_match("/^\d+$/", $tagId)) {
+                    $whereIds[] = $tagId;
+                    continue;
+                }
+                // если tagId не число, то значит надо создать новый тег
+                if (!$tag = Tag::findOne(['name' => $tagId])) {
+                    $tag = new Tag();
+                    $tag->name = $tagId;
+                    if (!$tag->save()) {
+                        continue;
+                    }
+                }
+                $newTagIds[] = $tag->id;
+                $models[] = $tag;
+            }
+
+            $this->unlinkAll('tags', true);
+            if ($whereIds) {
+                $models = array_merge($models, Tag::find()->where(['id' => $whereIds])->all());
+            }
+            foreach ($models as $model) {
+                $this->link('tags', $model);
+            }
+            // что бы после сохранения в значение были новые теги
+            $this->tagIds = array_merge($whereIds, $newTagIds);
+        };
+
+        $this->on(static::EVENT_AFTER_INSERT, $linkTags);
+        $this->on(static::EVENT_AFTER_UPDATE, $linkTags);
     }
 
     /**
@@ -73,7 +124,8 @@ class MediaFile extends ActiveRecord
             [['url', 'alt', 'description', 'thumbs'], 'string'],
             [['created_at', 'updated_at', 'size'], 'integer'],
             [['filename', 'type'], 'string', 'max' => 255],
-            [['file'], 'file']
+            [['file'], 'file'],
+            [['tagIds'], 'safe'],
         ];
     }
 
@@ -93,6 +145,7 @@ class MediaFile extends ActiveRecord
             'thumbs' => Module::t('main', 'Thumbnails'),
             'created_at' => Module::t('main', 'Created'),
             'updated_at' => Module::t('main', 'Updated'),
+            'tagIds' => Module::t('main', 'Tags'),
         ];
     }
 
@@ -120,6 +173,30 @@ class MediaFile extends ActiveRecord
         return $this->hasMany(Owners::className(), ['mediafile_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags() {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
+            ->viaTable('filemanager_mediafile_tag', ['mediafile_id' => 'id']);
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getTagIds() {
+        return $this->tagIds !== null ? $this->tagIds : array_map(function ($tag) {
+            return $tag->id;
+        }, $this->tags);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTagIds($value) {
+        $this->tagIds = $value;
+    }
+
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
@@ -132,7 +209,13 @@ class MediaFile extends ActiveRecord
             return false;
         }
     }
-    
+
+	public function afterDelete()
+	{
+		parent::afterDelete();
+		Tag::removeUnusedTags();
+	}
+
     /**
      * Get access for readonly Routes object
      * 
@@ -368,22 +451,6 @@ class MediaFile extends ActiveRecord
     public function deleteFile()
     {
         return unlink("{$this->_routes->basePath}/{$this->url}");
-    }
-
-    /**
-     * Creates data provider instance with search query applied
-     * 
-     * @return ActiveDataProvider
-     */
-    public function search()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => self::find()->orderBy('created_at DESC'),
-        ]);
-        
-        $dataProvider->pagination->defaultPageSize = 15;
-        
-        return $dataProvider;
     }
 
     /**
