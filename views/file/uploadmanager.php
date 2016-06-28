@@ -36,6 +36,5 @@ use yii\helpers\Html;
         ],
         'url' => ['upload'],
         'gallery' => false,
-        'formView' => '/file/_upload_form',
     ]) ?>
 </div>
