@@ -196,7 +196,10 @@ class MediaFile extends ActiveRecord
     public function setTagIds($value) {
         $this->tagIds = $value;
     }
-
+	
+	/**
+     * @inheritdoc
+     */
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
@@ -209,7 +212,10 @@ class MediaFile extends ActiveRecord
             return false;
         }
     }
-
+	
+	/**
+     * @inheritdoc
+     */
 	public function afterDelete()
 	{
 		parent::afterDelete();
@@ -366,7 +372,9 @@ class MediaFile extends ActiveRecord
 				$this->cropImage();
 			}
 			
-            $this->_thumbFiles->create();
+			if (Module::getInstance()->thumbsAutoCreate) {
+				$this->_thumbFiles->create();
+			}
         }
     }
     

@@ -1,45 +1,53 @@
 <?php
-/** @var \dosamigos\fileupload\FileUploadUI $this */
+use vommuan\filemanager\Module;
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use vommuan\filemanager\models\Tag;
 
-$context = $this->context;
+/** @var \dosamigos\fileupload\FileUploadUI $this */
 ?>
-    <!-- The file upload form used as target for the file upload widget -->
-<?= Html::beginTag('div', $context->options); ?>
+
+<!-- The file upload form used as target for the file upload widget -->
+<?= Html::beginTag('div', $this->context->options); ?>
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row fileupload-buttonbar">
-        <div class="col-lg-7">
-            <!-- The fileinput-button span is used to style the file input field as button -->
-            <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus"></i>
-                <span><?= Yii::t('fileupload', 'Add files') ?>...</span>
-
-                <?= $context->model instanceof \yii\base\Model && $context->attribute !== null
-                    ? Html::activeFileInput($context->model, $context->attribute, $context->fieldOptions)
-                    : Html::fileInput($context->name, $context->value, $context->fieldOptions);?>
-
-            </span>
-            <a class="btn btn-primary start">
-                <i class="glyphicon glyphicon-upload"></i>
-                <span><?= Yii::t('fileupload', 'Start upload') ?></span>
-            </a>
-            <a class="btn btn-warning cancel">
-                <i class="glyphicon glyphicon-ban-circle"></i>
-                <span><?= Yii::t('fileupload', 'Cancel upload') ?></span>
-            </a>
-            <a class="btn btn-danger delete">
-                <i class="glyphicon glyphicon-trash"></i>
-                <span><?= Yii::t('fileupload', 'Delete') ?></span>
-            </a>
-            <input type="checkbox" class="toggle">
+        <div class="col-lg-12">
+			<div class='btn-group' role="group">
+				<span class="btn btn-success fileinput-button">
+					<i class="glyphicon glyphicon-plus"></i>
+					<?php 
+					if ($this->context->model instanceof \yii\base\Model && $this->context->attribute !== null) {
+						echo Html::activeFileInput(
+							$this->context->model,
+							$this->context->attribute,
+							$this->context->fieldOptions
+						);
+					} else {
+						echo Html::fileInput(
+							$this->context->name,
+							$this->context->value,
+							$this->context->fieldOptions
+						);
+					}
+					?>
+				</span>
+				<?php
+				if (!Module::getInstance()->autoUpload) :?>
+					<span class="btn btn-primary start">
+						<i class="glyphicon glyphicon-upload"></i>
+					</span>
+					<?php
+				endif;?>
+				<span class="btn btn-warning cancel">
+					<i class="glyphicon glyphicon-ban-circle"></i>
+				</span>
+				<span class="btn btn-danger delete">
+					<i class="glyphicon glyphicon-trash"></i>
+				</span>
+			</div>
+			<input type="checkbox" class="toggle">
             <!-- The global file processing state -->
             <span class="fileupload-process"></span>
         </div>
-        <div class="col-lg-7">
-
-        </div>
+        
         <!-- The global progress state -->
         <div class="col-lg-5 fileupload-progress fade">
             <!-- The global progress bar -->

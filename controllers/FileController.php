@@ -4,6 +4,7 @@ namespace vommuan\filemanager\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
@@ -70,10 +71,11 @@ class FileController extends Controller
     public function actionUpload()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $model = new MediaFile([
+		
+		$model = new MediaFile([
             'rename' => $this->module->rename,
         ]);
+		//$uploadedFile = UploadedFile::getInstance($model, 'file');
 
         $tagIds = Yii::$app->request->post('tagIds');
 

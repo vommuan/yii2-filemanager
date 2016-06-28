@@ -71,6 +71,11 @@ class Module extends \yii\base\Module
             'size' => [128, 128],
         ],
     ];
+    
+    /**
+     * @var boolean
+     */
+    public $thumbsAutoCreate = true;
 
     /**
      * @var array max image sizes, [width, height]
@@ -81,7 +86,7 @@ class Module extends \yii\base\Module
      * @var boolean ignore image rotate for setting max sizes
      */
     public $ignoreImageRotate = false;
-
+    
     public function init()
     {
         parent::init();
