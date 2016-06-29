@@ -5,7 +5,6 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\base\ErrorException;
-use yii\imagine\Image;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Inflector;
 use yii\helpers\FileHelper;
@@ -30,10 +29,9 @@ use vommuan\filemanager\models\Owners;
  */
 class MediaFile extends ActiveRecord
 {
-    private $_routes;
-    private $_thumbFiles;
+    protected $_routes;
+    protected $_thumbFiles;
     
-    public $rename;
     public $file;
 
     public static $imageFileTypes = [
@@ -69,7 +67,6 @@ class MediaFile extends ActiveRecord
         $this->_thumbFiles = new Thumbs([
             'mediaFile' => $this,
         ]);
-        $this->rename = Module::getInstance()->rename;
 
         $linkTags = function ($event) {
             if ($this->tagIds === null) {
@@ -275,57 +272,63 @@ class MediaFile extends ActiveRecord
     }
     
     /**
-     * Crop image into max sizes with saving proportions
-     * Array indexes: 0 - width, 1 - height
+     * Generate unique file name for uploaded file
      * 
-     * @return void
+     * @return mixed [string|boolean] if setting 'rename' set to 'false' 
+     * return false, when filename is exist
      */
-    protected function cropImage()
+    protected function generateFileName()
     {
-        $maxSizes = Module::getInstance()->maxImageSizes;
-        $ignoreRotate = Module::getInstance()->ignoreImageRotate;
+        $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
         
-        if (! is_array($maxSizes) || count($maxSizes) != 2) {
-			throw new ErrorException('Error module "vommuan\\filemanager\\' . Module::className() . '" settings: maxImageSizes');
-		}
-		
-		$fileName = implode('/', [
-			$this->_routes->basePath,
-			$this->url,
-		]);
-		
-		$originSizes = array_slice(getimagesize($fileName), 0, 2);
-		
-		if ($ignoreRotate) {
-			$isVertical = ($originSizes[0] < $originSizes[1]) ? true : false;
-			sort($originSizes, SORT_NUMERIC);
-			sort($maxSizes, SORT_NUMERIC);
-		}
-		
-        // if original image sizes less or equal than max image sizes in settings
-        if ($originSizes[0] <= $maxSizes[0] && $originSizes[1] <= $maxSizes[1]) {
-			return;
-		}
-		
-		$newSizes = [];
+        //if a file with the same name already exist append a number
+        if ($this->fileNameExists($filename)) {
+            if (false === Module::getInstance()->rename) {
+                return false;
+            } else {
+                $filename = $this->getUniqueFileName();
+            }
+        }
         
-        $originProportions = $originSizes[0] / $originSizes[1];
-		$newSizes[0] = $maxSizes[0];
-		$newSizes[1] = $newSizes[0] / $originProportions;
-		
-		if ($maxSizes[1] < $newSizes[1]) {
-			$newSizes[1] = $maxSizes[1];
-			$newSizes[0] = $newSizes[1] * $originProportions;
+        return $filename;
+	}
+    
+    /**
+     * Save file in file system
+     * 
+     * @return boolean
+     */
+    protected function fileSave()
+    {
+        if (false === ($this->filename = $this->generateFileName())) {
+			return false;
 		}
-		
-		if ($ignoreRotate && ! $isVertical) {
-			rsort($newSizes);
-		}
-		
-		Image::thumbnail($fileName, round($newSizes[0]), round($newSizes[1]))->save($fileName);
-		
-		$this->size = filesize($fileName);
-		$this->save();
+        
+        FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
+        
+        $this->file->saveAs(
+            implode('/', [
+                $this->_routes->absolutePath,
+                $this->filename,
+            ])
+        );
+        
+        return true;
+	}
+	
+	/**
+	 * Save file information in database
+	 */
+	protected function dbSave()
+	{
+		$this->type = $this->file->type;
+        $this->size = $this->file->size;
+        $this->url = implode('/', [
+            $this->_routes->structure,
+            $this->filename,
+        ]);
+        
+        return $this->save();
 	}
     
     /**
@@ -335,44 +338,11 @@ class MediaFile extends ActiveRecord
      */
     public function saveUploadedFile()
     {
-        FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
+        if (false === $this->fileSave()) {
+			return false;
+		}
         
-        //if a file with the same name already exist append a number
-        $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
-        if ($this->fileNameExists($filename)) {
-            if (false === $this->rename) {
-                return false;
-            } else {
-                $filename = $this->getUniqueFileName();
-            }
-        }
-        
-        // save original uploaded file
-        $this->file->saveAs(
-            implode('/', [
-                $this->_routes->absolutePath,
-                $filename,
-            ])
-        );
-        $this->filename = $filename;
-        $this->type = $this->file->type;
-        $this->size = $this->file->size;
-        $this->url = implode('/', [
-            $this->_routes->structure,
-            $filename,
-        ]);
-        
-        $this->save();
-        
-        if ($this->isImage()) {
-			if (isset(Module::getInstance()->maxImageSizes)) {
-				$this->cropImage();
-			}
-			
-			if (Module::getInstance()->thumbsAutoCreate) {
-				$this->_thumbFiles->create();
-			}
-        }
+        return $this->dbSave();
     }
     
     /**
