@@ -2,7 +2,6 @@
 namespace vommuan\filemanager\models;
 
 use Yii;
-use yii\web\UploadedFile;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\base\ErrorException;
@@ -70,6 +69,7 @@ class MediaFile extends ActiveRecord
         $this->_thumbFiles = new Thumbs([
             'mediaFile' => $this,
         ]);
+        $this->rename = Module::getInstance()->rename;
 
         $linkTags = function ($event) {
             if ($this->tagIds === null) {
@@ -336,9 +336,6 @@ class MediaFile extends ActiveRecord
     public function saveUploadedFile()
     {
         FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
-        
-        // get file instance
-        $this->file = UploadedFile::getInstance($this, 'file');
         
         //if a file with the same name already exist append a number
         $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;

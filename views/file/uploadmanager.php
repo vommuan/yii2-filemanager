@@ -5,10 +5,12 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel vommuan\filemanager\models\MediaFile */
-
 ?>
 
-<header id="header"><span class="glyphicon glyphicon-upload"></span> <?= Module::t('main', 'Upload manager') ?></header>
+<header id="header">
+	<span class="glyphicon glyphicon-upload"></span>
+	<?= Module::t('main', 'Upload manager') ?>
+</header>
 
 <div id="uploadmanager">
     <p>

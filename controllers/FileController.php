@@ -4,11 +4,11 @@ namespace vommuan\filemanager\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use yii\helpers\Url;
 
@@ -60,7 +60,7 @@ class FileController extends Controller
         $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
         
         return $this->render('uploadmanager', [
-            'model' => new MediaFile(),
+            'model' => new UploadFileForm(),
         ]);
     }
 
@@ -70,32 +70,31 @@ class FileController extends Controller
      */
     public function actionUpload()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-		
-		$model = new MediaFile([
-            'rename' => $this->module->rename,
-        ]);
-		//$uploadedFile = UploadedFile::getInstance($model, 'file');
-
+        $model = new UploadFileForm();
+        
+        $handler = $model->getHandler();
+        
         $tagIds = Yii::$app->request->post('tagIds');
 
 	    if ($tagIds !== 'undefined') {
-		    $model->setTagIds(explode(',', $tagIds));
+		    $handler->setTagIds(explode(',', $tagIds));
 	    }
         
-        $model->saveUploadedFile();
+        $handler->saveUploadedFile();
         $bundle = FilemanagerAsset::register($this->view);
 
         $response['files'][] = [
-            'url'           => $model->url,
-            'thumbnailUrl'  => $model->thumbFiles->getDefaultUrl($bundle->baseUrl),
-            'name'          => $model->filename,
-            'type'          => $model->type,
-            'size'          => $model->file->size,
-            'deleteUrl'     => Url::to(['file/delete', 'id' => $model->id]),
+            'url'           => $handler->url,
+            'thumbnailUrl'  => $handler->thumbFiles->getDefaultUrl($bundle->baseUrl),
+            'name'          => $handler->filename,
+            'type'          => $handler->type,
+            'size'          => $handler->file->size,
+            'deleteUrl'     => Url::to(['file/delete', 'id' => $handler->id]),
             'deleteType'    => 'POST',
         ];
-
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
         return $response;
     }
 
