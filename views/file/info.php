@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Tag;
+use vommuan\filemanager\models\ImageFile;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
@@ -14,77 +14,78 @@ use yii\helpers\ArrayHelper;
 $bundle = FilemanagerAsset::register($this);
 ?>
 
-<?= Html::img($model->thumbFiles->getDefaultUrl($bundle->baseUrl)) ?>
+<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl)) ?>
 
 <ul class="detail">
-    <li><?= $model->type ?></li>
-    <li><?= Yii::$app->formatter->asDatetime($model->getLastChanges()) ?></li>
-    <?php if ($model->isImage()) : ?>
-        <li><?= $model->getOriginalImageSize(); ?></li>
-    <?php endif; ?>
-    <li><?= $model->getFileSize() ?></li>
-    <li><?= Html::a(Module::t('main', 'Delete'), ['file/delete/', 'id' => $model->id],
-            [
-                'class' => 'text-danger',
-                'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                'data-id' => $model->id,
-                'role' => 'delete',
-            ]
-        ) ?></li>
+    <li><?= $model->mediaFile->type;?></li>
+    <li><?= Yii::$app->formatter->asDatetime($model->mediaFile->getLastChanges());?></li>
+    <?php 
+    if ($model->mediaFile instanceof ImageFile) :?>
+        <li><?= $model->mediaFile->getOriginalImageSize();?></li>
+		<?php 
+	endif; ?>
+    <li><?= $model->mediaFile->getFileSize();?></li>
+    <li>
+		<?= Html::a(
+			Module::t('main', 'Delete'), [
+				'file/delete/', 
+				'id' => $model->mediaFile->id
+			], [
+				'class' => 'text-danger',
+				'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+				'data-id' => $model->mediaFile->id,
+				'role' => 'delete',
+			]
+		);?>
+    </li>
 </ul>
 
-<div class="filename"><?= $model->filename ?></div>
+<div class="filename"><?= $model->mediaFile->filename ?></div>
 
-<?php $form = ActiveForm::begin([
-    'action' => ['file/update', 'id' => $model->id],
+<?php 
+$form = ActiveForm::begin([
+    'action' => [
+		'file/update',
+		'id' => $model->mediaFile->id,
+	],
     'enableClientValidation' => false,
-    'options' => ['id' => 'control-form'],
-]); ?>
+    'options' => [
+		'id' => 'control-form',
+	],
+]);
+    
+    if ($model->mediaFile instanceof ImageFile) {
+        echo $form->field($model, 'alt')->textInput(['class' => 'form-control input-sm']);
+    }
 
-    <?= $form->field($model, 'tagIds')->widget(\kartik\select2\Select2::className(), [
-        'id' => 'update-image-tag',
-        'maintainOrder' => true,
-        'data' => ArrayHelper::map(Tag::find()->all(), 'id', 'name'),
-        'options' => ['multiple' => true],
-        'pluginOptions' => [
-            'tags' => true,
-            'maximumInputLength' => 10,
-            // нельзя создавать теги с числовым именем
-            'createTag' => new \yii\web\JsExpression("function (params) {
-                if (/^\d+$/.test(params.term)) {
-                    return null;
-                }
-                return {id: params.term, text: params.term};
-            }"),
-        ],
-    ]) ?>
+    echo $form->field($model, 'description')->textarea(['class' => 'form-control input-sm']);
+     
+    if ($model->mediaFile instanceof ImageFile) :?>
+        <div class="form-group<?= $strictThumb ? ' hidden' : '';?>">
+            <?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']);?>
 
-    <?php if ($model->isImage()) : ?>
-        <?= $form->field($model, 'alt')->textInput(['class' => 'form-control input-sm']); ?>
-    <?php endif; ?>
-
-    <?= $form->field($model, 'description')->textarea(['class' => 'form-control input-sm']); ?>
-
-    <?php if ($model->isImage()) : ?>
-        <div class="form-group<?= $strictThumb ? ' hidden' : '' ?>">
-            <?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']) ?>
-
-            <?= Html::dropDownList('url', $model->thumbFiles->getUrl($strictThumb), $model->thumbFiles->getImagesList(), [
-                'class' => 'form-control input-sm'
-            ]) ?>
+            <?= Html::dropDownList(
+				'url',
+				$model->mediaFile->thumbFiles->getUrl($strictThumb),
+				$model->mediaFile->getImagesList(), [
+					'class' => 'form-control input-sm'
+				]
+			);?>
             <div class="help-block"></div>
         </div>
-    <?php else : ?>
-        <?= Html::hiddenInput('url', $model->url) ?>
+		<?php 
+	else :?>
+        <?= Html::hiddenInput('url', $model->mediaFile->url);?>
+		<?php
+	endif;?>
+
+    <?= Html::hiddenInput('id', $model->mediaFile->id);?>
+
+    <?= Html::button(Module::t('main', 'Insert'), ['id' => 'insert-btn', 'class' => 'btn btn-primary btn-sm']);?>
+
+    <?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success btn-sm']);?>
+
+    <?php if ($message = Yii::$app->session->getFlash('mediafileUpdateResult')) :?>
+        <div class="text-success"><?= $message;?></div>
     <?php endif; ?>
-
-    <?= Html::hiddenInput('id', $model->id) ?>
-
-    <?= Html::button(Module::t('main', 'Insert'), ['id' => 'insert-btn', 'class' => 'btn btn-primary btn-sm']) ?>
-
-    <?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success btn-sm']) ?>
-
-    <?php if ($message = Yii::$app->session->getFlash('mediafileUpdateResult')) : ?>
-        <div class="text-success"><?= $message ?></div>
-    <?php endif; ?>
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end();?>

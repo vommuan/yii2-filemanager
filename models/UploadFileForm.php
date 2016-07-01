@@ -14,17 +14,6 @@ class UploadFileForm extends Model
 {
 	public $file;
 	
-	protected $imageFileTypes = [
-        'image/gif',
-        'image/jpeg',
-        'image/pjpeg',
-        'image/png',
-        'image/svg+xml',
-        'image/tiff',
-        'image/vnd.microsoft.icon',
-        'image/vnd.wap.wbmp',
-    ];
-	
 	/**
 	 * @inheritdoc
 	 */
@@ -37,17 +26,6 @@ class UploadFileForm extends Model
 	}
 	
 	/**
-	 * If type of this media file is image, return true
-	 * 
-	 * @param string $fileType MIME-type of file
-	 * @return boolean
-	 */
-	protected function isImage($fileType)
-	{
-		return in_array($fileType, $this->imageFileTypes);
-	}
-	
-	/**
 	 * Get handler to save file by type
 	 * 
 	 * @return mixed
@@ -56,10 +34,6 @@ class UploadFileForm extends Model
 	{
 		$this->file = UploadedFile::getInstance($this, 'file');
 		
-		if ($this->isImage($this->file->type)) {
-			return new ImageFile(['file' => $this->file]);
-		} else {
-			return new MediaFile(['file' => $this->file]);
-		}
+		return MediaFileFactory::getMediaFile($this->file);
 	}
 }

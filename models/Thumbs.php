@@ -37,9 +37,9 @@ class Thumbs extends Model
      * @return string
      */
     protected function generateFileName($width, $height) {
-        return pathinfo($this->mediaFile->url, PATHINFO_FILENAME)
+        return pathinfo($this->mediaFile->getFileName(), PATHINFO_FILENAME)
             . '-' . $width . 'x' . $height . '.'
-            . pathinfo($this->mediaFile->url, PATHINFO_EXTENSION);
+            . pathinfo($this->mediaFile->getFileName(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -55,14 +55,9 @@ class Thumbs extends Model
         
         Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
         
-        $originalFileName = implode('/', [
-            $this->mediaFile->routes->absolutePath,
-            pathinfo($this->mediaFile->url, PATHINFO_BASENAME),
-        ]);
-
         foreach ($this->_config as $alias => $preset) {
             list ($width, $height) = $preset['size'];
-            Image::thumbnail($originalFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+            Image::thumbnail($this->mediaFile->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
                 implode('/', [
                     $this->mediaFile->routes->getThumbsAbsolutePath(),
                     $this->generateFileName($width, $height),
@@ -75,61 +70,40 @@ class Thumbs extends Model
             ]);
         }
 
-        $this->mediaFile->thumbs = serialize($thumbs);
-        $this->mediaFile->detachBehavior('timestamp');
-
-        return $this->mediaFile->save();
+        $this->mediaFile->setThumbs($thumbs);
     }
     
     /**
      * @param $baseUrl
      * @return string default thumbnail for image
      */
-    public function getDefaultUrl($baseUrl = '')
+    public function getDefault()
     {
-        if ($this->mediaFile->isImage()) {
-            return $this->getUrl('default');
-        }
-        
-        return "{$baseUrl}/images/file.png";
+		return $this->getUrl('default');
     }
     
-    /**
-     * @return array thumbnails
-     */
-    protected function getThumbs()
-    {
-        return unserialize($this->mediaFile->thumbs);
-    }
-
     /**
      * @param string $alias thumb alias
      * @return string thumb url
      */
     public function getUrl($alias)
     {
-        $thumbs = $this->getThumbs();
+        $thumbs = $this->mediaFile->getThumbs();
 
-        if ('original' === $alias) {
-            return $this->mediaFile->url;
-        }
-
-        return ! empty($thumbs[$alias]) ? $thumbs[$alias] : '';
+        return !empty($thumbs[$alias]) ? $thumbs[$alias] : '';
     }
 
     /**
      * @param Module $module
      * @return array images list
      */
-    public function getImagesList()
+    public function getThumbsList()
     {
-        $thumbs = $this->getThumbs();
         $list = [];
-        $list[$this->mediaFile->url] = Module::t('main', 'Original') . ' ' . $this->mediaFile->getOriginalImageSize();
-
-        foreach ($thumbs as $alias => $url) {
-            $preset = $this->_config[$alias];
-            $list[$url] = $preset['name'] . ' ' . $preset['size'][0] . 'x' . $preset['size'][1];
+        
+        foreach ($this->mediaFile->getThumbs() as $alias => $url) {
+            $list[$url] = $this->_config[$alias]['name'] . ' ' 
+				. $this->_config[$alias]['size'][0] . ' x ' . $this->_config[$alias]['size'][1];
         }
         
         return $list;
@@ -142,7 +116,7 @@ class Thumbs extends Model
      */
     public function delete()
     {
-        foreach ($this->getThumbs() as $thumbUrl) {
+        foreach ($this->mediaFile->getThumbs() as $thumbUrl) {
             unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");
         }
     }
