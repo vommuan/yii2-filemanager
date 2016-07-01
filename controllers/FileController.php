@@ -45,7 +45,7 @@ class FileController extends Controller
 
     public function actionFilemanager()
     {
-        $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
+        $this->layout = 'main';
         
 		$model = new MediaFileSearch();
 
@@ -57,7 +57,7 @@ class FileController extends Controller
 
     public function actionUploadmanager()
     {
-        $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
+        $this->layout = 'main';
         
         return $this->render('uploadmanager', [
             'model' => new UploadFileForm(),
