@@ -24,7 +24,7 @@ $bundle = FilemanagerAsset::register($this);
         <li><?= $model->mediaFile->getOriginalImageSize();?></li>
 		<?php 
 	endif; ?>
-    <li><?= $model->mediaFile->getFileSize();?></li>
+    <li><?= $model->mediaFile->fileSize;?></li>
     <li>
 		<?= Html::a(
 			Module::t('main', 'Delete'), [

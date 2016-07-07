@@ -34,6 +34,6 @@ class UploadFileForm extends Model
 	{
 		$this->file = UploadedFile::getInstance($this, 'file');
 		
-		return MediaFileFactory::getMediaFile($this->file);
+		return new MediaFile(['file' => $this->file]);
 	}
 }

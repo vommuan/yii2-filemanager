@@ -1,9 +1,9 @@
 <?php
-namespace vommuan\filemanager\models;
+namespace vommuan\filemanager\models\handlers;
 
 use yii\base\Model;
 
-class MediaFileFactory extends Model
+class HandlerFactory extends Model
 {
 	/**
 	 * Get array of image file types
@@ -40,26 +40,12 @@ class MediaFileFactory extends Model
 	 * 
 	 * @return mixed
 	 */
-	public function getMediaFile($file)
+	public static function getHandler($activeRecord)
 	{
-		if (self::isImage($file->type)) {
-			return new ImageFile(['file' => $file]);
+		if (self::isImage($activeRecord->type)) {
+			return new ImageHandler(['activeRecord' => $activeRecord]);
 		} else {
-			return new MediaFile(['file' => $file]);
-		}
-	}
-	
-	/**
-	 * Get one record from database and wrap it of handler class
-	 */
-	public function getOne($mediaFileId)
-	{
-		$ar = MediaFileAR::findOne($mediaFileId);
-		
-		if (self::isImage($ar->type)) {
-			return new ImageFile(['activeRecord' => $ar]);
-		} else {
-			return new MediaFile(['activeRecord' => $ar]);
+			return new BaseHandler(['activeRecord' => $activeRecord]);
 		}
 	}
 }

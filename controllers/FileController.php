@@ -7,7 +7,6 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
-use vommuan\filemanager\models\MediaFileFactory;
 use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
@@ -81,11 +80,11 @@ class FileController extends Controller
         $bundle = FilemanagerAsset::register($this->view);
         
         $response['files'][] = [
-            'url'           => $handler->getUrl(),
+            'url'           => $handler->url,
             'thumbnailUrl'  => $handler->getIcon($bundle->baseUrl),
-            'name'          => $handler->getFileName(),
-            'type'          => $handler->getType(),
-            'size'          => $handler->getSize(),
+            'name'          => $handler->filename,
+            'type'          => $handler->type,
+            'size'          => $handler->size,
             'deleteUrl'     => Url::to(['file/delete', 'id' => $handler->id]),
             'deleteType'    => 'POST',
         ];
@@ -103,11 +102,11 @@ class FileController extends Controller
     public function actionUpdate($id)
     {
         $model = new UpdateFileForm([
-			'mediaFile' => MediaFileFactory::getOne($id)
+			'mediaFile' => MediaFile::findOne($id),
         ]);
         
         $message = Module::t('main', 'Changes not saved.');
-
+		
         if ($model->load(Yii::$app->request->post()) && $model->update()) {
             $message = Module::t('main', 'Changes saved!');
         }
@@ -128,29 +127,25 @@ class FileController extends Controller
      */
     public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $model = MediaFileFactory::getOne($id);
-
-        if ($model instanceof ImageFile) {
-            $model->thumbFiles->delete();
-        }
-
-        $model->deleteFile();
-        $model->delete();
-
+        $model = MediaFile::findOne($id);
+		
+		$model->delete();
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
         return ['success' => 'true'];
     }
 
     /**
      * Resize all thumbnails
+     * TODO: rewrite to new architecture
      */
     public function actionResize()
     {
-        $models = ImageFile::findAll();
+        $models = MediaFile::find()->all();
 
         foreach ($models as $model) {
-            if ($model instanceof ImageFile) {
+            if ($model instanceof ImageFile) { // $model->handler instanceof ImageHandler
                 $model->thumbFiles->delete();
                 $model->thumbFiles->create();
             }
@@ -170,7 +165,7 @@ class FileController extends Controller
     public function actionInfo($id, $strictThumb = null)
     {
         $model = new UpdateFileForm([
-			'mediaFile' => MediaFileFactory::getOne($id)
+			'mediaFile' => MediaFile::findOne($id)
         ]);
         
         Yii::$app->assetManager->bundles = false;

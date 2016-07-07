@@ -1,20 +1,13 @@
 <?php
-namespace vommuan\filemanager\models;
+namespace vommuan\filemanager\models\handlers;
 
-use yii\helpers\Inflector;
-use yii\helpers\FileHelper;
+use yii\base\Model;
 use yii\imagine\Image;
 use yii\base\ErrorException;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\Thumbs;
 
-/**
- * Class for working with image files
- * 
- * @since v0.3
- * @license MIT
- * @author Michael Naumov <vommuan@gmail.com>
- */
-class ImageFile extends MediaFile
+class ImageHandler extends BaseHandler
 {
 	/**
 	 * 
@@ -63,7 +56,7 @@ class ImageFile extends MediaFile
 	 */
 	public function getAlt()
 	{
-		return $this->_ar->alt;
+		return $this->activeRecord->alt;
 	}
 	
 	/**
@@ -73,7 +66,7 @@ class ImageFile extends MediaFile
 	 */
 	public function getThumbs()
 	{
-		return unserialize($this->_ar->thumbs);
+		return unserialize($this->activeRecord->thumbs);
 	}
 	
 	/**
@@ -83,7 +76,7 @@ class ImageFile extends MediaFile
 	 */
 	public function setThumbs($thumbs)
 	{
-		$this->_ar->thumbs = serialize($thumbs);
+		$this->activeRecord->thumbs = serialize($thumbs);
 	}
 	
 	/**
@@ -141,22 +134,14 @@ class ImageFile extends MediaFile
 	protected function afterFileSave()
 	{
 		if (isset(Module::getInstance()->maxImageSizes)) {
-			$this->_ar->size = $this->cropImage();
+			$this->activeRecord->size = $this->cropImage();
 		} else {
-			$this->_ar->size = $this->file->size;
+			$this->activeRecord->size = $this->activeRecord->file->size;
 		}
 		
 		if (Module::getInstance()->thumbsAutoCreate) {
 			$this->_thumbFiles->create();
 		}
-	}
-	
-	/**
-	 * @inheritdoc
-	 */
-	protected function beforeSave()
-	{
-		$this->_ar->type = $this->file->type;
 	}
 	
 	/**
@@ -175,7 +160,6 @@ class ImageFile extends MediaFile
     /**
      * This method wrap getimagesize() function
      * 
-     * @param array $routes see routes in module config
      * @param string $delimiter delimiter between width and height
      * @return string image size like '1366x768'
      */
@@ -189,8 +173,13 @@ class ImageFile extends MediaFile
         ]);
     }
 	
-	public static function findAll()
+	/**
+	 * @inheritdoc
+	 */
+	public function delete()
 	{
-		
+		if (parent::delete()) {
+			return $this->_thumbFiles->delete();
+		}
 	}
 }

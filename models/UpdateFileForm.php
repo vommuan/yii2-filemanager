@@ -17,6 +17,16 @@ class UpdateFileForm extends Model
 	public $mediaFile;
 	
 	/**
+	 * @var string
+	 */
+	private $_alt;
+	
+	/**
+	 * @var string
+	 */
+	private $_description;
+	
+	/**
 	 * @inheritdoc
 	 */
 	public function rules()
@@ -33,7 +43,11 @@ class UpdateFileForm extends Model
 	 */
 	public function getAlt()
 	{
-		return $this->mediaFile->alt;
+		if (isset($this->_alt)) {
+			return $this->_alt;
+		} else {
+			return $this->mediaFile->alt;
+		}
 	}
 	
 	/**
@@ -43,7 +57,31 @@ class UpdateFileForm extends Model
 	 */
 	public function getDescription()
 	{
-		return $this->mediaFile->description;
+		if (isset($this->_description)) {
+			return $this->_description;
+		} else {
+			return $this->mediaFile->description;
+		}
+	}
+	
+	/**
+	 * Set alternative text for media file
+	 * 
+	 * @return void
+	 */
+	public function setAlt($alt)
+	{
+		$this->_alt = $alt;
+	}
+	
+	/**
+	 * Set description for media file
+	 * 
+	 * @return void
+	 */
+	public function setDescription($description)
+	{
+		$this->_description = $description;
 	}
 	
 	/**
@@ -55,6 +93,9 @@ class UpdateFileForm extends Model
 			return false;
 		}
 		
-        return $this->mediaFile->update($this->attributes);
+		$this->mediaFile->alt = $this->_alt;
+		$this->mediaFile->description = $this->_description;
+		
+        return $this->mediaFile->save();
 	}
 }

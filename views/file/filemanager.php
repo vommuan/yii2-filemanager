@@ -2,7 +2,6 @@
 
 use vommuan\filemanager\assets\FilemanagerAsset;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Tag;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ListView;
 use yii\helpers\Html;

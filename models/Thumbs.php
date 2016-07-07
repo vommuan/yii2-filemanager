@@ -4,6 +4,7 @@ namespace vommuan\filemanager\models;
 use Yii;
 use yii\base\Model;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\handlers\ImageHandler;
 use yii\base\ErrorException;
 use yii\helpers\FileHelper;
 use yii\imagine\Image;
@@ -24,7 +25,7 @@ class Thumbs extends Model
     {
         $this->_config = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
         
-        if (! ($this->mediaFile instanceof MediaFile)) {
+        if (! ($this->mediaFile instanceof ImageHandler)) {
             throw new ErrorException('Error class initialization.');
         }
     }
@@ -37,9 +38,9 @@ class Thumbs extends Model
      * @return string
      */
     protected function generateFileName($width, $height) {
-        return pathinfo($this->mediaFile->getFileName(), PATHINFO_FILENAME)
+        return pathinfo($this->mediaFile->activeRecord->filename, PATHINFO_FILENAME)
             . '-' . $width . 'x' . $height . '.'
-            . pathinfo($this->mediaFile->getFileName(), PATHINFO_EXTENSION);
+            . pathinfo($this->mediaFile->activeRecord->filename, PATHINFO_EXTENSION);
     }
 
     /**
@@ -119,5 +120,7 @@ class Thumbs extends Model
         foreach ($this->mediaFile->getThumbs() as $thumbUrl) {
             unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");
         }
+        
+        return true;
     }
 }

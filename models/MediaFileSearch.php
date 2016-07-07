@@ -6,7 +6,7 @@ use yii\web\UploadedFile;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\imagine\Image;
-//use yii\data\ActiveDataProvider;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use vommuan\filemanager\Module;
@@ -16,18 +16,16 @@ use Imagine\Image\ImageInterface;
 /**
  *
  */
-class MediaFileSearch extends MediaFileAR
+class MediaFileSearch extends MediaFile
 {
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function beforeValidate()
     {
-        return [
-            //[['tagIds'], 'safe'],
-        ];
-    }
-
+		return true;
+	}
+    
     /**
      * Creates data provider instance with search query applied
      * 
@@ -46,10 +44,6 @@ class MediaFileSearch extends MediaFileAR
             return $dataProvider;
         }
 
-        //if ($this->tagIds) {
-        //    $query->joinWith('tags')->andFilterWhere(['in', Tag::tableName() . '.id', $this->tagIds]);
-        //}
-        
         $dataProvider->pagination->defaultPageSize = 15;
 
         return $dataProvider;
