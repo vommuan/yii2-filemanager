@@ -202,4 +202,51 @@ class BaseHandler extends Model
 	{
 		return $this->deleteFile();
 	}
+	
+	/**
+	 * Get one variant of this file
+	 * 
+	 * @param string $alias alias of file variant
+	 * @return string path to file
+	 */
+	public function getVariant($alias)
+	{
+		return false;
+	}
+	
+	/**
+     * Formating list of images to array for Html::dropDownList()
+     * 
+     * @param array $data array to format
+     * ```
+     * [
+	 *     0 => [
+	 *         'alias' => 'alias_1',
+	 *         'label' => 'label_1',
+	 *         'url' => 'url_1',
+	 *     ],
+	 *     1 => [
+	 *         'alias' => 'alias_2',
+	 *         'label' => 'label_2',
+	 *         'url' => 'url_2',
+	 *     ],
+	 * ]
+	 * ```
+	 * @return array
+	 * ```
+	 * [
+	 *     'url_1' => 'label_1',
+	 *     'url_2' => 'label_2',
+	 * ]
+     */
+    public function dropDownFormatter($input)
+    {
+		$output = [];
+		
+		for ($i = 0; $i < count($input); $i++) {
+			$output[$input[$i]['url']] = $input[$i]['label'];
+		}
+		
+		return $output;
+	}
 }

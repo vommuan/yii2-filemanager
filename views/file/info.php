@@ -4,8 +4,6 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\ImageFile;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model vommuan\filemanager\models\MediaFile */
@@ -20,8 +18,8 @@ $bundle = FilemanagerAsset::register($this);
     <li><?= $model->mediaFile->type;?></li>
     <li><?= Yii::$app->formatter->asDatetime($model->mediaFile->getLastChanges());?></li>
     <?php 
-    if ($model->mediaFile instanceof ImageFile) :?>
-        <li><?= $model->mediaFile->getOriginalImageSize();?></li>
+    if ('image' == $model->mediaFile->baseType) :?>
+        <li><?= $model->mediaFile->sizes;?></li>
 		<?php 
 	endif; ?>
     <li><?= $model->mediaFile->fileSize;?></li>
@@ -54,20 +52,20 @@ $form = ActiveForm::begin([
 	],
 ]);
     
-    if ($model->mediaFile instanceof ImageFile) {
+    if ('image' == $model->mediaFile->baseType) {
         echo $form->field($model, 'alt')->textInput(['class' => 'form-control input-sm']);
     }
 
     echo $form->field($model, 'description')->textarea(['class' => 'form-control input-sm']);
      
-    if ($model->mediaFile instanceof ImageFile) :?>
+    if ('image' == $model->mediaFile->baseType) :?>
         <div class="form-group<?= $strictThumb ? ' hidden' : '';?>">
             <?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']);?>
 
             <?= Html::dropDownList(
 				'url',
-				$model->mediaFile->thumbFiles->getUrl($strictThumb),
-				$model->mediaFile->getImagesList(), [
+				$model->mediaFile->getFileVariant($strictThumb),
+				$model->mediaFile->getFileVariants(true), [
 					'class' => 'form-control input-sm'
 				]
 			);?>

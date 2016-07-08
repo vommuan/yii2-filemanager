@@ -65,13 +65,6 @@ class Module extends \yii\base\Module
         ],
     ];
     
-    private $_defaultThumbs = [
-        'default' => [
-            'name' => 'Default size',
-            'size' => [128, 128],
-        ],
-    ];
-    
     /**
      * @var boolean
      */
@@ -121,6 +114,11 @@ class Module extends \yii\base\Module
     
     public function getDefaultThumbs()
     {
-        return $this->_defaultThumbs;
+        return [
+			'default' => [
+				'name' => Module::t('main', 'Default'),
+				'size' => [128, 128],
+			],
+		];
     }
 }

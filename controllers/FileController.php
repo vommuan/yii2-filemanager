@@ -145,7 +145,7 @@ class FileController extends Controller
         $models = MediaFile::find()->all();
 
         foreach ($models as $model) {
-            if ($model instanceof ImageFile) { // $model->handler instanceof ImageHandler
+            if ('image' == $model->baseType) {
                 $model->thumbFiles->delete();
                 $model->thumbFiles->create();
             }

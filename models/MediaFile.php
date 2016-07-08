@@ -95,7 +95,7 @@ class MediaFile extends ActiveRecord
     {
         return [
             'id' => Module::t('main', 'ID'),
-            'filename' => Module::t('main', 'filename'),
+            'filename' => Module::t('main', 'Filename'),
             'type' => Module::t('main', 'Type'),
             'url' => Module::t('main', 'Url'),
             'alt' => Module::t('main', 'Alt attribute'),
@@ -131,6 +131,104 @@ class MediaFile extends ActiveRecord
 		Yii::$app->formatter->sizeFormatBase = 1000;
 		
 		return Yii::$app->formatter->asShortSize($this->size, 0);
+	}
+	
+	/**
+	 * Get base file type from MIME-type (saved in database)
+	 * 
+	 * @return string
+	 */
+	public function getBaseType()
+	{
+		return substr($this->type, 0, strpos($this->type, '/'));
+	}
+	
+	/**
+	 * Get file width x height sizes
+	 * 
+	 * @param string $delimiter delimiter between width and height
+     * @param string $format see [[Thumbs::getSizes()]] for detailed documentation
+     * @return string image size like '1366x768'
+     */
+	public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		return $this->handler->getSizes($delimiter, $format);
+	}
+	
+	/**
+	 * 
+	 */
+	public function getThumbFiles()
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		return $this->handler->getThumbFiles();
+	}
+	
+	/**
+	 * Get one variant of this file
+	 * 
+	 * @param string $alias alias of file variant
+	 * @return string file url
+	 */
+	public function getFileVariant($alias = 'origin')
+	{
+		if ('origin' == $alias) {
+			return $this->url;
+		} else {
+			return $this->handler->getVariant($alias);
+		}
+	}
+	
+	/**
+	 * Get list variants of one file. For example, image variants are thumbs files.
+	 * 
+	 * @return array paths to files
+	 * ```
+	 * [
+	 *     0 => [
+	 *         'alias' => 'alias_1',
+	 *         'label' => 'label_1',
+	 *         'url' => 'url_1',
+	 *     ],
+	 *     1 => [
+	 *         'alias' => 'alias_2',
+	 *         'label' => 'label_2',
+	 *         'url' => 'url_2',
+	 *     ],
+	 * ]
+	 * ```
+	 * or formated array for using in drop down list
+	 * ```
+	 * [
+	 *     'url_1' => 'label_1',
+	 *     'url_2' => 'label_2',
+	 * ]
+	 * ```
+	 */
+	public function getFileVariants($dropDown = false)
+	{
+		if ('image' != $this->baseType) {
+			$variants = [
+				'alias' => 'origin',
+				'label' => Module::t('main', 'Original'),
+				'url' => $this->getFileVariant(),
+			];
+		} else {
+			$variants = $this->handler->getVariantsList();
+		}
+		
+		if ($dropDown) {
+			return $this->handler->dropDownFormatter($variants);
+		} else {
+			return $variants;
+		}
 	}
     
     /**

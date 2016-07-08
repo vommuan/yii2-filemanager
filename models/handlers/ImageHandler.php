@@ -10,16 +10,16 @@ use vommuan\filemanager\models\Thumbs;
 class ImageHandler extends BaseHandler
 {
 	/**
-	 * 
+	 * @var vommuan\filemanager\models\Thumbs
 	 */
-	protected $_thumbFiles;
+	protected $_thumbs;
 	
 	/**
 	 * 
 	 */
 	protected function initThumbs()
 	{
-		$this->_thumbFiles = new Thumbs([
+		$this->_thumbs = new Thumbs([
 			'mediaFile' => $this,
 		]);
 	}
@@ -40,7 +40,7 @@ class ImageHandler extends BaseHandler
      */
     public function getThumbFiles()
     {
-        return $this->_thumbFiles;
+        return $this->_thumbs;
     }
 	
 	/**
@@ -48,7 +48,7 @@ class ImageHandler extends BaseHandler
 	 */
 	public function getIcon($baseUrl)
 	{
-		return $this->_thumbFiles->getDefault();
+		return $this->_thumbs->getDefault();
 	}
 	
 	/**
@@ -140,38 +140,9 @@ class ImageHandler extends BaseHandler
 		}
 		
 		if (Module::getInstance()->thumbsAutoCreate) {
-			$this->_thumbFiles->create();
+			$this->_thumbs->create();
 		}
 	}
-	
-	/**
-     * @param Module $module
-     * @return array images list
-     */
-    public function getImagesList()
-    {
-        $list = [
-			$this->getUrl() => Module::t('main', 'Original') . ' ' . $this->getOriginalImageSize(),
-		];
-		
-		return array_merge($list, $this->_thumbFiles->getThumbsList());
-    }
-    
-    /**
-     * This method wrap getimagesize() function
-     * 
-     * @param string $delimiter delimiter between width and height
-     * @return string image size like '1366x768'
-     */
-    public function getOriginalImageSize($delimiter = 'x')
-    {
-        $imageSizes = getimagesize($this->absoluteFileName);
-        
-        return implode($delimiter, [
-            $imageSizes[0],
-            $imageSizes[1],
-        ]);
-    }
 	
 	/**
 	 * @inheritdoc
@@ -179,7 +150,47 @@ class ImageHandler extends BaseHandler
 	public function delete()
 	{
 		if (parent::delete()) {
-			return $this->_thumbFiles->delete();
+			return $this->_thumbs->delete();
 		}
 	}
+	
+	/**
+	 * Get one variant of this file
+	 * 
+	 * @param string $alias alias of file variant
+	 * @return string path to file
+	 */
+	public function getVariant($alias)
+	{
+		return $this->_thumbs->getUrl($alias);
+	}
+	
+	/**
+     * @param Module $module
+     * @return array images list
+     */
+    public function getVariantsList()
+    {
+		$list = [
+			[
+				'alias' => 'origin',
+				'label' => Module::t('main', 'Original') . ' ' . $this->getSizes(),
+				'url' => $this->activeRecord->url,
+			],
+		];
+		
+		return array_merge($list, $this->_thumbs->getThumbsList());
+	}
+    
+    /**
+     * Get file width x height sizes
+     * 
+     * @param string $delimiter delimiter between width and height
+     * @param string $format see [[Thumbs::getSizes()]] for detailed documentation
+     * @return string image size like '1366x768'
+     */
+    public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')
+    {
+        return $this->_thumbs->getSizes($this->absoluteFileName, $delimiter, $format);
+    }
 }

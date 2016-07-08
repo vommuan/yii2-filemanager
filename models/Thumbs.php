@@ -91,8 +91,22 @@ class Thumbs extends Model
     {
         $thumbs = $this->mediaFile->getThumbs();
 
-        return !empty($thumbs[$alias]) ? $thumbs[$alias] : '';
+        return !empty($thumbs[$alias]) ? $thumbs[$alias] : false;
     }
+    
+    /**
+     * Get absolute file name of this thumbnail alias
+     * 
+     * @param string $alias thumbnail alias
+     * @return string
+     */
+    protected function getPath($alias)
+    {
+		return implode('/', [
+			$this->mediaFile->routes->basePath,
+			$this->getUrl($alias),
+		]);
+	}
 
     /**
      * @param Module $module
@@ -103,11 +117,36 @@ class Thumbs extends Model
         $list = [];
         
         foreach ($this->mediaFile->getThumbs() as $alias => $url) {
-            $list[$url] = $this->_config[$alias]['name'] . ' ' 
-				. $this->_config[$alias]['size'][0] . ' x ' . $this->_config[$alias]['size'][1];
+            $list[] = [
+				'alias' => $alias,
+				'label' => $this->_config[$alias]['name'] . ' ' . $this->getSizes($this->getPath($alias)),
+				'url' => $url,
+            ];
         }
         
         return $list;
+    }
+    
+    /**
+     * This method wrap getimagesize() function
+     * 
+     * @param string $filePath path to image file
+     * @param string $delimiter delimiter between width and height
+     * @param string $format output string format
+     * - {w} replaced to width
+     * - {d} replaced to delimiter
+     * - {h} replaced to height
+     * @return string image size like '1366x768'
+     */
+    public function getSizes($filePath, $delimiter = 'x', $format = '{w}{d}{h}')
+    {
+        $imageSizes = getimagesize($filePath);
+        
+        return str_replace(
+			['{w}', '{d}', '{h}'], 
+			[$imageSizes[0], $delimiter, $imageSizes[1]], 
+			$format
+		);
     }
 
     /**
