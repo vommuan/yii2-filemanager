@@ -14,34 +14,64 @@ use yii\bootstrap\ActiveForm;
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 ?>
 
-<header id="header">
-    <span class="glyphicon glyphicon-picture"></span>
-    <?= Module::t('main', 'File manager');?>
-</header>
-
-<div id="filemanager" data-url-info="<?= Url::to(['file/info']) ?>">
-    <?php echo ListView::widget([
-        'dataProvider' => $dataProvider,
-        'layout' => '<div class="items">{items}</div>{pager}',
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(
-                Html::img($model->getIcon($this->params['moduleBundle']->baseUrl))
-                    . '<span class="checked glyphicon glyphicon-check"></span>',
-                '#mediafile',
-                ['data-key' => $key]
-            );
-        },
-    ]);?>
-
-    <div class="dashboard">
-        <p>
-            <?= Html::a(
-                '<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
-                ['file/uploadmanager'],
-                ['class' => 'btn btn-default']
-            ); ?>
-        </p>
-        <div id="fileinfo"></div>
-    </div>
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>
+			<span class="glyphicon glyphicon-picture"></span>
+			<?= Module::t('main', 'File manager');?>
+		</h1>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-12">
+			<?= Html::a(
+				'<span class="glyphicon glyphicon-upload"></span> ' . Module::t('main', 'Upload manager'),
+				['file/uploadmanager'], [
+					'class' => 'btn btn-primary'
+				]
+			); ?>
+		</div>
+	</div>
+	<div class="row">
+		<div id="filemanager" class="col-xs-12" data-url-info="<?= Url::to(['file/info']);?>">
+			<?php /*echo ListView::widget([
+				'dataProvider' => $dataProvider,
+				'layout' => '<div class="items">{items}</div>{pager}',
+				'itemOptions' => ['class' => 'item'],
+				'itemView' => function ($model, $key, $index, $widget) {
+					return Html::a(
+						Html::img($model->getIcon($this->params['moduleBundle']->baseUrl))
+							. '<span class="checked glyphicon glyphicon-check"></span>',
+						'#mediafile',
+						['data-key' => $key]
+					);
+				},
+			]);*/?>
+			<?php echo ListView::widget([
+				'dataProvider' => $dataProvider,
+				'layout' => 
+					Html::tag('div', '{summary}', ['class' => 'col-xs-12']) 
+					. Html::tag('div', '{pager}', ['class' => 'col-xs-12'])
+					. Html::tag('div', '{items}', ['class' => 'col-xs-12 items'])
+					. Html::tag('div', '{pager}', ['class' => 'col-xs-12']),
+				'options' => [
+					'class' => 'files-gallery row',
+				],	
+				'itemOptions' => [
+					'class' => 'col-xs-4 col-sm-2 item',
+				],
+				'itemView' => function ($model, $key, $index, $widget) {
+					return Html::a(
+						Html::img($model->getIcon($this->params['moduleBundle']->baseUrl))
+							. Html::tag('span', '', ['class' => 'glyphicon glyphicon-check checked']),
+						'#mediafile', [
+							'class' => 'thumbnail',
+							'data-key' => $key,
+						]
+					);
+				},
+			]);?>
+		</div>
+	</div>
+	<div id="fileinfo"></div>
 </div>

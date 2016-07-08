@@ -44,7 +44,7 @@ class MediaFileSearch extends MediaFile
             return $dataProvider;
         }
 
-        $dataProvider->pagination->defaultPageSize = 15;
+        $dataProvider->pagination->defaultPageSize = 30;
 
         return $dataProvider;
     }
