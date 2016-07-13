@@ -1,7 +1,6 @@
 <?php
 namespace vommuan\filemanager\models;
 
-use Yii;
 use yii\base\Model;
 use yii\base\ErrorException;
 use yii\imagine\Image;
@@ -29,6 +28,26 @@ class ImageThumbnail extends Model
             throw new ErrorException('Error class initialization.');
         }
     }
+    
+    /**
+     * Get one thumbnail by alias
+     * 
+     * @return Thumbnail | null
+     */
+    protected function getThumbnail($alias)
+	{
+		return Thumbnail::findOne(['alias' => $alias, 'mediafile_id' => $this->handler->activeRecord->id]);
+	}
+    
+    /**
+     * Get thumbnails list
+     * 
+     * @return Thumbnail[]
+     */
+    protected function getThumbnails()
+    {
+		return Thumbnail::findAll(['mediafile_id' => $this->handler->activeRecord->id]);
+	}
     
     /**
      * Generates thumb file name
@@ -113,7 +132,6 @@ class ImageThumbnail extends Model
     }
     
     /**
-     * @param $baseUrl
      * @return string default thumbnail for image
      */
     public function getDefault()
@@ -127,10 +145,8 @@ class ImageThumbnail extends Model
      */
     public function getUrl($alias)
     {
-        $avaliableThumbs = $this->handler->getThumbs();
-        
-        if (isset($avaliableThumbs[$alias])) {
-			return $avaliableThumbs[$alias];
+        if (null !== ($thumb = $this->getThumbnail($alias))) {
+			return $thumb->url;
 		}
 		
 		if (isset($this->_config[$alias]) && false !== ($thumb = $this->createOne($alias))) {
@@ -161,14 +177,15 @@ class ImageThumbnail extends Model
     public function getThumbsList()
     {
         $list = [];
+        $thumbs = $this->getThumbnails();
         
-        foreach ($this->handler->getThumbs() as $alias => $url) {
-            $list[] = [
-				'alias' => $alias,
-				'label' => $this->_config[$alias]['name'] . ' ' . $this->getSizes($this->getPath($alias)),
-				'url' => $url,
+        for ($i = 0; $i < count($thumbs); $i++) {
+			$list[] = [
+				'alias' => $thumbs[$i]->alias,
+				'label' => $this->_config[$thumbs[$i]->alias]['name'] . ' ' . $this->getSizes($this->getPath($thumbs[$i]->alias)),
+				'url' => $thumbs[$i]->url,
             ];
-        }
+		}
         
         return $list;
     }
@@ -204,9 +221,11 @@ class ImageThumbnail extends Model
      */
     public function delete()
     {
-        foreach ($this->handler->getThumbs() as $thumbUrl) {
-            unlink("{$this->handler->routes->basePath}/{$thumbUrl}");
-        }
+        $thumbs = $this->getThumbnails();
+        
+        for ($i = 0; $i < count($thumbs); $i++) {
+			unlink($this->handler->routes->basePath . '/' . $thumbs[$i]->url);
+		}
         
         FileHelper::removeDirectory(
 			$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url), 

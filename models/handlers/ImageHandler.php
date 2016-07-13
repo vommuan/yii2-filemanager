@@ -1,8 +1,6 @@
 <?php
 namespace vommuan\filemanager\models\handlers;
 
-use yii\base\Model;
-use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
 use yii\base\ErrorException;
 use vommuan\filemanager\Module;
@@ -48,16 +46,6 @@ class ImageHandler extends BaseHandler
 	public function getAlt()
 	{
 		return $this->activeRecord->alt;
-	}
-	
-	/**
-	 * Get thumbs information from active record
-	 * 
-	 * @return array
-	 */
-	public function getThumbs()
-	{
-		return ArrayHelper::map($this->activeRecord->thumbnails, 'alias', 'url');
 	}
 	
 	/**
