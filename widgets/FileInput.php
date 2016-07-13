@@ -154,7 +154,7 @@ class FileInput extends InputWidget
             );
         }
 
-        $modal = $this->renderFile('@vendor/vommuan/yii2-filemanager/views/file/modal.php', [
+        $modal = $this->render('modal', [
             'inputId' => $this->options['id'],
             'btnId' => $this->buttonOptions['id'],
             'frameId' => $this->options['id'] . '-frame',

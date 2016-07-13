@@ -8,7 +8,7 @@ function filemanagerTinyMCE(callback, value, meta) {
         var modal = $(this).parents('[role="filemanager-modal"]'),
             input = $("#" + modal.attr("data-input-id"));
 
-        $(this).contents().find(".dashboard").on("click", "#insert-btn", function(e) {
+        $(this).contents().find("#fileinfo").on("click", "#insert-btn", function(e) {
             e.preventDefault();
 
             var data = getFormData($(this).parents("#control-form"));
@@ -51,7 +51,7 @@ $(document).ready(function() {
             pasteData = modal.attr("data-paste-data"),
             input = $("#" + modal.attr("data-input-id"));
 
-        $(this).contents().find(".dashboard").on("click", "#insert-btn", function(e) {
+        $(this).contents().find("#fileinfo").on("click", "#insert-btn", function(e) {
             e.preventDefault();
 
             var data = getFormData($(this).parents("#control-form"));

@@ -80,7 +80,7 @@ class TinyMce extends InputWidget
             );
         }
 
-        $modal = $this->renderFile('@vendor/vommuan/yii2-filemanager/views/file/modal.php', [
+        $modal = $this->render('modal', [
             'inputId' => $this->options['id'],
             'btnId' => $this->options['id'] . '-btn',
             'frameId' => $this->options['id'] . '-frame',
