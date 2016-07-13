@@ -17,26 +17,25 @@ use vommuan\filemanager\models\handlers\HandlerFactory;
  * @property string $alt
  * @property integer $size
  * @property string $description
- * @property string $thumbs
  * @property integer $created_at
  * @property integer $updated_at
  * @property Owners[] $owners
- * @property Tag[] $tags
+ * @property Thumbnail[] $thumbnails
  */
 class MediaFile extends ActiveRecord
 {
 	/**
-	 * @var
+	 * @var vommuan\filemanager\models\handlers\BaseHandler or child class
 	 */
 	protected $handler;
 	
 	/**
-	 * 
+	 * @var yii\web\UploadedFile uploaded file
 	 */
 	public $file;
 	
 	/**
-	 * 
+	 * Initialization handler of file
 	 */
 	protected function initHandler()
 	{
@@ -48,7 +47,7 @@ class MediaFile extends ActiveRecord
 	}
 	
 	/**
-	 * 
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -101,7 +100,6 @@ class MediaFile extends ActiveRecord
             'alt' => Module::t('main', 'Alt attribute'),
             'size' => Module::t('main', 'Size'),
             'description' => Module::t('main', 'Description'),
-            'thumbs' => Module::t('main', 'Thumbnails'),
             'created_at' => Module::t('main', 'Created'),
             'updated_at' => Module::t('main', 'Updated'),
         ];
@@ -124,7 +122,10 @@ class MediaFile extends ActiveRecord
 	}
     
     /**
+	 * Get icon url
 	 * 
+	 * @param string $baseUrl asset's base url
+	 * @return string
 	 */
 	public function getIcon($baseUrl)
 	{
@@ -132,7 +133,9 @@ class MediaFile extends ActiveRecord
 	}
 	
 	/**
-	 * @return string file size
+	 * Get file size
+	 * 
+	 * @return string size in KB
 	 */
 	public function getFileSize()
 	{
@@ -293,17 +296,6 @@ class MediaFile extends ActiveRecord
     {
 		$this->initHandler();
 	}
-	
-	/**
-     * Find model by url
-     *
-     * @param $url
-     * @return static
-     */
-    public static function findByUrl($url)
-    {
-        return self::findOne(['url' => $url]);
-    }
 	
 	/**
      * @return int last changes timestamp

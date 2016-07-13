@@ -5,13 +5,19 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\Routes;
 use vommuan\filemanager\models\helpers\FileHelper;
 
+/**
+ * Base file handler
+ * 
+ * @author Michael Naumov <vommuan@gmail.com>
+ */
 class BaseHandler extends Model
 {
 	/**
-	 * @var Routes
+	 * @var vommuan\filemanager\models\Routes
 	 */
 	protected $_routes;
 	
@@ -21,7 +27,7 @@ class BaseHandler extends Model
 	public $activeRecord;
 	
 	/**
-	 * 
+	 * Initialization [[Routes]] object
 	 */
 	protected function initRoutes()
 	{
@@ -47,7 +53,10 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * Get icon url
 	 * 
+	 * @param string $baseUrl asset's base url
+	 * @return string
 	 */
 	public function getIcon($baseUrl)
 	{
@@ -62,12 +71,12 @@ class BaseHandler extends Model
 	 */
 	protected function fileExists($filename)
 	{
-		$url = implode('/', [
-			$this->_routes->structure,
-			$filename,
+		return (bool) MediaFile::findOne([
+			'url' => implode('/', [
+				$this->_routes->structure,
+				$filename,
+			]),
 		]);
-		
-		return ($this->activeRecord->findByUrl($url)) ? true : false; // checks for existing url in db
 	}
 	
 	/**
@@ -97,7 +106,7 @@ class BaseHandler extends Model
 	{
 		$filename = Inflector::slug($this->activeRecord->file->baseName) . '.' . $this->activeRecord->file->extension;
 		
-		//if a file with the same name already exist append a number
+		// if a file with the same name already exist append a number
 		if ($this->fileExists($filename)) {
 			if (false === Module::getInstance()->rename) {
 				return false;
@@ -110,10 +119,16 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * Generate url for file
 	 * 
+	 * @return string
 	 */
 	protected function generateUrl()
 	{
+		if (! isset($this->activeRecord->filename)) {
+			return false;
+		}
+		
 		return implode('/', [
 			$this->_routes->structure,
 			$this->activeRecord->filename,
@@ -121,10 +136,16 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * Get absolute file name in system
 	 * 
+	 * @return string
 	 */
 	public function getAbsoluteFileName()
 	{
+		if (! isset($this->activeRecord->url)) {
+			return false;
+		}
+		
 		return implode('/', [
 			$this->_routes->basePath,
 			$this->activeRecord->url,
@@ -139,18 +160,16 @@ class BaseHandler extends Model
 	protected function fileSave()
 	{
 		FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
-		
-		Yii::info($this->absoluteFileName);
-		
 		$this->activeRecord->file->saveAs($this->absoluteFileName);
-		
 		$this->afterFileSave();
 		
 		return true;
 	}
 	
 	/**
+	 * Function witch calling after save the file
 	 * 
+	 * @return null | boolean
 	 */
 	protected function afterFileSave() 
 	{
@@ -158,7 +177,9 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * Function witch calling before active record MediaFile validate
 	 * 
+	 * @return boolean
 	 */
 	public function beforeValidate()
 	{
@@ -173,7 +194,9 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * Function witch calling before active record MediaFile save
 	 * 
+	 * @return boolean
 	 */
 	public function beforeSave($insert)
 	{
@@ -185,7 +208,7 @@ class BaseHandler extends Model
 	}
 	
 	/**
-	 * 
+	 * Function witch calling after active record MediaFile save
 	 */
 	public function afterSave($insert)
 	{
@@ -193,22 +216,14 @@ class BaseHandler extends Model
 	}
 	
 	/**
-	 * Delete file
+	 * Delete file and empty directory
 	 * 
-	 * @param array $routes see routes in module config
-	 * @return bool
-	 */
-	protected function deleteFile()
-	{
-		return unlink("{$this->_routes->basePath}/{$this->activeRecord->url}");
-	}
-	
-	/**
-	 * 
+	 * @return boolean
 	 */
 	public function delete()
 	{
-		$status = $this->deleteFile();
+		$status = unlink($this->_routes->basePath . '/' . $this->activeRecord->url);
+		
 		FileHelper::removeDirectory(
 			implode('/', [
 				$this->_routes->basePath,
@@ -224,7 +239,7 @@ class BaseHandler extends Model
 	 * Get one variant of this file
 	 * 
 	 * @param string $alias alias of file variant
-	 * @return string path to file
+	 * @return boolean | string path to file
 	 */
 	public function getVariant($alias)
 	{
@@ -235,7 +250,7 @@ class BaseHandler extends Model
      * Formating list of images to array for Html::dropDownList()
      * 
      * @param array $data array to format
-     * ```
+     * ```php
      * [
 	 *     0 => [
 	 *         'alias' => 'alias_1',
@@ -250,7 +265,7 @@ class BaseHandler extends Model
 	 * ]
 	 * ```
 	 * @return array
-	 * ```
+	 * ```php
 	 * [
 	 *     'url_1' => 'label_1',
 	 *     'url_2' => 'label_2',

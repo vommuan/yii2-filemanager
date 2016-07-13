@@ -147,7 +147,7 @@ class FileController extends Controller
         foreach ($models as $model) {
             if ('image' == $model->baseType) {
                 $model->thumbFiles->delete();
-                $model->thumbFiles->create();
+                $model->thumbFiles->createAll();
             }
         }
 

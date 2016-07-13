@@ -10,11 +10,20 @@ use vommuan\filemanager\models\handlers\ImageHandler;
 use vommuan\filemanager\models\helpers\FileHelper;
 
 /**
- * This is the helper model class for route paths
+ * This is the model class for working with images thumbnails
+ * 
+ * @author Michael Naumov <vommuan@gmail.com>
  */
 class ImageThumbnail extends Model
 {
+    /**
+     * @var vommuan\filemanager\models\handlers\ImageHandler image handler
+     */
     public $handler;
+    
+    /**
+     * @var array module thumbnail's configuration
+     */
     private $_config;
 
     /**
@@ -50,7 +59,7 @@ class ImageThumbnail extends Model
 	}
     
     /**
-     * Generates thumb file name
+     * Generates thumbnail file name
      * 
      * @param int $width
      * @param int $height
@@ -67,12 +76,14 @@ class ImageThumbnail extends Model
      * 
      * @param string $alias alias of thumbnail size
      * @return array
+     * ```php
      * [
      *     0 => 300, // width in pixels
      *     1 => 200, // height in pixels
      * ]
+     * ```
      */
-    protected function getAliasSizes($alias)
+    protected function getConfigSizes($alias)
     {
 		if (! isset($this->_config[$alias])) {
 			return false;
@@ -93,7 +104,7 @@ class ImageThumbnail extends Model
      */
     public function createOne($alias)
     {
-		if (false === ($sizes = $this->getAliasSizes($alias))) {
+		if (false === ($sizes = $this->getConfigSizes($alias))) {
 			return false;
 		}
 		
@@ -124,7 +135,7 @@ class ImageThumbnail extends Model
     /**
      * Create all thumbnails for this image
      */
-    public function create()
+    public function createAll()
     {
         foreach ($this->_config as $alias => $preset) {
             $this->createOne($alias);
@@ -132,16 +143,10 @@ class ImageThumbnail extends Model
     }
     
     /**
-     * @return string default thumbnail for image
-     */
-    public function getDefault()
-    {
-		return $this->getUrl('default');
-    }
-    
-    /**
+     * Get url of thumbnail
+     * 
      * @param string $alias thumb alias
-     * @return string thumb url
+     * @return string | boolean `false` if thumbnail not found in database and module configuration
      */
     public function getUrl($alias)
     {
@@ -171,10 +176,20 @@ class ImageThumbnail extends Model
 	}
 
     /**
-     * @param Module $module
-     * @return array images list
+     * Get thumbnail's list
+     * 
+     * @return array
+     * ```php
+     * [
+     *     [
+     *         'alias' => 'small',
+     *         'label' => 'Small size (300x200)'
+     *         'url' => 'path/to/thumnbnail.png'
+     *     ],
+     * ]
+     * ```
      */
-    public function getThumbsList()
+    public function getList()
     {
         $list = [];
         $thumbs = $this->getThumbnails();
@@ -212,12 +227,10 @@ class ImageThumbnail extends Model
 		);
     }
 	
-	
-	
     /**
      * Delete thumbnails for current image
      * 
-     * @param array $routes see routes in module config
+     * @return boolean
      */
     public function delete()
     {

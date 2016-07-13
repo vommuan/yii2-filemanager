@@ -3,6 +3,11 @@ namespace vommuan\filemanager\models\handlers;
 
 use yii\base\Model;
 
+/**
+ * Project template Factory
+ * 
+ * @author Michael Naumov <vommuan@gmail.com>
+ */
 class HandlerFactory extends Model
 {
 	/**

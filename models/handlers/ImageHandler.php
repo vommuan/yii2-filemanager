@@ -6,19 +6,24 @@ use yii\base\ErrorException;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\ImageThumbnail;
 
+/**
+ * Image handler
+ * 
+ * @author Michael Naumov <vommuan@gmail.com>
+ */
 class ImageHandler extends BaseHandler
 {
 	/**
 	 * @var vommuan\filemanager\models\ImageThumbnail
 	 */
-	protected $_thumbs;
+	protected $_imageThumbnail;
 	
 	/**
-	 * 
+	 * Initialization [[ImageThumbnail]] object
 	 */
-	protected function initThumbs()
+	protected function initImageThumbnail()
 	{
-		$this->_thumbs = new ImageThumbnail([
+		$this->_imageThumbnail = new ImageThumbnail([
 			'handler' => $this,
 		]);
 	}
@@ -29,30 +34,22 @@ class ImageHandler extends BaseHandler
 	public function init()
 	{
 		parent::init();
-		$this->initThumbs();
+		$this->initImageThumbnail();
 	}
 	
 	/**
-	 * 
+	 * @inheritdoc
 	 */
 	public function getIcon($baseUrl)
 	{
-		return $this->_thumbs->getDefault();
-	}
-	
-	/**
-	 * 
-	 */
-	public function getAlt()
-	{
-		return $this->activeRecord->alt;
+		return $this->getVariant('default');
 	}
 	
 	/**
 	 * Crop image into max sizes with saving proportions
 	 * Array indexes: 0 - width, 1 - height
 	 * 
-	 * @return integer
+	 * @return integer size of file
 	 * @throws yii\base\ErrorException if setting `Module::maxImageSizes` has error
 	 */
 	protected function cropImage()
@@ -98,27 +95,25 @@ class ImageHandler extends BaseHandler
 	}
 	
 	/**
-	 * 
+	 * @inheritdoc
 	 */
 	protected function afterFileSave()
 	{
 		if (isset(Module::getInstance()->maxImageSizes)) {
 			$this->activeRecord->size = $this->cropImage();
-		} else {
-			$this->activeRecord->size = $this->activeRecord->file->size;
 		}
 	}
 	
 	/**
-	 * 
+	 * @inheritdoc
 	 */
 	public function afterSave($insert)
 	{
 		if ($insert) {
 			if (Module::getInstance()->thumbsAutoCreate) {
-				$this->_thumbs->create();
+				$this->_imageThumbnail->createAll();
 			} else {
-				$this->_thumbs->createOne('default');
+				$this->_imageThumbnail->createOne('default');
 			}
 		}
 	}
@@ -129,7 +124,7 @@ class ImageHandler extends BaseHandler
 	public function delete()
 	{
 		if (parent::delete()) {
-			$this->_thumbs->delete();
+			$this->_imageThumbnail->delete();
 		}
 	}
 	
@@ -141,11 +136,10 @@ class ImageHandler extends BaseHandler
 	 */
 	public function getVariant($alias)
 	{
-		return $this->_thumbs->getUrl($alias);
+		return $this->_imageThumbnail->getUrl($alias);
 	}
 	
 	/**
-     * @param Module $module
      * @return array images list
      */
     public function getVariantsList()
@@ -158,7 +152,7 @@ class ImageHandler extends BaseHandler
 			],
 		];
 		
-		return array_merge($list, $this->_thumbs->getThumbsList());
+		return array_merge($list, $this->_imageThumbnail->getList());
 	}
     
     /**
@@ -170,6 +164,6 @@ class ImageHandler extends BaseHandler
      */
     public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')
     {
-        return $this->_thumbs->getSizes($this->absoluteFileName, $delimiter, $format);
+        return $this->_imageThumbnail->getSizes($this->absoluteFileName, $delimiter, $format);
     }
 }
