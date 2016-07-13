@@ -34,18 +34,17 @@ class MediaFileSearch extends MediaFile
      */
     public function search($params)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => self::find()->orderBy('created_at DESC'),
-        ]);
-        
-        $this->load($params);
+		$dataProvider = new ActiveDataProvider([
+			'query' => self::find()->orderBy('created_at DESC'),
+		]);
 
-        if (!$this->validate()) {
-            return $dataProvider;
-        }
+		$this->load($params);
+		$dataProvider->pagination->defaultPageSize = 30;
 
-        $dataProvider->pagination->defaultPageSize = 30;
+		if (!$this->validate()) {
+			return $dataProvider;
+		}
 
-        return $dataProvider;
+		return $dataProvider;
     }
 }

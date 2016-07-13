@@ -185,6 +185,14 @@ class BaseHandler extends Model
 	}
 	
 	/**
+	 * 
+	 */
+	public function afterSave($insert)
+	{
+		
+	}
+	
+	/**
 	 * Delete file
 	 * 
 	 * @param array $routes see routes in module config

@@ -2,6 +2,7 @@
 namespace vommuan\filemanager\models\handlers;
 
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
 use yii\base\ErrorException;
 use vommuan\filemanager\Module;
@@ -34,16 +35,6 @@ class ImageHandler extends BaseHandler
 	}
 	
 	/**
-     * Get access for readonly Thumbs object
-     * 
-     * @return vommuan\filemanager\models\Thumbs
-     */
-    public function getThumbFiles()
-    {
-        return $this->_thumbs;
-    }
-	
-	/**
 	 * 
 	 */
 	public function getIcon($baseUrl)
@@ -66,17 +57,15 @@ class ImageHandler extends BaseHandler
 	 */
 	public function getThumbs()
 	{
-		return unserialize($this->activeRecord->thumbs);
+		return ArrayHelper::map($this->activeRecord->thumbnails, 'alias', 'url');
 	}
 	
 	/**
-	 * Set thumbs infomation to active record
-	 * 
-	 * @param array $thumbs
+	 * Append thumbnail files information to active record
 	 */
-	public function setThumbs($thumbs)
+	public function appendThumbs()
 	{
-		$this->activeRecord->thumbs = serialize($thumbs);
+		
 	}
 	
 	/**
@@ -138,8 +127,14 @@ class ImageHandler extends BaseHandler
 		} else {
 			$this->activeRecord->size = $this->activeRecord->file->size;
 		}
-		
-		if (Module::getInstance()->thumbsAutoCreate) {
+	}
+	
+	/**
+	 * 
+	 */
+	public function afterSave($insert)
+	{
+		if ($insert && Module::getInstance()->thumbsAutoCreate) {
 			$this->_thumbs->create();
 		}
 	}

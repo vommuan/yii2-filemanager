@@ -42,6 +42,63 @@ class Thumbs extends Model
             . '-' . $width . 'x' . $height . '.'
             . pathinfo($this->mediaFile->activeRecord->filename, PATHINFO_EXTENSION);
     }
+    
+    /**
+     * Get configuration thumbnail sizes for alias
+     * 
+     * @param string $alias alias of thumbnail size
+     * @return array
+     * [
+     *     0 => 300, // width in pixels
+     *     1 => 200, // height in pixels
+     * ]
+     */
+    protected function getAliasSizes($alias)
+    {
+		if (! isset($this->_config[$alias])) {
+			return false;
+		}
+		
+		if (! isset($this->_config[$alias]['size']) || 2 != count($this->_config[$alias]['size'])) {
+			throw new ErrorException('Error. Wrong number of size parameters in thumbnail settings "' . $alias . '".');
+		}
+		
+		return $this->_config[$alias]['size'];
+	}
+    
+    /**
+     * Create thumbnail file for this image
+     * 
+     * @param string $alias alias of thumbnail size
+     * @return Thumbnail
+     */
+    protected function createOne($alias)
+    {
+		if (false === ($sizes = $this->getAliasSizes($alias))) {
+			return [];
+		}
+		
+		list ($width, $height) = $sizes;
+		
+		Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
+		Image::thumbnail($this->mediaFile->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+			implode('/', [
+				$this->mediaFile->routes->getThumbsAbsolutePath(),
+				$this->generateFileName($width, $height),
+			])
+		);
+		
+		$thumbnail = new Thumbnail([
+			'alias' => $alias,
+			'url' => implode('/', [
+				$this->mediaFile->routes->getThumbsUrlPath(),
+				$this->generateFileName($width, $height),
+			]),
+			'mediafile_id' => $this->mediaFile->activeRecord->id,
+		]);
+		
+		return $thumbnail->save();
+	}
 
     /**
      * Create thumbs for this image
@@ -54,24 +111,9 @@ class Thumbs extends Model
         
         $thumbs = [];
         
-        Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
-        
         foreach ($this->_config as $alias => $preset) {
-            list ($width, $height) = $preset['size'];
-            Image::thumbnail($this->mediaFile->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
-                implode('/', [
-                    $this->mediaFile->routes->getThumbsAbsolutePath(),
-                    $this->generateFileName($width, $height),
-                ])
-            );
-
-            $thumbs[$alias] = implode('/', [
-                $this->mediaFile->routes->getThumbsUrlPath(),
-                $this->generateFileName($width, $height),
-            ]);
+            $this->createOne($alias);
         }
-
-        $this->mediaFile->setThumbs($thumbs);
     }
     
     /**

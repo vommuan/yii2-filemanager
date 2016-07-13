@@ -83,7 +83,7 @@ class MediaFile extends ActiveRecord
         return [
             [['filename', 'type', 'url', 'size'], 'required'],
             [['filename', 'type'], 'string', 'max' => 255],
-            [['url', 'alt', 'description', 'thumbs'], 'string'],
+            [['url', 'alt', 'description'], 'string'],
             [['size'], 'integer'],
         ];
     }
@@ -114,6 +114,14 @@ class MediaFile extends ActiveRecord
     {
         return $this->hasMany(Owners::className(), ['mediafile_id' => 'id']);
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getThumbnails()
+    {
+		return $this->hasMany(Thumbnail::className(), ['mediafile_id' => 'id']);
+	}
     
     /**
 	 * 
@@ -157,18 +165,6 @@ class MediaFile extends ActiveRecord
 		}
 		
 		return $this->handler->getSizes($delimiter, $format);
-	}
-	
-	/**
-	 * 
-	 */
-	public function getThumbFiles()
-	{
-		if ('image' != $this->baseType) {
-			return false;
-		}
-		
-		return $this->handler->getThumbFiles();
 	}
 	
 	/**
@@ -272,6 +268,15 @@ class MediaFile extends ActiveRecord
             return false;
         }
     }
+    
+    /**
+     * @inheritdoc
+     */
+	public function afterSave($insert, $changedAttributes)
+	{
+		parent::afterSave($insert, $changedAttributes);
+		$this->handler->afterSave($insert);
+	}
     
     /**
      * @inheritdoc
