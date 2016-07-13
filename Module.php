@@ -65,12 +65,10 @@ class Module extends \yii\base\Module
         ],
     ];
     
-    private $_defaultThumbs = [
-        'default' => [
-            'name' => 'Default size',
-            'size' => [128, 128],
-        ],
-    ];
+    /**
+     * @var boolean
+     */
+    public $thumbsAutoCreate = true;
 
     /**
      * @var array max image sizes, [width, height]
@@ -81,7 +79,7 @@ class Module extends \yii\base\Module
      * @var boolean ignore image rotate for setting max sizes
      */
     public $ignoreImageRotate = false;
-
+    
     public function init()
     {
         parent::init();
@@ -116,6 +114,11 @@ class Module extends \yii\base\Module
     
     public function getDefaultThumbs()
     {
-        return $this->_defaultThumbs;
+        return [
+			'default' => [
+				'name' => Module::t('main', 'Default'),
+				'size' => [128, 128],
+			],
+		];
     }
 }

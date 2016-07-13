@@ -21,13 +21,11 @@ class MediaFileSearch extends MediaFile
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function beforeValidate()
     {
-        return [
-            [['tagIds'], 'safe'],
-        ];
-    }
-
+		return true;
+	}
+    
     /**
      * Creates data provider instance with search query applied
      * 
@@ -36,22 +34,17 @@ class MediaFileSearch extends MediaFile
      */
     public function search($params)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => self::find()->orderBy('created_at DESC'),
-        ]);
-        
-        $this->load($params);
+		$dataProvider = new ActiveDataProvider([
+			'query' => self::find()->orderBy('created_at DESC'),
+		]);
 
-        if (!$this->validate()) {
-            return $dataProvider;
-        }
+		$this->load($params);
+		$dataProvider->pagination->defaultPageSize = 30;
 
-        if ($this->tagIds) {
-            $query->joinWith('tags')->andFilterWhere(['in', Tag::tableName() . '.id', $this->tagIds]);
-        }
-        
-        $dataProvider->pagination->defaultPageSize = 15;
+		if (!$this->validate()) {
+			return $dataProvider;
+		}
 
-        return $dataProvider;
+		return $dataProvider;
     }
 }
