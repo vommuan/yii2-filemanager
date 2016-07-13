@@ -155,7 +155,7 @@ class MediaFile extends ActiveRecord
 	 * Get file width x height sizes
 	 * 
 	 * @param string $delimiter delimiter between width and height
-     * @param string $format see [[Thumbs::getSizes()]] for detailed documentation
+     * @param string $format see [[ImageThumbnail::getSizes()]] for detailed documentation
      * @return string image size like '1366x768'
      */
 	public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')

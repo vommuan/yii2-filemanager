@@ -6,12 +6,12 @@ use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
 use yii\base\ErrorException;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Thumbs;
+use vommuan\filemanager\models\ImageThumbnail;
 
 class ImageHandler extends BaseHandler
 {
 	/**
-	 * @var vommuan\filemanager\models\Thumbs
+	 * @var vommuan\filemanager\models\ImageThumbnail
 	 */
 	protected $_thumbs;
 	
@@ -20,8 +20,8 @@ class ImageHandler extends BaseHandler
 	 */
 	protected function initThumbs()
 	{
-		$this->_thumbs = new Thumbs([
-			'mediaFile' => $this,
+		$this->_thumbs = new ImageThumbnail([
+			'handler' => $this,
 		]);
 	}
 	
@@ -58,14 +58,6 @@ class ImageHandler extends BaseHandler
 	public function getThumbs()
 	{
 		return ArrayHelper::map($this->activeRecord->thumbnails, 'alias', 'url');
-	}
-	
-	/**
-	 * Append thumbnail files information to active record
-	 */
-	public function appendThumbs()
-	{
-		
 	}
 	
 	/**
@@ -185,7 +177,7 @@ class ImageHandler extends BaseHandler
      * Get file width x height sizes
      * 
      * @param string $delimiter delimiter between width and height
-     * @param string $format see [[Thumbs::getSizes()]] for detailed documentation
+     * @param string $format see [[ImageThumbnail::getSizes()]] for detailed documentation
      * @return string image size like '1366x768'
      */
     public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')

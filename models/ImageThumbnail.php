@@ -13,9 +13,9 @@ use vommuan\filemanager\models\helpers\FileHelper;
 /**
  * This is the helper model class for route paths
  */
-class Thumbs extends Model
+class ImageThumbnail extends Model
 {
-    public $mediaFile;
+    public $handler;
     private $_config;
 
     /**
@@ -25,7 +25,7 @@ class Thumbs extends Model
     {
         $this->_config = array_merge(Module::getInstance()->thumbs, Module::getInstance()->defaultThumbs);
         
-        if (! ($this->mediaFile instanceof ImageHandler)) {
+        if (! ($this->handler instanceof ImageHandler)) {
             throw new ErrorException('Error class initialization.');
         }
     }
@@ -38,9 +38,9 @@ class Thumbs extends Model
      * @return string
      */
     protected function generateFileName($width, $height) {
-        return pathinfo($this->mediaFile->activeRecord->filename, PATHINFO_FILENAME)
+        return pathinfo($this->handler->activeRecord->filename, PATHINFO_FILENAME)
             . '-' . $width . 'x' . $height . '.'
-            . pathinfo($this->mediaFile->activeRecord->filename, PATHINFO_EXTENSION);
+            . pathinfo($this->handler->activeRecord->filename, PATHINFO_EXTENSION);
     }
     
     /**
@@ -78,14 +78,14 @@ class Thumbs extends Model
 			return false;
 		}
 		
-		FileHelper::createDirectory($this->mediaFile->routes->getThumbsAbsolutePath(), 0777, true);
+		FileHelper::createDirectory($this->handler->routes->getThumbsAbsolutePath(), 0777, true);
 		
 		list ($width, $height) = $sizes;
 		
 		Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
-		Image::thumbnail($this->mediaFile->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
+		Image::thumbnail($this->handler->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
 			implode('/', [
-				$this->mediaFile->routes->getThumbsAbsolutePath(),
+				$this->handler->routes->getThumbsAbsolutePath(),
 				$this->generateFileName($width, $height),
 			])
 		);
@@ -93,10 +93,10 @@ class Thumbs extends Model
 		$thumbnail = new Thumbnail([
 			'alias' => $alias,
 			'url' => implode('/', [
-				$this->mediaFile->routes->getThumbsUrlPath(),
+				$this->handler->routes->getThumbsUrlPath(),
 				$this->generateFileName($width, $height),
 			]),
-			'mediafile_id' => $this->mediaFile->activeRecord->id,
+			'mediafile_id' => $this->handler->activeRecord->id,
 		]);
 		
 		return ($thumbnail->save()) ? $thumbnail : false;
@@ -127,7 +127,7 @@ class Thumbs extends Model
      */
     public function getUrl($alias)
     {
-        $avaliableThumbs = $this->mediaFile->getThumbs();
+        $avaliableThumbs = $this->handler->getThumbs();
         
         if (isset($avaliableThumbs[$alias])) {
 			return $avaliableThumbs[$alias];
@@ -149,7 +149,7 @@ class Thumbs extends Model
     protected function getPath($alias)
     {
 		return implode('/', [
-			$this->mediaFile->routes->basePath,
+			$this->handler->routes->basePath,
 			$this->getUrl($alias),
 		]);
 	}
@@ -162,7 +162,7 @@ class Thumbs extends Model
     {
         $list = [];
         
-        foreach ($this->mediaFile->getThumbs() as $alias => $url) {
+        foreach ($this->handler->getThumbs() as $alias => $url) {
             $list[] = [
 				'alias' => $alias,
 				'label' => $this->_config[$alias]['name'] . ' ' . $this->getSizes($this->getPath($alias)),
@@ -204,12 +204,12 @@ class Thumbs extends Model
      */
     public function delete()
     {
-        foreach ($this->mediaFile->getThumbs() as $thumbUrl) {
-            unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");
+        foreach ($this->handler->getThumbs() as $thumbUrl) {
+            unlink("{$this->handler->routes->basePath}/{$thumbUrl}");
         }
         
         FileHelper::removeDirectory(
-			$this->mediaFile->routes->getThumbsAbsolutePath($this->mediaFile->activeRecord->url), 
+			$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url), 
 			['onlyEmpty' => true]
 		);
         
