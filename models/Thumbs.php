@@ -72,11 +72,13 @@ class Thumbs extends Model
      * @param string $alias alias of thumbnail size
      * @return Thumbnail
      */
-    protected function createOne($alias)
+    public function createOne($alias)
     {
 		if (false === ($sizes = $this->getAliasSizes($alias))) {
-			return [];
+			return false;
 		}
+		
+		FileHelper::createDirectory($this->mediaFile->routes->getThumbsAbsolutePath(), 0777, true);
 		
 		list ($width, $height) = $sizes;
 		
@@ -97,20 +99,14 @@ class Thumbs extends Model
 			'mediafile_id' => $this->mediaFile->activeRecord->id,
 		]);
 		
-		return $thumbnail->save();
+		return ($thumbnail->save()) ? $thumbnail : false;
 	}
 
     /**
-     * Create thumbs for this image
-     *
-     * @return bool
+     * Create all thumbnails for this image
      */
     public function create()
     {
-        FileHelper::createDirectory($this->mediaFile->routes->getThumbsAbsolutePath(), 0777, true);
-        
-        $thumbs = [];
-        
         foreach ($this->_config as $alias => $preset) {
             $this->createOne($alias);
         }
@@ -131,9 +127,17 @@ class Thumbs extends Model
      */
     public function getUrl($alias)
     {
-        $thumbs = $this->mediaFile->getThumbs();
-
-        return !empty($thumbs[$alias]) ? $thumbs[$alias] : false;
+        $avaliableThumbs = $this->mediaFile->getThumbs();
+        
+        if (isset($avaliableThumbs[$alias])) {
+			return $avaliableThumbs[$alias];
+		}
+		
+		if (isset($this->_config[$alias]) && false !== ($thumb = $this->createOne($alias))) {
+			return $thumb->url;
+		}
+        
+        return false;
     }
     
     /**

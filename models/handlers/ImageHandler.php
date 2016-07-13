@@ -134,8 +134,12 @@ class ImageHandler extends BaseHandler
 	 */
 	public function afterSave($insert)
 	{
-		if ($insert && Module::getInstance()->thumbsAutoCreate) {
-			$this->_thumbs->create();
+		if ($insert) {
+			if (Module::getInstance()->thumbsAutoCreate) {
+				$this->_thumbs->create();
+			} else {
+				$this->_thumbs->createOne('default');
+			}
 		}
 	}
 	
