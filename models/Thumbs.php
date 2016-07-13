@@ -3,12 +3,12 @@ namespace vommuan\filemanager\models;
 
 use Yii;
 use yii\base\Model;
-use vommuan\filemanager\Module;
-use vommuan\filemanager\models\handlers\ImageHandler;
 use yii\base\ErrorException;
-use yii\helpers\FileHelper;
 use yii\imagine\Image;
 use Imagine\Image\ImageInterface;
+use vommuan\filemanager\Module;
+use vommuan\filemanager\models\handlers\ImageHandler;
+use vommuan\filemanager\models\helpers\FileHelper;
 
 /**
  * This is the helper model class for route paths
@@ -194,7 +194,9 @@ class Thumbs extends Model
 			$format
 		);
     }
-
+	
+	
+	
     /**
      * Delete thumbnails for current image
      * 
@@ -205,6 +207,11 @@ class Thumbs extends Model
         foreach ($this->mediaFile->getThumbs() as $thumbUrl) {
             unlink("{$this->mediaFile->routes->basePath}/{$thumbUrl}");
         }
+        
+        FileHelper::removeDirectory(
+			$this->mediaFile->routes->getThumbsAbsolutePath($this->mediaFile->activeRecord->url), 
+			['onlyEmpty' => true]
+		);
         
         return true;
     }

@@ -4,9 +4,9 @@ namespace vommuan\filemanager\models\handlers;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
-use yii\helpers\FileHelper;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\Routes;
+use vommuan\filemanager\models\helpers\FileHelper;
 
 class BaseHandler extends Model
 {
@@ -208,7 +208,16 @@ class BaseHandler extends Model
 	 */
 	public function delete()
 	{
-		return $this->deleteFile();
+		$status = $this->deleteFile();
+		FileHelper::removeDirectory(
+			implode('/', [
+				$this->_routes->basePath,
+				pathinfo($this->activeRecord->url, PATHINFO_DIRNAME),
+			]),
+			['onlyEmpty' => true]
+		);
+		
+		return $status;
 	}
 	
 	/**

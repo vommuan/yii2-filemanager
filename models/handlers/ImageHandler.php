@@ -149,7 +149,7 @@ class ImageHandler extends BaseHandler
 	public function delete()
 	{
 		if (parent::delete()) {
-			return $this->_thumbs->delete();
+			$this->_thumbs->delete();
 		}
 	}
 	
