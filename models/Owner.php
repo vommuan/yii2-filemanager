@@ -8,14 +8,12 @@ use yii\behaviors\TimestampBehavior;
 use vommuan\filemanager\Module;
 
 /**
- * This is the model class for table "filemanager_mediafiles".
+ * This is the model class for table "filemanager_owner".
  *
  * @property integer $mediafile_id
- * @property integer $owner_id
- * @property string $owner
- * @property string $owner_attribute
+ * @property integer $user_id
  *
- * @property MediaFile $mediafile
+ * @property MediaFile $mediaFile
  */
 class Owner extends ActiveRecord
 {
@@ -53,10 +51,22 @@ class Owner extends ActiveRecord
     }
 
     /**
+     * Get media file
+     * 
      * @return \yii\db\ActiveQuery
      */
     public function getMediaFile()
     {
         return $this->hasOne(MediaFile::className(), ['id' => 'mediafile_id']);
     }
+    
+    /**
+     * Get user (owner)
+     * 
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+		return $this->hasOne(Module::getInstance()->userClass, ['id' => 'user_id']);
+	}
 }
