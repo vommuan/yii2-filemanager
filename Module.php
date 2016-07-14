@@ -80,6 +80,16 @@ class Module extends \yii\base\Module
      */
     public $ignoreImageRotate = false;
     
+    /**
+     * @var string user class
+     */
+    public $userClass = '\common\models\User';
+    
+    /**
+     * @var boolean if `true`, user can manage only his own files
+     */
+    public $manageOwnFiles = false;
+    
     public function init()
     {
         parent::init();
@@ -91,7 +101,7 @@ class Module extends \yii\base\Module
         Yii::$app->i18n->translations['modules/filemanager/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => '@vendor/vommuan/yii2-filemanager/messages',
+            'basePath' => __DIR__ . '/messages',
             'fileMap' => [
                 'modules/filemanager/main' => 'main.php',
             ],
@@ -104,7 +114,7 @@ class Module extends \yii\base\Module
             return $message;
         }
 
-        return Yii::t("modules/filemanager/$category", $message, $params, $language);
+        return Yii::t('modules/filemanager/' . $category, $message, $params, $language);
     }
 
     public function getDefaultRoutes()

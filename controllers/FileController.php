@@ -52,7 +52,7 @@ class FileController extends Controller
 
         return $this->render('filemanager', [
 			'model' => $model,
-            'dataProvider' => $model->search(Yii::$app->request->queryParams),
+            'dataProvider' => $model->search(),
         ]);
     }
 
