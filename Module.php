@@ -80,6 +80,11 @@ class Module extends \yii\base\Module
      */
     public $ignoreImageRotate = false;
     
+    /**
+     * @var string user class
+     */
+    public $userClass = '\common\models\User';
+    
     public function init()
     {
         parent::init();

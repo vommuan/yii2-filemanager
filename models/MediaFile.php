@@ -19,7 +19,7 @@ use vommuan\filemanager\models\handlers\HandlerFactory;
  * @property string $description
  * @property integer $created_at
  * @property integer $updated_at
- * @property Owners[] $owners
+ * @property Owner[] $owners
  * @property Thumbnail[] $thumbnails
  */
 class MediaFile extends ActiveRecord
@@ -110,8 +110,25 @@ class MediaFile extends ActiveRecord
      */
     public function getOwners()
     {
-        return $this->hasMany(Owners::className(), ['mediafile_id' => 'id']);
+        return $this->hasMany(Owner::className(), ['mediafile_id' => 'id']);
     }
+    
+    /**
+     * Add owner for mediafile
+     */
+    protected function addOwner()
+    {
+		if (Yii::$app->user->isGuest) {
+			return false;
+		}
+		
+		$owner = new Owner([
+			'user_id' => Yii::$app->user->id,
+			'mediafile_id' => $this->id,
+		]);
+		
+		$owner->save();
+	}
     
     /**
      * @return \yii\db\ActiveQuery
@@ -279,6 +296,7 @@ class MediaFile extends ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 		$this->handler->afterSave($insert);
+		$this->addOwner();
 	}
     
     /**
@@ -287,6 +305,7 @@ class MediaFile extends ActiveRecord
 	public function afterDelete()
 	{
 		parent::afterDelete();
+		// Mediafile's owner will be removed automatically by database event 'ON DELETE CASCADE'
 	}
 	
 	/**
