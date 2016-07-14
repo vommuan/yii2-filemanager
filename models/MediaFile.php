@@ -108,9 +108,9 @@ class MediaFile extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOwners()
+    public function getOwner()
     {
-        return $this->hasMany(Owner::className(), ['mediafile_id' => 'id']);
+        return $this->hasOne(Owner::className(), ['mediafile_id' => 'id']);
     }
     
     /**
