@@ -2,9 +2,10 @@
 namespace vommuan\filemanager\models;
 
 use yii\base\Model;
+use vommuan\filemanager\Module;
 
 /**
- * Form for upload files
+ * Form for update file information
  * 
  * @license MIT
  * @author Michael Naumov <vommuan@gmail.com>
@@ -12,7 +13,7 @@ use yii\base\Model;
 class UpdateFileForm extends Model
 {
 	/**
-	 * @var MediaFile or one of children
+	 * @var MediaFile
 	 */
 	public $mediaFile;
 	
@@ -35,6 +36,17 @@ class UpdateFileForm extends Model
 			[['alt', 'description'], 'string'],
 		];
 	}
+	
+	/**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'alt' => Module::t('main', 'Alt attribute'),
+            'description' => Module::t('main', 'Description'),
+        ];
+    }
 	
 	/**
 	 * Get alternative text for media file
