@@ -12,7 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="filemanager-default-settings">
 	<div class="page-header">
-		<h1><?= $this->title;?></h1>
+		<h1>
+			<span class="glyphicon glyphicon-wrench"></span>
+			<?= $this->title;?>
+		</h1>
 	</div>
 
     <div class="panel panel-default">

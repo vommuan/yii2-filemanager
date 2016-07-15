@@ -46,34 +46,21 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        return $this->render('index');
-    }
-
-    public function actionFilemanager()
-    {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
-        
-        $this->layout = 'main';
-        
 		$model = new MediaFileSearch();
-
-        return $this->render('filemanager', [
+		
+        return $this->render('index', [
 			'model' => $model,
-            'dataProvider' => $model->search(),
+			'dataProvider' => $model->search(),
         ]);
     }
 
-    public function actionUploadmanager()
+    public function actionUploadManager()
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
 		
-        $this->layout = 'main';
-        
-        return $this->render('uploadmanager', [
+        return $this->render('upload-manager', [
             'model' => new UploadFileForm(),
         ]);
     }

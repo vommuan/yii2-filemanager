@@ -1,3 +1,11 @@
+<?php
+use vommuan\filemanager\assets\ModalAsset;
+use vommuan\filemanager\assets\FilemanagerAsset;
+
+ModalAsset::register($this);
+$this->params['moduleBundle'] = FilemanagerAsset::register($this);
+?>
+
 <div role="filemanager-modal" class="modal" tabindex="-1"
      data-frame-id="<?= $frameId ?>"
      data-frame-src="<?= $frameSrc ?>"
