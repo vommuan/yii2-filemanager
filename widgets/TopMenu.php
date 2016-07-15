@@ -9,6 +9,8 @@ use vommuan\filemanager\Module;
 
 class TopMenu extends Widget
 {
+	public $controller = 'file';
+	
 	/**
 	 * @return array menu items
 	 */
@@ -17,11 +19,11 @@ class TopMenu extends Widget
 		return [
 			[
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-picture']) . ' ' . Module::t('main', 'File manager'),
-				'url' => Url::to(['file/index']),
+				'url' => Url::to([$this->controller . '/index']),
 				'encode' => false,
 			], [
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-upload']) . ' ' . Module::t('main', 'Upload manager'),
-				'url' => Url::to(['file/upload-manager']),
+				'url' => Url::to([$this->controller . '/upload-manager']),
 				'encode' => false,
 			],
 		];
@@ -49,7 +51,7 @@ class TopMenu extends Widget
 			$menuItems = array_merge($menuItems, $this->getManageFilesItems());
 		}
 		
-		if (Module::getInstance()->rbac && Yii::$app->user->can('filemanagerManageSettings')) {
+		if ('modal' != $this->controller && Module::getInstance()->rbac && Yii::$app->user->can('filemanagerManageSettings')) {
 			$menuItems = array_merge($menuItems, $this->getManageSettingsItems());
 		}
 		

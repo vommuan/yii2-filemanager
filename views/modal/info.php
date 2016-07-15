@@ -13,12 +13,12 @@ $bundle = FilemanagerAsset::register($this);
 ?>
 
 <div class="row">
-	<div class="col-xs-12 col-sm-2">
+	<div class="col-xs-12 col-sm-6">
 		<div class="thumbnail">
 			<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl)) ?>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-10">
+	<div class="col-xs-12 col-sm-6">
 		<ul class="detail">
 			<li><?= $model->mediaFile->filename;?></li>
 			<li>
@@ -54,7 +54,7 @@ $bundle = FilemanagerAsset::register($this);
 		<?php 
 		$form = ActiveForm::begin([
 			'action' => [
-				'file/update',
+				'modal/update',
 				'id' => $model->mediaFile->id,
 			],
 			'enableClientValidation' => false,

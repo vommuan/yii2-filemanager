@@ -5,6 +5,10 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel vommuan\filemanager\models\MediaFile */
+
+$this->title = Module::t('main', 'Upload manager');
+$this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 'url' => ['default/index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="page-header">

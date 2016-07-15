@@ -26,7 +26,9 @@ use vommuan\filemanager\widgets\TopMenu;
 			<div class='col-md-12'>
 				<?php
 				if (Module::getInstance()->rbac && (Yii::$app->user->can('filemanagerManageFiles') || Yii::$app->user->can('filemanagerManageOwnFiles') || Yii::$app->user->can('filemanagerManageSettings'))) {
-					echo TopMenu::widget();
+					echo TopMenu::widget([
+						'controller' => 'modal',
+					]);
 				}
 				?>
 				<?= $content;?>	
