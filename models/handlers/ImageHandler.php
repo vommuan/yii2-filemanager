@@ -154,6 +154,20 @@ class ImageHandler extends BaseHandler
 		
 		return array_merge($list, $this->_imageThumbnail->getList());
 	}
+	
+	/**
+	 * Remove old file's variants and generate new
+	 */
+	public function refreshFileVariants()
+	{
+		$this->_imageThumbnail->delete();
+		
+		if (Module::getInstance()->thumbsAutoCreate) {
+			$this->_imageThumbnail->createAll();
+		} else {
+			$this->_imageThumbnail->createOne('default');
+		}
+	}
     
     /**
      * Get file width x height sizes

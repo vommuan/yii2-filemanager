@@ -1,5 +1,4 @@
 <?php
-
 namespace vommuan\filemanager\controllers;
 
 use Yii;
@@ -16,14 +15,5 @@ class DefaultController extends Controller
 		}
 		
         return $this->render('index');
-    }
-
-    public function actionSettings()
-    {
-        if (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageSettings')) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
-        
-        return $this->render('settings');
     }
 }

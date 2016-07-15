@@ -161,30 +161,6 @@ class FileController extends Controller
         return ['success' => 'true'];
     }
 
-    /**
-     * Resize all thumbnails
-     * TODO: rewrite to new architecture
-     * TOMOVE: move to the default controller or to standalone settings controller
-     */
-    public function actionResize()
-    {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageSettings'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
-        
-        $models = MediaFile::find()->all();
-
-        foreach ($models as $model) {
-            if ('image' == $model->baseType) {
-                $model->thumbFiles->delete();
-                $model->thumbFiles->createAll();
-            }
-        }
-
-        Yii::$app->session->setFlash('successResize');
-        $this->redirect(Url::to(['default/settings']));
-    }
-
     /** 
      * Render model info
      * 

@@ -246,6 +246,18 @@ class MediaFile extends ActiveRecord
 			return $variants;
 		}
 	}
+	
+	/**
+	 * Remove old file's variants and generate new
+	 */
+	public function refreshFileVariants()
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		$this->handler->refreshFileVariants();
+	}
     
     /**
      * @inheritdoc
