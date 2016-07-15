@@ -8,13 +8,13 @@ class Module extends \yii\base\Module
     public $controllerNamespace = 'vommuan\filemanager\controllers';
 
     /**
-     * Set true if you want to rename files if the name is already in use 
+     * Set `true` if you want to rename files if the name is already in use 
      * @var boolean 
      */
     public $rename = false;
     
      /**
-      * Set true to enable autoupload
+      * Set `true` to enable autoupload
       * @var boolean 
       */
     public $autoUpload = false;
@@ -50,20 +50,7 @@ class Module extends \yii\base\Module
     /**
      * @var array thumbnails info
      */
-    public $thumbs = [
-        'small' => [
-            'name' => 'Small size',
-            'size' => [120, 80],
-        ],
-        'medium' => [
-            'name' => 'Medium size',
-            'size' => [400, 300],
-        ],
-        'large' => [
-            'name' => 'Large size',
-            'size' => [800, 600],
-        ],
-    ];
+    public $thumbs = [];
     
     /**
      * @var boolean
@@ -89,6 +76,11 @@ class Module extends \yii\base\Module
      * @var boolean if `true`, user can manage only his own files
      */
     public $manageOwnFiles = false;
+    
+    /**
+     * @var boolean if `true`, RBAC user manager is enabled
+     */
+    public $rbac = false;
     
     public function init()
     {

@@ -246,6 +246,18 @@ class MediaFile extends ActiveRecord
 			return $variants;
 		}
 	}
+	
+	/**
+	 * Remove old file's variants and generate new
+	 */
+	public function refreshFileVariants()
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		$this->handler->refreshFileVariants();
+	}
     
     /**
      * @inheritdoc
@@ -277,11 +289,17 @@ class MediaFile extends ActiveRecord
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
-            $this->handler->delete();
+            if (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles')) {
+				if (! isset($this->owner) || $this->owner->user_id != Yii::$app->user->id) {
+					return false;
+				}
+			}
             
-            foreach ($this->owners as $owner) {
-                $owner->delete();
-            }
+            if (null !== ($owner = $this->owner)) {
+				$owner->delete();
+			}
+			
+			$this->handler->delete();
             
             return true;
         } else {

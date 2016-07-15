@@ -108,14 +108,18 @@ class ImageThumbnail extends Model
 			return false;
 		}
 		
-		FileHelper::createDirectory($this->handler->routes->getThumbsAbsolutePath(), 0777, true);
+		FileHelper::createDirectory(
+			$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url), 
+			0777, 
+			true
+		);
 		
 		list ($width, $height) = $sizes;
 		
 		Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
 		Image::thumbnail($this->handler->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
 			implode('/', [
-				$this->handler->routes->getThumbsAbsolutePath(),
+				$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url),
 				$this->generateFileName($width, $height),
 			])
 		);
@@ -123,7 +127,7 @@ class ImageThumbnail extends Model
 		$thumbnail = new Thumbnail([
 			'alias' => $alias,
 			'url' => implode('/', [
-				$this->handler->routes->getThumbsUrlPath(),
+				$this->handler->routes->getThumbsUrlPath($this->handler->activeRecord->url),
 				$this->generateFileName($width, $height),
 			]),
 			'mediafile_id' => $this->handler->activeRecord->id,
@@ -237,7 +241,11 @@ class ImageThumbnail extends Model
         $thumbs = $this->getThumbnails();
         
         for ($i = 0; $i < count($thumbs); $i++) {
-			unlink($this->handler->routes->basePath . '/' . $thumbs[$i]->url);
+			$thumbnailFile = $this->handler->routes->basePath . '/' . $thumbs[$i]->url;
+			if (is_file($thumbnailFile)) {
+				unlink($thumbnailFile);
+			}
+			$thumbs[$i]->delete();
 		}
         
         FileHelper::removeDirectory(
