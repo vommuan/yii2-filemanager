@@ -14,9 +14,10 @@ use vommuan\filemanager\models\UpdateFileForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use yii\helpers\Url;
 
-class FileController extends Controller
+class ModalController extends Controller
 {
     public $enableCsrfValidation = false;
+    public $layout = 'main-modal';
 
     public function behaviors()
     {

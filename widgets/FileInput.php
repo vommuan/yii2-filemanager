@@ -108,7 +108,7 @@ class FileInput extends InputWidget
      *
      * @var array selecte the frameSrc in case you use a different module name
      */
-    public $frameSrc  = ['/filemanager/file/filemanager'];
+    public $frameSrc  = ['/filemanager/modal/index'];
 
     const DATA_ID = 'id';
     const DATA_URL = 'url';
@@ -149,9 +149,7 @@ class FileInput extends InputWidget
         FileInputAsset::register($this->view);
 
         if (!empty($this->callbackBeforeInsert)) {
-            $this->view->registerJs('
-                $("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');'
-            );
+            $this->view->registerJs('$("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');');
         }
 
         $modal = $this->render('modal', [

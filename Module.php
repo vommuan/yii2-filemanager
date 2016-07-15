@@ -6,6 +6,7 @@ use Yii;
 class Module extends \yii\base\Module
 {
     public $controllerNamespace = 'vommuan\filemanager\controllers';
+    public $layout = 'main';
 
     /**
      * Set `true` if you want to rename files if the name is already in use 

@@ -1,27 +1,15 @@
 <?php
-use vommuan\filemanager\assets\FilemanagerAsset;
-use yii\helpers\Html;
+use vommuan\filemanager\Module;
+use vommuan\filemanager\widgets\TopMenu;
 
-/* @var $this yii\web\View */
+$this->beginContent('@app/views/layouts/main.php');?>
 
-FilemanagerAsset::register($this);
-?>
-<?php $this->beginPage() ?>
-    <!DOCTYPE html>
-    <html lang="<?= Yii::$app->language ?>">
-    <head>
-        <meta charset="<?= Yii::$app->charset ?>"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <?= Html::csrfMetaTags() ?>
-        <title><?= Html::encode($this->title) ?></title>
-        <?php $this->head() ?>
-    </head>
-    <body>
-    <?php $this->beginBody() ?>
-
-        <?= $content ?>
-
-    <?php $this->endBody() ?>
-    </body>
-    </html>
-<?php $this->endPage() ?>
+	<?php
+	if (Module::getInstance()->rbac && (Yii::$app->user->can('filemanagerManageFiles') || Yii::$app->user->can('filemanagerManageOwnFiles') || Yii::$app->user->can('filemanagerManageSettings'))) {
+		echo TopMenu::widget();
+	}
+	?>
+	<?= $content;?>
+	
+	<?php 
+$this->endContent();
