@@ -60,5 +60,5 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			]);?>
 		</div>
 	</div>
-	<div id="fileinfo"></div>
 </div>
+<div id="fileinfo"></div>
