@@ -13,46 +13,30 @@
 /*------------------------------------*\
     #ITEMS
 \*------------------------------------*/
-.list-view {
-  float: left;
-  width: 660px;
+.files-gallery .items .item {
+  padding-left: 0;
+  padding-right: 0;
 }
-.list-view .items {
-  border-right: 1px solid #e5e5e5;
-  border-bottom: 1px solid #e5e5e5;
-}
-.list-view .items .item {
-  display: inline-block;
-  margin-bottom: 3px;
-}
-.list-view .items .item a {
+
+.files-gallery .items .item a {
   position: relative;
   display: inline-block;
-  color: #5ba6f7;
 }
-.list-view .items .item a img {
-  min-width: 128px;
-  min-height: 128px;
-  opacity: .8;
+.files-gallery .items .item a img:hover {
+  opacity: 0.9;
 }
-.list-view .items .item a img:hover {
-  opacity: 1;
-}
-.list-view .items .item a .checked {
+.files-gallery .items .item a .checked {
   display: none;
   position: absolute;
   top: 5px;
   right: 6px;
-  font-size: 3em;
+  font-size: 2em;
 }
-.list-view .items .item .active {
+.files-gallery .items .item .active {
   outline: 5px solid #5ba6f7;
   outline-offset: -5px;
 }
-.list-view .items .item .active img {
-  opacity: 1;
-}
-.list-view .items .item .active .checked {
+.files-gallery .items .item .active .checked {
   display: inline-block;
 }
 /*------------------------------------*\
@@ -65,17 +49,16 @@
 /*------------------------------------*\
     #DASHBOARD
 \*------------------------------------*/
-.dashboard {
-  width: 290px;
-  float: left;
-  padding-left: 10px;
-}
-.dashboard .loading {
+#fileinfo .loading {
   width: 298px;
   margin-top: 50px;
   font-size: 5em;
   color: #5ba6f7;
   text-align: center;
+}
+#fileinfo ul {
+  padding: 0;
+  list-style: none;
 }
 /*------------------------------------*\
     #UPLOAD MANAGER
@@ -85,35 +68,6 @@
 }
 #uploadmanager .progress {
   margin-top: 10px;
-}
-/*------------------------------------*\
-    #FILEINFO
-\*------------------------------------*/
-#fileinfo img {
-  float: left;
-  max-width: 82px;
-}
-#fileinfo .detail {
-  float: left;
-  margin: 0 0 0 10px;
-  padding: 0;
-  list-style: none;
-  font-size: .85em;
-}
-#fileinfo .filename {
-  clear: both;
-  margin-bottom: 5px;
-}
-#fileinfo #control-form .form-group {
-  margin-bottom: 0;
-}
-#fileinfo #control-form .control-label {
-  margin-bottom: 0;
-  font-size: .9em;
-  font-weight: bold;
-}
-#fileinfo #control-form textarea {
-  max-width: 100%;
 }
 /*------------------------------------*\
     #SPIN ICONS

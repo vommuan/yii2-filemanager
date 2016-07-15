@@ -2,56 +2,39 @@
 namespace vommuan\filemanager\models;
 
 use Yii;
-use yii\web\UploadedFile;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
-use yii\imagine\Image;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
-use yii\helpers\Inflector;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Owners;
-use Imagine\Image\ImageInterface;
 
 /**
- *
+ * 
  */
 class MediaFileSearch extends MediaFile
 {
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['tagIds'], 'safe'],
-        ];
-    }
-
     /**
      * Creates data provider instance with search query applied
      * 
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => self::find()->orderBy('created_at DESC'),
-        ]);
-        
-        $this->load($params);
+		$query = self::find()->orderBy(['created_at' => SORT_DESC]);
+		
+		$dataProvider = new ActiveDataProvider([
+			'query' => $query,
+		]);
 
-        if (!$this->validate()) {
-            return $dataProvider;
-        }
+		$dataProvider->pagination->defaultPageSize = 30;
+		
+		if (Module::getInstance()->manageOwnFiles || (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			$query->joinWith('owner');
+			if (Yii::$app->user->isGuest) {
+				$query->andFilterWhere([Owner::tableName() . '.user_id' => 0]);
+			} else {
+				$query->andFilterWhere([Owner::tableName() . '.user_id' => Yii::$app->user->id]);
+			}
+		}
 
-        if ($this->tagIds) {
-            $query->joinWith('tags')->andFilterWhere(['in', Tag::tableName() . '.id', $this->tagIds]);
-        }
-        
-        $dataProvider->pagination->defaultPageSize = 15;
-
-        return $dataProvider;
+		return $dataProvider;
     }
 }

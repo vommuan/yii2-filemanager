@@ -108,7 +108,7 @@ class FileInput extends InputWidget
      *
      * @var array selecte the frameSrc in case you use a different module name
      */
-    public $frameSrc  = ['/filemanager/file/filemanager'];
+    public $frameSrc  = ['/filemanager/modal/index'];
 
     const DATA_ID = 'id';
     const DATA_URL = 'url';
@@ -149,12 +149,10 @@ class FileInput extends InputWidget
         FileInputAsset::register($this->view);
 
         if (!empty($this->callbackBeforeInsert)) {
-            $this->view->registerJs('
-                $("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');'
-            );
+            $this->view->registerJs('$("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');');
         }
 
-        $modal = $this->renderFile('@vendor/vommuan/yii2-filemanager/views/file/modal.php', [
+        $modal = $this->render('modal', [
             'inputId' => $this->options['id'],
             'btnId' => $this->buttonOptions['id'],
             'frameId' => $this->options['id'] . '-frame',

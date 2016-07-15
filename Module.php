@@ -6,15 +6,16 @@ use Yii;
 class Module extends \yii\base\Module
 {
     public $controllerNamespace = 'vommuan\filemanager\controllers';
+    public $layout = 'main';
 
     /**
-     * Set true if you want to rename files if the name is already in use 
+     * Set `true` if you want to rename files if the name is already in use 
      * @var boolean 
      */
     public $rename = false;
     
      /**
-      * Set true to enable autoupload
+      * Set `true` to enable autoupload
       * @var boolean 
       */
     public $autoUpload = false;
@@ -50,27 +51,12 @@ class Module extends \yii\base\Module
     /**
      * @var array thumbnails info
      */
-    public $thumbs = [
-        'small' => [
-            'name' => 'Small size',
-            'size' => [120, 80],
-        ],
-        'medium' => [
-            'name' => 'Medium size',
-            'size' => [400, 300],
-        ],
-        'large' => [
-            'name' => 'Large size',
-            'size' => [800, 600],
-        ],
-    ];
+    public $thumbs = [];
     
-    private $_defaultThumbs = [
-        'default' => [
-            'name' => 'Default size',
-            'size' => [128, 128],
-        ],
-    ];
+    /**
+     * @var boolean
+     */
+    public $thumbsAutoCreate = true;
 
     /**
      * @var array max image sizes, [width, height]
@@ -81,7 +67,22 @@ class Module extends \yii\base\Module
      * @var boolean ignore image rotate for setting max sizes
      */
     public $ignoreImageRotate = false;
-
+    
+    /**
+     * @var string user class
+     */
+    public $userClass = '\common\models\User';
+    
+    /**
+     * @var boolean if `true`, user can manage only his own files
+     */
+    public $manageOwnFiles = false;
+    
+    /**
+     * @var boolean if `true`, RBAC user manager is enabled
+     */
+    public $rbac = false;
+    
     public function init()
     {
         parent::init();
@@ -93,7 +94,7 @@ class Module extends \yii\base\Module
         Yii::$app->i18n->translations['modules/filemanager/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => '@vendor/vommuan/yii2-filemanager/messages',
+            'basePath' => __DIR__ . '/messages',
             'fileMap' => [
                 'modules/filemanager/main' => 'main.php',
             ],
@@ -106,7 +107,7 @@ class Module extends \yii\base\Module
             return $message;
         }
 
-        return Yii::t("modules/filemanager/$category", $message, $params, $language);
+        return Yii::t('modules/filemanager/' . $category, $message, $params, $language);
     }
 
     public function getDefaultRoutes()
@@ -116,6 +117,11 @@ class Module extends \yii\base\Module
     
     public function getDefaultThumbs()
     {
-        return $this->_defaultThumbs;
+        return [
+			'default' => [
+				'name' => Module::t('main', 'Default'),
+				'size' => [128, 128],
+			],
+		];
     }
 }

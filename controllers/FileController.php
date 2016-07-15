@@ -4,10 +4,13 @@ namespace vommuan\filemanager\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\models\UploadFileForm;
+use vommuan\filemanager\models\UpdateFileForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
 use yii\helpers\Url;
 
@@ -39,27 +42,26 @@ class FileController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
-    }
-
-    public function actionFilemanager()
-    {
-        $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
         
 		$model = new MediaFileSearch();
-
-        return $this->render('filemanager', [
+		
+        return $this->render('index', [
 			'model' => $model,
-            'dataProvider' => $model->search(Yii::$app->request->queryParams),
+			'dataProvider' => $model->search(),
         ]);
     }
 
-    public function actionUploadmanager()
+    public function actionUploadManager()
     {
-        $this->layout = '@vendor/vommuan/yii2-filemanager/views/layouts/main';
-        
-        return $this->render('uploadmanager', [
-            'model' => new MediaFile(),
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+		
+        return $this->render('upload-manager', [
+            'model' => new UploadFileForm(),
         ]);
     }
 
@@ -69,31 +71,30 @@ class FileController extends Controller
      */
     public function actionUpload()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $model = new MediaFile([
-            'rename' => $this->module->rename,
-        ]);
-
-        $tagIds = Yii::$app->request->post('tagIds');
-
-	    if ($tagIds !== 'undefined') {
-		    $model->setTagIds(explode(',', $tagIds));
-	    }
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
         
-        $model->saveUploadedFile();
+        $model = new UploadFileForm();
+        
+        $handler = $model->getHandler();
+        
+        $handler->save();
+        
         $bundle = FilemanagerAsset::register($this->view);
-
+        
         $response['files'][] = [
-            'url'           => $model->url,
-            'thumbnailUrl'  => $model->thumbFiles->getDefaultUrl($bundle->baseUrl),
-            'name'          => $model->filename,
-            'type'          => $model->type,
-            'size'          => $model->file->size,
-            'deleteUrl'     => Url::to(['file/delete', 'id' => $model->id]),
+            'url'           => $handler->url,
+            'thumbnailUrl'  => $handler->getIcon($bundle->baseUrl),
+            'name'          => $handler->filename,
+            'type'          => $handler->type,
+            'size'          => $handler->size,
+            'deleteUrl'     => Url::to(['file/delete', 'id' => $handler->id]),
             'deleteType'    => 'POST',
         ];
-
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+		
         return $response;
     }
 
@@ -104,10 +105,17 @@ class FileController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = MediaFile::findOne($id);
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+        
+        $model = new UpdateFileForm([
+			'mediaFile' => MediaFile::findOne($id),
+        ]);
+        
         $message = Module::t('main', 'Changes not saved.');
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+		
+        if ($model->load(Yii::$app->request->post()) && $model->update()) {
             $message = Module::t('main', 'Changes saved!');
         }
 
@@ -127,46 +135,36 @@ class FileController extends Controller
      */
     public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+        
         $model = MediaFile::findOne($id);
-
-        if ($model->isImage()) {
-            $model->thumbFiles->delete();
-        }
-
-        $model->deleteFile();
-        $model->delete();
-
+		
+		$model->delete();
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
         return ['success' => 'true'];
     }
 
-    /**
-     * Resize all thumbnails
-     */
-    public function actionResize()
-    {
-        $models = MediaFile::findByTypes(MediaFile::$imageFileTypes);
-
-        foreach ($models as $model) {
-            if ($model->isImage()) {
-                $model->thumbFiles->delete();
-                $model->thumbFiles->create();
-            }
-        }
-
-        Yii::$app->session->setFlash('successResize');
-        $this->redirect(Url::to(['default/settings']));
-    }
-
-    /** Render model info
+    /** 
+     * Render model info
+     * 
      * @param int $id
      * @param string $strictThumb only this thumb will be selected
      * @return string
      */
     public function actionInfo($id, $strictThumb = null)
     {
-        $model = MediaFile::findOne($id);
+        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+        
+        $model = new UpdateFileForm([
+			'mediaFile' => MediaFile::findOne($id)
+        ]);
+        
         Yii::$app->assetManager->bundles = false;
         return $this->renderAjax('info', [
             'model' => $model,

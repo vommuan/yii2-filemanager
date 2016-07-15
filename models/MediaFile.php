@@ -2,16 +2,10 @@
 namespace vommuan\filemanager\models;
 
 use Yii;
-use yii\web\UploadedFile;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\base\ErrorException;
-use yii\imagine\Image;
-use yii\data\ActiveDataProvider;
-use yii\helpers\Inflector;
-use yii\helpers\FileHelper;
+use yii\behaviors\TimestampBehavior;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\models\Owners;
+use vommuan\filemanager\models\handlers\HandlerFactory;
 
 /**
  * This is the model class for table "{{%filemanager_mediafile}}".
@@ -23,132 +17,51 @@ use vommuan\filemanager\models\Owners;
  * @property string $alt
  * @property integer $size
  * @property string $description
- * @property string $thumbs
  * @property integer $created_at
  * @property integer $updated_at
- * @property Owners[] $owners
- * @property Tag[] $tags
+ * @property Owner[] $owners
+ * @property Thumbnail[] $thumbnails
  */
 class MediaFile extends ActiveRecord
 {
-    private $_routes;
-    private $_thumbFiles;
-    
-    public $rename;
-    public $file;
-
-    public static $imageFileTypes = [
-        'image/gif',
-        'image/jpeg',
-        //'image/pjpeg',
-        'image/png',
-        //'image/svg+xml',
-        //'image/tiff',
-        //'image/vnd.microsoft.icon',
-        //'image/vnd.wap.wbmp',
-    ];
-
-    /**
-     * @var array|null
-     */
-    protected $tagIds = null;
-
-    /**
+	/**
+	 * @var vommuan\filemanager\models\handlers\BaseHandler or child class
+	 */
+	protected $handler;
+	
+	/**
+	 * @var yii\web\UploadedFile uploaded file
+	 */
+	public $file;
+	
+	/**
+	 * Initialization handler of file
+	 */
+	protected function initHandler()
+	{
+		if (isset($this->file)) {
+			$this->type = $this->file->type;
+		}
+		
+		$this->handler = HandlerFactory::getHandler($this);
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		$this->initHandler();
+	}
+	
+	/**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%filemanager_mediafile}}';
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        $this->_routes = new Routes();
-        $this->_thumbFiles = new Thumbs([
-            'mediaFile' => $this,
-        ]);
-
-        $linkTags = function ($event) {
-            if ($this->tagIds === null) {
-                return;
-            }
-            if (!is_array($this->tagIds)) {
-                $this->tagIds = [];
-            }
-            $whereIds = $models = $newTagIds = [];
-            foreach ($this->tagIds as $tagId) {
-                if (empty($tagId)) {
-                    continue;
-                }
-                if (preg_match("/^\d+$/", $tagId)) {
-                    $whereIds[] = $tagId;
-                    continue;
-                }
-                // если tagId не число, то значит надо создать новый тег
-                if (!$tag = Tag::findOne(['name' => $tagId])) {
-                    $tag = new Tag();
-                    $tag->name = $tagId;
-                    if (!$tag->save()) {
-                        continue;
-                    }
-                }
-                $newTagIds[] = $tag->id;
-                $models[] = $tag;
-            }
-
-            $this->unlinkAll('tags', true);
-            if ($whereIds) {
-                $models = array_merge($models, Tag::find()->where(['id' => $whereIds])->all());
-            }
-            foreach ($models as $model) {
-                $this->link('tags', $model);
-            }
-            // что бы после сохранения в значение были новые теги
-            $this->tagIds = array_merge($whereIds, $newTagIds);
-        };
-
-        $this->on(static::EVENT_AFTER_INSERT, $linkTags);
-        $this->on(static::EVENT_AFTER_UPDATE, $linkTags);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['filename', 'type', 'url', 'size'], 'required'],
-            [['url', 'alt', 'description', 'thumbs'], 'string'],
-            [['created_at', 'updated_at', 'size'], 'integer'],
-            [['filename', 'type'], 'string', 'max' => 255],
-            [['file'], 'file'],
-            [['tagIds'], 'safe'],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Module::t('main', 'ID'),
-            'filename' => Module::t('main', 'filename'),
-            'type' => Module::t('main', 'Type'),
-            'url' => Module::t('main', 'Url'),
-            'alt' => Module::t('main', 'Alt attribute'),
-            'size' => Module::t('main', 'Size'),
-            'description' => Module::t('main', 'Description'),
-            'thumbs' => Module::t('main', 'Thumbnails'),
-            'created_at' => Module::t('main', 'Created'),
-            'updated_at' => Module::t('main', 'Updated'),
-            'tagIds' => Module::t('main', 'Tags'),
-        ];
-    }
-
+    
     /**
      * @inheritdoc
      */
@@ -157,353 +70,275 @@ class MediaFile extends ActiveRecord
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => 'created_at',
-                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
-                ],
             ]
         ];
     }
-
+    
     /**
-     * @return \yii\db\ActiveQuery
+     * @inheritdoc
      */
-    public function getOwners()
+    public function rules()
     {
-        return $this->hasMany(Owners::className(), ['mediafile_id' => 'id']);
+        return [
+            [['filename', 'type', 'url', 'size'], 'required'],
+            [['filename', 'type'], 'string', 'max' => 255],
+            [['url', 'alt', 'description'], 'string'],
+            [['size'], 'integer'],
+        ];
     }
-
+    
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Module::t('main', 'ID'),
+            'filename' => Module::t('main', 'Filename'),
+            'type' => Module::t('main', 'Type'),
+            'url' => Module::t('main', 'Url'),
+            'alt' => Module::t('main', 'Alt attribute'),
+            'size' => Module::t('main', 'Size'),
+            'description' => Module::t('main', 'Description'),
+            'created_at' => Module::t('main', 'Created'),
+            'updated_at' => Module::t('main', 'Updated'),
+        ];
+    }
+    
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTags() {
-        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
-            ->viaTable('filemanager_mediafile_tag', ['mediafile_id' => 'id']);
+    public function getOwner()
+    {
+        return $this->hasOne(Owner::className(), ['mediafile_id' => 'id']);
     }
+    
+    /**
+     * Add owner for mediafile
+     */
+    protected function addOwner()
+    {
+		if (Yii::$app->user->isGuest) {
+			return false;
+		}
+		
+		$owner = new Owner([
+			'user_id' => Yii::$app->user->id,
+			'mediafile_id' => $this->id,
+		]);
+		
+		$owner->save();
+	}
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getThumbnails()
+    {
+		return $this->hasMany(Thumbnail::className(), ['mediafile_id' => 'id']);
+	}
+    
+    /**
+	 * Get icon url
+	 * 
+	 * @param string $baseUrl asset's base url
+	 * @return string
+	 */
+	public function getIcon($baseUrl)
+	{
+		return $this->handler->getIcon($baseUrl);
+	}
+	
+	/**
+	 * Get file size
+	 * 
+	 * @return string size in KB
+	 */
+	public function getFileSize()
+	{
+		Yii::$app->formatter->sizeFormatBase = 1000;
+		
+		return Yii::$app->formatter->asShortSize($this->size, 0);
+	}
+	
+	/**
+	 * Get base file type from MIME-type (saved in database)
+	 * 
+	 * @return string
+	 */
+	public function getBaseType()
+	{
+		return substr($this->type, 0, strpos($this->type, '/'));
+	}
+	
+	/**
+	 * Get file width x height sizes
+	 * 
+	 * @param string $delimiter delimiter between width and height
+     * @param string $format see [[ImageThumbnail::getSizes()]] for detailed documentation
+     * @return string image size like '1366x768'
+     */
+	public function getSizes($delimiter = 'x', $format = '{w}{d}{h}')
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		return $this->handler->getSizes($delimiter, $format);
+	}
+	
+	/**
+	 * Get one variant of this file
+	 * 
+	 * @param string $alias alias of file variant
+	 * @return string file url
+	 */
+	public function getFileVariant($alias = 'origin')
+	{
+		if ('origin' == $alias) {
+			return $this->url;
+		} else {
+			return $this->handler->getVariant($alias);
+		}
+	}
+	
+	/**
+	 * Get list variants of one file. For example, image variants are thumbs files.
+	 * 
+	 * @return array paths to files
+	 * ```
+	 * [
+	 *     0 => [
+	 *         'alias' => 'alias_1',
+	 *         'label' => 'label_1',
+	 *         'url' => 'url_1',
+	 *     ],
+	 *     1 => [
+	 *         'alias' => 'alias_2',
+	 *         'label' => 'label_2',
+	 *         'url' => 'url_2',
+	 *     ],
+	 * ]
+	 * ```
+	 * or formated array for using in drop down list
+	 * ```
+	 * [
+	 *     'url_1' => 'label_1',
+	 *     'url_2' => 'label_2',
+	 * ]
+	 * ```
+	 */
+	public function getFileVariants($dropDown = false)
+	{
+		if ('image' != $this->baseType) {
+			$variants = [
+				'alias' => 'origin',
+				'label' => Module::t('main', 'Original'),
+				'url' => $this->getFileVariant(),
+			];
+		} else {
+			$variants = $this->handler->getVariantsList();
+		}
+		
+		if ($dropDown) {
+			return $this->handler->dropDownFormatter($variants);
+		} else {
+			return $variants;
+		}
+	}
+	
+	/**
+	 * Remove old file's variants and generate new
+	 */
+	public function refreshFileVariants()
+	{
+		if ('image' != $this->baseType) {
+			return false;
+		}
+		
+		$this->handler->refreshFileVariants();
+	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function beforeValidate()
+    {
+		if (isset($this->file)) {
+			return $this->handler->beforeValidate();
+		} else {
+			return true;
+		}
+	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+		if (parent::beforeSave($insert)) {
+			return $this->handler->beforeSave($insert);
+		} else {
+			return false;
+		}
+	}
 
     /**
-     * @return array|null
+     * @inheritdoc
      */
-    public function getTagIds() {
-        return $this->tagIds !== null ? $this->tagIds : array_map(function ($tag) {
-            return $tag->id;
-        }, $this->tags);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setTagIds($value) {
-        $this->tagIds = $value;
-    }
-
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
-            foreach ($this->owners as $owner) {
-                $owner->delete();
-            }
+            if (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles')) {
+				if (! isset($this->owner) || $this->owner->user_id != Yii::$app->user->id) {
+					return false;
+				}
+			}
+            
+            if (null !== ($owner = $this->owner)) {
+				$owner->delete();
+			}
+			
+			$this->handler->delete();
             
             return true;
         } else {
             return false;
         }
     }
-
+    
+    /**
+     * @inheritdoc
+     */
+	public function afterSave($insert, $changedAttributes)
+	{
+		parent::afterSave($insert, $changedAttributes);
+		$this->handler->afterSave($insert);
+		$this->addOwner();
+	}
+    
+    /**
+     * @inheritdoc
+     */
 	public function afterDelete()
 	{
 		parent::afterDelete();
-		Tag::removeUnusedTags();
+		// Mediafile's owner will be removed automatically by database event 'ON DELETE CASCADE'
 	}
-
-    /**
-     * Get access for readonly Routes object
-     * 
-     * @return vommuan\filemanager\models\Routes
+	
+	/**
+     * @inheritdoc
      */
-    public function getRoutes()
+    public function afterFind()
     {
-        return $this->_routes;
-    }
-    
-    /**
-     * Get access for readonly Thumbs object
-     * 
-     * @return vommuan\filemanager\models\Thumbs
-     */
-    public function getThumbFiles()
-    {
-        return $this->_thumbFiles;
-    }
-    
-    /**
-     * Check if current file name is exists
-     * 
-     * @param string $filename
-     * @return bool 
-     */
-    protected function fileNameExists($filename)
-    {
-        $url = implode('/', [
-            $this->_routes->structure,
-            $filename,
-        ]);
-        
-        return (self::findByUrl($url)) ? true : false; // checks for existing url in db
-    }
-    
-    /**
-     * Get unique file name with index. Used when current file name is exists
-     * 
-     * @return string
-     */
-    protected function getUniqueFileName()
-    {
-        $counter = 0;
-        
-        do {
-            $filename = Inflector::slug($this->file->baseName) . $counter++ . '.' . $this->file->extension;
-        } while ($this->fileNameExists($filename));
-        
-        return $filename;
-    }
-    
-    /**
-     * Crop image into max sizes with saving proportions
-     * Array indexes: 0 - width, 1 - height
-     * 
-     * @return void
-     */
-    protected function cropImage()
-    {
-        $maxSizes = Module::getInstance()->maxImageSizes;
-        $ignoreRotate = Module::getInstance()->ignoreImageRotate;
-        
-        if (! is_array($maxSizes) || count($maxSizes) != 2) {
-			throw new ErrorException('Error module "vommuan\\filemanager\\' . Module::className() . '" settings: maxImageSizes');
-		}
-		
-		$fileName = implode('/', [
-			$this->_routes->basePath,
-			$this->url,
-		]);
-		
-		$originSizes = array_slice(getimagesize($fileName), 0, 2);
-		
-		if ($ignoreRotate) {
-			$isVertical = ($originSizes[0] < $originSizes[1]) ? true : false;
-			sort($originSizes, SORT_NUMERIC);
-			sort($maxSizes, SORT_NUMERIC);
-		}
-		
-        // if original image sizes less or equal than max image sizes in settings
-        if ($originSizes[0] <= $maxSizes[0] && $originSizes[1] <= $maxSizes[1]) {
-			return;
-		}
-		
-		$newSizes = [];
-        
-        $originProportions = $originSizes[0] / $originSizes[1];
-		$newSizes[0] = $maxSizes[0];
-		$newSizes[1] = $newSizes[0] / $originProportions;
-		
-		if ($maxSizes[1] < $newSizes[1]) {
-			$newSizes[1] = $maxSizes[1];
-			$newSizes[0] = $newSizes[1] * $originProportions;
-		}
-		
-		if ($ignoreRotate && ! $isVertical) {
-			rsort($newSizes);
-		}
-		
-		Image::thumbnail($fileName, round($newSizes[0]), round($newSizes[1]))->save($fileName);
-		
-		$this->size = filesize($fileName);
-		$this->save();
+		$this->initHandler();
 	}
-    
-    /**
-     * Save just uploaded file
-     * 
-     * @return bool
-     */
-    public function saveUploadedFile()
-    {
-        FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
-        
-        // get file instance
-        $this->file = UploadedFile::getInstance($this, 'file');
-        
-        //if a file with the same name already exist append a number
-        $filename = Inflector::slug($this->file->baseName) . '.' . $this->file->extension;
-        if ($this->fileNameExists($filename)) {
-            if (false === $this->rename) {
-                return false;
-            } else {
-                $filename = $this->getUniqueFileName();
-            }
-        }
-        
-        // save original uploaded file
-        $this->file->saveAs(
-            implode('/', [
-                $this->_routes->absolutePath,
-                $filename,
-            ])
-        );
-        $this->filename = $filename;
-        $this->type = $this->file->type;
-        $this->size = $this->file->size;
-        $this->url = implode('/', [
-            $this->_routes->structure,
-            $filename,
-        ]);
-        
-        $this->save();
-        
-        if ($this->isImage()) {
-			if (isset(Module::getInstance()->maxImageSizes)) {
-				$this->cropImage();
-			}
-			
-            $this->_thumbFiles->create();
-        }
-    }
-    
-    /**
-     * @return bool if type of this media file is image, return true;
-     */
-    public function isImage()
-    {
-        return in_array($this->type, self::$imageFileTypes);
-    }
-    
-    /**
-     * This method wrap getimagesize() function
-     * 
-     * @param array $routes see routes in module config
-     * @param string $delimiter delimiter between width and height
-     * @return string image size like '1366x768'
-     */
-    public function getOriginalImageSize($delimiter = 'x')
-    {
-        $imageSizes = getimagesize(
-            implode('/', [
-                $this->_routes->basePath,
-                $this->url,
-            ])
-        );
-        
-        return implode($delimiter, [
-            $imageSizes[0],
-            $imageSizes[1],
-        ]);
-    }
-    
-    /**
-     * Add owner to mediafiles table
-     *
-     * @param int $owner_id owner id
-     * @param string $owner owner identification name
-     * @param string $owner_attribute owner identification attribute
-     * @return bool save result
-     */
-    public function addOwner($owner_id, $owner, $owner_attribute)
-    {
-        $mediafiles = new Owners();
-        $mediafiles->mediafile_id = $this->id;
-        $mediafiles->owner = $owner;
-        $mediafiles->owner_id = $owner_id;
-        $mediafiles->owner_attribute = $owner_attribute;
-
-        return $mediafiles->save();
-    }
-
-    /**
-     * Remove this mediafile owner
-     *
-     * @param int $owner_id owner id
-     * @param string $owner owner identification name
-     * @param string $owner_attribute owner identification attribute
-     * @return bool delete result
-     */
-    public static function removeOwner($owner_id, $owner, $owner_attribute)
-    {
-        $mediafiles = Owners::findOne([
-            'owner_id' => $owner_id,
-            'owner' => $owner,
-            'owner_attribute' => $owner_attribute,
-        ]);
-
-        if ($mediafiles) {
-            return $mediafiles->delete();
-        }
-
-        return false;
-    }
-
-    /**
-     * Delete file
-     * 
-     * @param array $routes see routes in module config
-     * @return bool
-     */
-    public function deleteFile()
-    {
-        return unlink("{$this->_routes->basePath}/{$this->url}");
-    }
-
-    /**
+	
+	/**
      * @return int last changes timestamp
      */
     public function getLastChanges()
     {
-        return ! empty($this->updated_at) ? $this->updated_at : $this->created_at;
-    }
-    
-    /**
-     * @return string file size
-     */
-    public function getFileSize()
-    {
-        Yii::$app->formatter->sizeFormatBase = 1000;
-        return Yii::$app->formatter->asShortSize($this->size, 0);
-    }
-
-    /**
-     * Find model by url
-     *
-     * @param $url
-     * @return static
-     */
-    public static function findByUrl($url)
-    {
-        return self::findOne(['url' => $url]);
-    }
-
-    /**
-     * Search models by file types
-     * 
-     * @param array $types file types
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public static function findByTypes(array $types)
-    {
-        return self::find()->filterWhere(['in', 'type', $types])->all();
-    }
-
-    public static function loadOneByOwner($owner, $owner_id, $owner_attribute)
-    {
-        $owner = Owners::findOne([
-            'owner' => $owner,
-            'owner_id' => $owner_id,
-            'owner_attribute' => $owner_attribute,
-        ]);
-
-        if ($owner) {
-            return $owner->mediafile;
-        }
-
-        return false;
+        return !empty($this->updated_at) ? $this->updated_at : $this->created_at;
     }
 }
