@@ -90,6 +90,11 @@ class Module extends \yii\base\Module
      */
     public $manageOwnFiles = false;
     
+    /**
+     * @var boolean if `true`, RBAC user manager is enabled
+     */
+    public $rbac = false;
+    
     public function init()
     {
         parent::init();

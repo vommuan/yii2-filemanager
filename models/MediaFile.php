@@ -277,11 +277,11 @@ class MediaFile extends ActiveRecord
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
-            $this->handler->delete();
-            
-            foreach ($this->owners as $owner) {
-                $owner->delete();
-            }
+            if (null !== ($owner = $this->owner)) {
+				$owner->delete();
+			}
+			
+			$this->handler->delete();
             
             return true;
         } else {
