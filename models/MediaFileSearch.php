@@ -26,7 +26,7 @@ class MediaFileSearch extends MediaFile
 
 		$dataProvider->pagination->defaultPageSize = 30;
 		
-		if (Module::getInstance()->manageOwnFiles) {
+		if (Module::getInstance()->manageOwnFiles || (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			$query->joinWith('owner');
 			if (Yii::$app->user->isGuest) {
 				$query->andFilterWhere([Owner::tableName() . '.user_id' => 0]);
