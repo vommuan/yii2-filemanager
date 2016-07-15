@@ -127,7 +127,7 @@ class ImageThumbnail extends Model
 		$thumbnail = new Thumbnail([
 			'alias' => $alias,
 			'url' => implode('/', [
-				$this->handler->routes->getThumbsUrlPath(),
+				$this->handler->routes->getThumbsUrlPath($this->handler->activeRecord->url),
 				$this->generateFileName($width, $height),
 			]),
 			'mediafile_id' => $this->handler->activeRecord->id,
@@ -245,6 +245,7 @@ class ImageThumbnail extends Model
 			if (is_file($thumbnailFile)) {
 				unlink($thumbnailFile);
 			}
+			$thumbs[$i]->delete();
 		}
         
         FileHelper::removeDirectory(
