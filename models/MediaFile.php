@@ -94,7 +94,7 @@ class MediaFile extends ActiveRecord
     {
         return [
             'id' => Module::t('main', 'ID'),
-            'filename' => Module::t('main', 'Filename'),
+            'filename' => Module::t('main', 'File name'),
             'type' => Module::t('main', 'Type'),
             'url' => Module::t('main', 'Url'),
             'alt' => Module::t('main', 'Alt attribute'),
