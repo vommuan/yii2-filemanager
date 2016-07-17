@@ -68,25 +68,9 @@ $bundle = FilemanagerAsset::register($this);
 			}
 
 			echo $form->field($model, 'description')->textarea(['class' => 'form-control']);
-			 
-			if ('image' == $model->mediaFile->baseType) :?>
-				<div class="form-group<?= $strictThumb ? ' hidden' : '';?>">
-					<?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']);?>
-
-					<?= Html::dropDownList(
-						'url',
-						$model->mediaFile->getFileVariant($strictThumb),
-						$model->mediaFile->getFileVariants(true), [
-							'class' => 'form-control'
-						]
-					);?>
-					<div class="help-block"></div>
-				</div>
-				<?php 
-			else :?>
-				<?= Html::hiddenInput('url', $model->mediaFile->url);?>
-				<?php
-			endif;?>
+			?>
+			
+			<?= Html::hiddenInput('url', $model->mediaFile->url);?>
 
 			<?= Html::hiddenInput('id', $model->mediaFile->id);?>
 
