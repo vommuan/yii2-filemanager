@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'File name' => 'Имя файла',
+    'This file already exists.' => 'Такой файл уже есть.',
     'Alias' => 'Алиас',
     'Alt attribute' => 'Атрибут alt',
     'Changes not saved.' => 'Изменения не сохранены.',
@@ -29,6 +29,7 @@ return [
     'Do not forget every time you change thumbnails presets to make them resize.' => 'Не забывайте при каждом изменении предустановок миниатюр делать их ресайз.',
     'Do resize thumbnails' => 'Сделать ресайз миниатюр',
     'File manager' => 'Файловый менеджер',
+    'File name' => 'Имя файла',
     'Files' => 'Файлы',
     'ID' => 'Идентификатор',
     'If you change the thumbnails sizes, it is strongly recommended to make resize all thumbnails.' => 'Если вы изменили размеры миниатюр, строго рекомендуется сделать ресайз всех миниатюр.',

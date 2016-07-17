@@ -24,6 +24,7 @@ return [
     'Media File' => '',
     'Permission denied.' => '',
     'Size' => '',
+    'This file already exists.' => '',
     'Upload' => '',
     'Alt attribute' => 'Thuộc tính alt',
     'Changes not saved.' => 'Thay đổi không được lưu lại.',

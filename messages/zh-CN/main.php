@@ -24,6 +24,7 @@ return [
     'Media File' => '',
     'Permission denied.' => '',
     'Size' => '',
+    'This file already exists.' => '',
     'Upload' => '',
     'Alt attribute' => 'ALT属性',
     'Changes not saved.' => '修改没有保存。',

@@ -24,6 +24,7 @@ return [
     'Media File' => '',
     'Permission denied.' => '',
     'Size' => '',
+    'This file already exists.' => '',
     'Upload' => '',
     'Alt attribute' => 'Alt atribūts',
     'Changes not saved.' => 'Izmaiņas netika saglabātas!',

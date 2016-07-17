@@ -40,6 +40,7 @@ return [
     'Save' => '',
     'Settings' => '',
     'Size' => '',
+    'This file already exists.' => '',
     'Thumbnails settings' => '',
     'Thumbnails sizes has been resized successfully!' => '',
     'Type' => '',

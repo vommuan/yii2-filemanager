@@ -24,6 +24,7 @@ return [
     'Media File' => '',
     'Permission denied.' => '',
     'Size' => '',
+    'This file already exists.' => '',
     'Upload' => '',
     'Alt attribute' => 'attributo alt',
     'Changes not saved.' => 'Alterações não foram guardadas.',
