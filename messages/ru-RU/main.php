@@ -24,6 +24,7 @@ return [
     'Do resize thumbnails' => 'Сделать ресайз миниатюр',
     'Thumbnails sizes has been resized successfully!' => 'Размеры миниатюр успешно изменены!',
     'Do not forget every time you change thumbnails presets to make them resize.' => 'Не забывайте при каждом изменении предустановок миниатюр делать их ресайз.',
+    'Upload' => 'Загрузить',
     'Upload manager' => 'Менеджер загрузок',
     'Back to file manager' => 'Назад, к файловому менеджеру',
     'Alt attribute' => 'Атрибут alt',
