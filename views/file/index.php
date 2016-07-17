@@ -22,7 +22,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 <div class="page-header">
 	<h1>
 		<span class="glyphicon glyphicon-picture"></span>
-		<?= Module::t('main', 'File manager');?>
+		<?= $this->title;?>
 	</h1>
 </div>
 
@@ -33,7 +33,12 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			'layout' => 
 				Html::tag('div', '{summary}', ['class' => 'col-xs-12']) 
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12'])
-				. Html::tag('div', '{items}', ['class' => 'col-xs-12 items'])
+				. Html::tag('div', '{items}', ['class' => 'col-xs-12 col-sm-8 items'])
+				. Html::tag(
+					'div', 
+					Html::tag('div', '', ['id' => 'fileinfo']),
+					['class' => 'col-xs-12 col-sm-4']
+				)
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12']),
 			'options' => [
 				'class' => 'files-gallery row',
@@ -54,4 +59,3 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 		]);?>
 	</div>
 </div>
-<div id="fileinfo"></div>
