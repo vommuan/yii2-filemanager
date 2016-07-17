@@ -13,12 +13,12 @@ $bundle = FilemanagerAsset::register($this);
 ?>
 
 <div class="row">
-	<div class="col-xs-12 col-sm-2">
+	<div class="col-xs-12 col-sm-6">
 		<div class="thumbnail">
 			<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl)) ?>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-10">
+	<div class="col-xs-12 col-sm-6">
 		<ul class="detail">
 			<li><?= $model->mediaFile->filename;?></li>
 			<li>
@@ -68,29 +68,11 @@ $bundle = FilemanagerAsset::register($this);
 			}
 
 			echo $form->field($model, 'description')->textarea(['class' => 'form-control']);
-			 
-			if ('image' == $model->mediaFile->baseType) :?>
-				<div class="form-group<?= $strictThumb ? ' hidden' : '';?>">
-					<?= Html::label(Module::t('main', 'Select image size'), 'image', ['class' => 'control-label']);?>
-
-					<?= Html::dropDownList(
-						'url',
-						$model->mediaFile->getFileVariant($strictThumb),
-						$model->mediaFile->getFileVariants(true), [
-							'class' => 'form-control'
-						]
-					);?>
-					<div class="help-block"></div>
-				</div>
-				<?php 
-			else :?>
-				<?= Html::hiddenInput('url', $model->mediaFile->url);?>
-				<?php
-			endif;?>
+			?>
+			
+			<?= Html::hiddenInput('url', $model->mediaFile->url);?>
 
 			<?= Html::hiddenInput('id', $model->mediaFile->id);?>
-
-			<?= Html::button(Module::t('main', 'Insert'), ['id' => 'insert-btn', 'class' => 'btn btn-primary']);?>
 
 			<?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success']);?>
 

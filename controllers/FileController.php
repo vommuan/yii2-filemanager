@@ -6,6 +6,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Inflector;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
@@ -79,19 +80,27 @@ class FileController extends Controller
         
         $handler = $model->getHandler();
         
-        $handler->save();
+        $saved = $handler->save();
         
         $bundle = FilemanagerAsset::register($this->view);
         
-        $response['files'][] = [
-            'url'           => $handler->url,
-            'thumbnailUrl'  => $handler->getIcon($bundle->baseUrl),
-            'name'          => $handler->filename,
-            'type'          => $handler->type,
-            'size'          => $handler->size,
-            'deleteUrl'     => Url::to(['file/delete', 'id' => $handler->id]),
-            'deleteType'    => 'POST',
-        ];
+        if ($saved) {
+			$response['files'][] = [
+				'url'          => $handler->url,
+				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
+				'name'         => $handler->filename,
+				'type'         => $handler->type,
+				'size'         => $handler->size,
+				'deleteUrl'    => Url::to(['file/delete', 'id' => $handler->id]),
+				'deleteType'   => 'POST',
+			];
+		} else {
+			$response['files'][] = [
+				'name'  => Inflector::slug($handler->file->baseName) . '.' . $handler->file->extension,
+				'size'  => $handler->file->size,
+				'error' => Module::t('main', 'This file already exists.'),
+			];
+		}
         
         Yii::$app->response->format = Response::FORMAT_JSON;
 		
