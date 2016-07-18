@@ -23,15 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'model' => $model,
 			'attribute' => 'file',
 			'clientOptions' => [
-				'autoUpload'=> Module::getInstance()->autoUpload,
-			],
-			'clientEvents' => [
-				'fileuploadsubmit' => "function (e, data) {
-					data.formData = [{
-						name: 'tagIds',
-						value: $('#filemanager-tagIds').val()
-					}]; 
-				}",
+				'autoUpload' => Module::getInstance()->autoUpload,
 			],
 			'url' => ['upload'],
 			'gallery' => false,
