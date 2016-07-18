@@ -1,7 +1,6 @@
 $(document).ready(function() {
-    var ajaxRequest = null,
-        fileInfoContainer = $("#fileinfo"),
-        strictThumb = $(window.frameElement).parents('[role="filemanager-modal"]').attr("data-thumb");
+    var ajaxRequest = null;
+    var fileInfoContainer = $("#fileinfo");
 
     function setAjaxLoader() {
         $("#fileinfo").html('<div class="loading"><span class="glyphicon glyphicon-refresh spin"></span></div>');
@@ -24,7 +23,7 @@ $(document).ready(function() {
         ajaxRequest = $.ajax({
             type: "GET",
             url: url,
-            data: "id=" + id + "&strictThumb=" + strictThumb,
+            data: "id=" + id,
             beforeSend: function() {
                 setAjaxLoader();
             },
@@ -37,9 +36,9 @@ $(document).ready(function() {
     fileInfoContainer.on("click", '[role="delete"]', function(e) {
         e.preventDefault();
 
-        var url = $(this).attr("href"),
-            id = $(this).attr("data-id"),
-            confirmMessage = $(this).attr("data-message");
+        var url = $(this).attr("href");
+        var id = $(this).attr("data-id");
+        var confirmMessage = $(this).attr("data-message");
 
         $.ajax({
             type: "POST",
@@ -63,8 +62,8 @@ $(document).ready(function() {
     fileInfoContainer.on("submit", "#control-form", function(e) {
         e.preventDefault();
 
-        var url = $(this).attr("action"),
-            data = $(this).serialize();
+        var url = $(this).attr("action");
+        var data = $(this).serialize();
 
         $.ajax({
             type: "POST",
