@@ -147,13 +147,13 @@ class FileController extends Controller
     }
 
     /** 
-     * Render model info
+     * Render file information
      * 
      * @param int $id
      * @param string $strictThumb only this thumb will be selected
      * @return string
      */
-    public function actionInfo($id, $strictThumb = null)
+    public function actionDetails($id, $strictThumb = null)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -164,7 +164,7 @@ class FileController extends Controller
         ]);
         
         Yii::$app->assetManager->bundles = false;
-        return $this->renderAjax('info', [
+        return $this->renderAjax('details', [
             'model' => $model,
             'strictThumb' => $strictThumb,
         ]);

@@ -40,7 +40,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 </div>
 
 <div class="row">
-	<div id="filemanager" class="col-xs-12" data-url-info="<?= Url::to(['modal/info']);?>">
+	<div id="gallery" class="col-xs-12" data-url-info="<?= Url::to(['modal/details']);?>">
 		<?= ListView::widget([
 			'dataProvider' => $dataProvider,
 			'layout' => 

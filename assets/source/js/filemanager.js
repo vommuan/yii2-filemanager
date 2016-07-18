@@ -17,8 +17,9 @@ $(document).ready(function() {
 
         $(".item a").removeClass("active");
         $(this).addClass("active");
-        var id = $(this).attr("data-key"),
-            url = $("#filemanager").attr("data-url-info");
+        
+        var id = $(this).attr("data-key");
+        var url = $("#gallery").attr("data-url-info");
 
         ajaxRequest = $.ajax({
             type: "GET",
