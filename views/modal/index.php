@@ -1,9 +1,8 @@
 <?php
-use yii\helpers\ArrayHelper;
 use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\bootstrap\ActiveForm;
+use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\assets\ModalAsset;
 use vommuan\filemanager\assets\FilemanagerAsset;
@@ -22,6 +21,22 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 		<span class="glyphicon glyphicon-picture"></span>
 		<?= $this->title;?>
 	</h1>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<?= FileUploadUI::widget([
+			'model' => $uploadModel,
+			'attribute' => 'file',
+			'clientOptions' => [
+				'autoUpload' => Module::getInstance()->autoUpload,
+			],
+			'url' => ['upload'],
+			'uploadTemplateView' => '/fileuploadui/upload',
+			'formView' => '/fileuploadui/form',
+			'gallery' => false,
+		]);?>
+	</div>
 </div>
 
 <div class="row">
