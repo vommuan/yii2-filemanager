@@ -16,7 +16,7 @@ function mediaFileClick(event) {
 	ajaxRequest = $.ajax({
 		type: "GET",
 		url: $("#gallery").attr("data-url-info"),
-		data: "id=" + $(this).attr("data-key"),
+		data: "id=" + $(this).closest('.item').attr("data-key"),
 		beforeSend: function() {
 			setAjaxLoader();
 		},

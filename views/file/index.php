@@ -37,7 +37,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			],
 			'clientEvents' => [
 				'fileuploadcompleted' => 'function(event, data) {
-					$("[data-key=\'" + data.result.files[0].id + "\']").bind("click", mediaFileClick);
+					$("[data-key=\'" + data.result.files[0].id + "\'] a").bind("click", mediaFileClick);
 				}',
 			],
 			'url' => ['upload'],
@@ -73,7 +73,6 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 						. Html::tag('span', '', ['class' => 'glyphicon glyphicon-check checked']),
 					'#mediafile', [
 						'class' => 'thumbnail',
-						'data-key' => $key,
 					]
 				);
 			},
