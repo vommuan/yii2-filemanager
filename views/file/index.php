@@ -31,11 +31,19 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			'model' => $uploadModel,
 			'attribute' => 'file',
 			'clientOptions' => [
-				'autoUpload' => Module::getInstance()->autoUpload,
+				'autoUpload' => true,
+				'filesContainer' => '.items',
+				'prependFiles' => true,
+			],
+			'clientEvents' => [
+				'fileuploadcompleted' => 'function(event, data) {
+					$("[data-key=\'" + data.result.files[0].id + "\']").bind("click", mediaFileClick);
+				}',
 			],
 			'url' => ['upload'],
-			'uploadTemplateView' => '/fileuploadui/upload',
 			'formView' => '/fileuploadui/form',
+			'uploadTemplateView' => '/fileuploadui/upload',
+			'downloadTemplateView' => '/fileuploadui/download',
 			'gallery' => false,
 		]);?>
 	</div>
@@ -49,11 +57,9 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 				Html::tag('div', '{summary}', ['class' => 'col-xs-12']) 
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12'])
 				. Html::tag('div', '{items}', ['class' => 'col-xs-12 col-sm-8 items'])
-				. Html::tag(
-					'div', 
-					Html::tag('div', '', ['id' => 'fileinfo']),
-					['class' => 'col-xs-12 col-sm-4']
-				)
+				. Html::beginTag('div', ['class' => 'col-xs-12 col-sm-4'])
+					. Html::tag('div', '', ['id' => 'fileinfo'])
+				. Html::endTag('div')
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12']),
 			'options' => [
 				'class' => 'files-gallery row',

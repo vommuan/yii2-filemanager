@@ -75,6 +75,7 @@ class FileController extends Controller
         
         if ($saved) {
 			$response['files'][] = [
+				'id'          => $handler->id,
 				'url'          => $handler->url,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
 				'name'         => $handler->filename,

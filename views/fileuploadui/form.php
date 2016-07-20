@@ -31,6 +31,4 @@ $context = $this->context;
             <div class="progress-extended">&nbsp;</div>
         </div>
     </div>
-    <!-- The table listing the files available for upload/download -->
-    <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
 <?= Html::endTag('div');?>

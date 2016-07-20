@@ -14,12 +14,6 @@ class Module extends \yii\base\Module
      */
     public $rename = false;
     
-     /**
-      * Set `true` to enable autoupload
-      * @var boolean 
-      */
-    public $autoUpload = false;
-    
     /**
      * @var array upload routes
      */

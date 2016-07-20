@@ -29,7 +29,7 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			'model' => $uploadModel,
 			'attribute' => 'file',
 			'clientOptions' => [
-				'autoUpload' => Module::getInstance()->autoUpload,
+				'autoUpload' => true,
 			],
 			'url' => ['upload'],
 			'uploadTemplateView' => '/fileuploadui/upload',
