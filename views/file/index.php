@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\widgets\PageHeader;
 use vommuan\filemanager\assets\ModalAsset;
 use vommuan\filemanager\assets\FilemanagerAsset;
 
@@ -18,12 +19,10 @@ ModalAsset::register($this);
 $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 ?>
 
-<div class="page-header">
-	<h1>
-		<span class="glyphicon glyphicon-picture"></span>
-		<?= $this->title;?>
-	</h1>
-</div>
+<?= PageHeader::widget([
+	'icon' => 'picture',
+	'title' => $this->title,
+]);?>
 
 <div class="row">
 	<div class="col-xs-12">

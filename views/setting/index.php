@@ -2,8 +2,12 @@
 use yii\helpers\Html;
 use kartik\alert\Alert;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\widgets\PageHeader;
+use vommuan\filemanager\assets\SettingAsset;
 
 /* @var $this yii\web\View */
+
+SettingAsset::register($this);
 
 $this->title = Module::t('main', 'Settings');
 $this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 'url' => ['default/index']];
@@ -11,13 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="filemanager-default-settings">
-	<div class="page-header">
-		<h1>
-			<span class="glyphicon glyphicon-wrench"></span>
-			<?= $this->title;?>
-		</h1>
-	</div>
-
+	<?= PageHeader::widget([
+		'icon' => 'wrench',
+		'title' => $this->title,
+	]);?>
+	
     <div class="panel panel-default">
         <div class="panel-heading"><?= Module::t('main', 'Thumbnails settings') ?></div>
         <div class="panel-body">
