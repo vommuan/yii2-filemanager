@@ -1,19 +1,6 @@
 /*------------------------------------*\
-    #VARIABLES
-\*------------------------------------*/
-/*------------------------------------*\
-    #MAIN
-\*------------------------------------*/
-#header {
-  font-size: 1.4em;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 5px;
-}
-/*------------------------------------*\
     #ITEMS
 \*------------------------------------*/
-.file-gallery .gallery-items .gallery-items__item,
 .template-upload {
   padding-left: 0;
   padding-right: 0;
@@ -28,32 +15,10 @@
   display: none;
 }
 
-.file-gallery .gallery-items .gallery-items__item .thumbnail,
 .template-upload .thumbnail {
   margin-bottom: 0;
 }
 
-.file-gallery .gallery-items .gallery-items__item a {
-  position: relative;
-  display: inline-block;
-}
-.file-gallery .gallery-items .gallery-items__item a img:hover {
-  opacity: 0.9;
-}
-.file-gallery .gallery-items .gallery-items__item a .checked {
-  display: none;
-  position: absolute;
-  top: 5px;
-  right: 6px;
-  font-size: 2em;
-}
-.file-gallery .gallery-items .gallery-items__item .thumbnail.active {
-  outline: 5px solid #5ba6f7;
-  outline-offset: -5px;
-}
-.file-gallery .gallery-items .gallery-items__item .active .checked {
-  display: inline-block;
-}
 /*------------------------------------*\
     #PAGINATION
 \*------------------------------------*/

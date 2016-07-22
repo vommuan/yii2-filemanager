@@ -2,22 +2,29 @@
 use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use vommuan\filemanager\assets\FileGalleryAsset;
+
+$bundle = FileGalleryAsset::register($this);
 ?>
-<div class="file-gallery" data-details-url="<?= Url::to(['details']);?>">
+<div class="file-gallery" data-details-url="<?= Url::to(['details']);?>" data-multiple='false'>
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
 		'layout' => $this->render('__layout/file-gallery__layout'),
 		'itemOptions' => [
-			'class' => 'col-xs-4 col-sm-2 gallery-items__item',
+			'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
 		],
-		'itemView' => function ($model, $key, $index, $widget) {
+		'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
 			return Html::a(
-				Html::img($model->getIcon($this->params['moduleBundle']->baseUrl))
-					. Html::tag('span', '', ['class' => 'glyphicon glyphicon-check checked']),
-				'#mediafile', [
-					'class' => 'thumbnail',
-				]
+				Html::img(
+					$model->getIcon($bundle->baseUrl), 
+					['class' => 'media-file__image']
+				),
+				'#',
+				['class' => 'thumbnail media-file__link']
 			);
 		},
 	]);?>
+	<div class="file-gallery__checker">
+		<span class="glyphicon glyphicon-check"></span>
+	</div>
 </div>
