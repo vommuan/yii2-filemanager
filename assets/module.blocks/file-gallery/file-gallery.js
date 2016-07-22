@@ -20,8 +20,13 @@ function FileGallery(item) {
 		if ($(_item).closest('.file-gallery').data('multiple')) {
 			checker.toggleClass('file-gallery__checker_checked');
 		} else {
-			$('.gallery-items__item .file-gallery__checker_checked').removeClass('file-gallery__checker_checked');
-			checker.addClass('file-gallery__checker_checked');
+			var sameItem = $(_item).find('.file-gallery__checker').hasClass('file-gallery__checker_checked');
+			
+			$('.gallery-items__item .file-gallery__checker').removeClass('file-gallery__checker_checked');
+			
+			if (!sameItem) {
+				checker.addClass('file-gallery__checker_checked');
+			}
 		}
 	}
 	
@@ -34,16 +39,29 @@ function FileGallery(item) {
 			_ajaxRequest.abort();
 			_ajaxRequest = null;
 		}
-
-		_ajaxRequest = $.ajax({
+		
+		var requestParams = {
 			type: "GET",
 			url: $(_item).closest('.file-gallery').data("details-url"),
-			data: "id=" + $(_item).closest('.gallery-items__item').data("key"),
 			beforeSend: setAjaxLoader,
 			success: function(html) {
 				$("#fileinfo").html(html);
 			}
-		});
+		};
+		
+		if ($(_item).find('.file-gallery__checker').hasClass('file-gallery__checker_checked')) {
+			requestParams.data = "id=" + $(_item).closest('.gallery-items__item').data("key");
+			
+			_ajaxRequest = $.ajax(requestParams);
+		} else if ($('.gallery-items__item .file-gallery__checker_checked').length > 0) {
+			requestParams.data = "id=" + $(_item).closest('.file-gallery')
+				.find('.gallery-items__item .file-gallery__checker_checked').filter(':last')
+				.closest('.gallery-items__item').data("key");
+			
+			_ajaxRequest = $.ajax(requestParams);
+		} else {
+			$("#fileinfo").html('');
+		}
 	}
 }
 
