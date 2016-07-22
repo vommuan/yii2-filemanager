@@ -14,14 +14,10 @@ $bundle = FileGalleryAsset::register($this);
 			'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
 		],
 		'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
-			return Html::a(
-				Html::img(
-					$model->getIcon($bundle->baseUrl), 
-					['class' => 'media-file__image']
-				),
-				'#',
-				['class' => 'thumbnail media-file__link']
-			);
+			return $this->render('__item/gallery-items__item', [
+				'model' => $model,
+				'bundle' => $bundle,
+			]);
 		},
 	]);?>
 	<div class="file-gallery__checker">
