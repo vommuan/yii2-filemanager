@@ -50,16 +50,14 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 </div>
 
 <div class="row">
-	<div id="gallery" class="col-xs-12" data-url-info="<?= Url::to(['file/details']);?>">
+	<div id="gallery" class="col-xs-12" data-url-info="<?= Url::to(['details']);?>">
 		<?= ListView::widget([
 			'dataProvider' => $dataProvider,
 			'layout' => 
 				Html::tag('div', '{summary}', ['class' => 'col-xs-12']) 
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12'])
 				. Html::tag('div', '{items}', ['class' => 'col-xs-12 col-sm-8 items'])
-				. Html::beginTag('div', ['class' => 'col-xs-12 col-sm-4'])
-					. Html::tag('div', '', ['id' => 'fileinfo'])
-				. Html::endTag('div')
+				. Html::tag('div', '', ['id' => 'fileinfo', 'class' => 'col-xs-12 col-sm-4'])
 				. Html::tag('div', '{pager}', ['class' => 'col-xs-12']),
 			'options' => [
 				'class' => 'files-gallery row',
