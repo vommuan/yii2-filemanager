@@ -10,13 +10,13 @@ function mediaFileClick(event) {
 		ajaxRequest = null;
 	}
 
-	$(".item a").removeClass("active");
+	$(".gallery-items__item a").removeClass("active");
 	$(this).addClass("active");
 	
 	ajaxRequest = $.ajax({
 		type: "GET",
-		url: $("#gallery").attr("data-url-info"),
-		data: "id=" + $(this).closest('.item').attr("data-key"),
+		url: $(this).closest('.file-gallery').data("details-url"),
+		data: "id=" + $(this).closest('.gallery-items__item').data("key"),
 		beforeSend: function() {
 			setAjaxLoader();
 		},
@@ -37,8 +37,8 @@ $(document).ready(function() {
         e.preventDefault();
 
         var url = $(this).attr("href");
-        var id = $(this).attr("data-id");
-        var confirmMessage = $(this).attr("data-message");
+        var id = $(this).data("id");
+        var confirmMessage = $(this).data("message");
 
         $.ajax({
             type: "POST",

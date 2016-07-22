@@ -13,7 +13,7 @@
 /*------------------------------------*\
     #ITEMS
 \*------------------------------------*/
-.files-gallery .items .item,
+.file-gallery .gallery-items .gallery-items__item,
 .template-upload {
   padding-left: 0;
   padding-right: 0;
@@ -28,30 +28,30 @@
   display: none;
 }
 
-.files-gallery .items .item .thumbnail,
+.file-gallery .gallery-items .gallery-items__item .thumbnail,
 .template-upload .thumbnail {
   margin-bottom: 0;
 }
 
-.files-gallery .items .item a {
+.file-gallery .gallery-items .gallery-items__item a {
   position: relative;
   display: inline-block;
 }
-.files-gallery .items .item a img:hover {
+.file-gallery .gallery-items .gallery-items__item a img:hover {
   opacity: 0.9;
 }
-.files-gallery .items .item a .checked {
+.file-gallery .gallery-items .gallery-items__item a .checked {
   display: none;
   position: absolute;
   top: 5px;
   right: 6px;
   font-size: 2em;
 }
-.files-gallery .items .item .thumbnail.active {
+.file-gallery .gallery-items .gallery-items__item .thumbnail.active {
   outline: 5px solid #5ba6f7;
   outline-offset: -5px;
 }
-.files-gallery .items .item .active .checked {
+.file-gallery .gallery-items .gallery-items__item .active .checked {
   display: inline-block;
 }
 /*------------------------------------*\
