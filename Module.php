@@ -80,6 +80,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        Yii::setAlias('@filemanager', __DIR__);
         $this->registerTranslations();
     }
 
@@ -88,7 +89,7 @@ class Module extends \yii\base\Module
         Yii::$app->i18n->translations['modules/filemanager/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
-            'basePath' => __DIR__ . '/messages',
+            'basePath' => '@filemanager/messages',
             'fileMap' => [
                 'modules/filemanager/main' => 'main.php',
             ],

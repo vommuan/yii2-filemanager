@@ -5,7 +5,7 @@ use yii\web\AssetBundle;
 
 class PageHeaderAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/vommuan/yii2-filemanager/assets/module.blocks';
+    public $sourcePath = '@filemanager/assets/module.blocks';
     
     public $css = [
         'page-header/page-header.css',
