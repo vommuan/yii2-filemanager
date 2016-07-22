@@ -3,20 +3,19 @@ namespace vommuan\filemanager\assets;
 
 use yii\web\AssetBundle;
 
-class FileGalleryAsset extends AssetBundle
+class MediaFileAsset extends AssetBundle
 {
     public $sourcePath = '@filemanager/assets/module.blocks';
     
     public $css = [
-        'file-gallery/file-gallery.css',
+        'media-file/media-file.css',
     ];
     
     public $js = [
-		'file-gallery/file-gallery.js',
+		'media-file/media-file.js',
     ];
     
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
-        'vommuan\filemanager\assets\MediaFileAsset',
     ];
 }

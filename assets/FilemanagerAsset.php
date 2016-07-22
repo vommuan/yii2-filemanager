@@ -6,7 +6,7 @@ use yii\web\AssetBundle;
 
 class FilemanagerAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/vommuan/yii2-filemanager/assets/source';
+    public $sourcePath = '@filemanager/assets/source';
     
     public $css = [
         'css/filemanager.css',
