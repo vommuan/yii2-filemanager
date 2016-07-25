@@ -50,19 +50,8 @@ class FileController extends Controller
 		$model = new MediaFileSearch();
 		
         return $this->render('index', [
-			'model' => $model,
+			'uploadModel' => new UploadFileForm(),
 			'dataProvider' => $model->search(),
-        ]);
-    }
-
-    public function actionUploadManager()
-    {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
-		
-        return $this->render('upload-manager', [
-            'model' => new UploadFileForm(),
         ]);
     }
 
@@ -86,12 +75,13 @@ class FileController extends Controller
         
         if ($saved) {
 			$response['files'][] = [
+				'id'          => $handler->id,
 				'url'          => $handler->url,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
 				'name'         => $handler->filename,
 				'type'         => $handler->type,
 				'size'         => $handler->size,
-				'deleteUrl'    => Url::to(['file/delete', 'id' => $handler->id]),
+				'deleteUrl'    => Url::to(['delete', 'id' => $handler->id]),
 				'deleteType'   => 'POST',
 			];
 		} else {
@@ -131,9 +121,8 @@ class FileController extends Controller
         Yii::$app->session->setFlash('mediafileUpdateResult', $message);
 
         Yii::$app->assetManager->bundles = false;
-        return $this->renderAjax('info', [
+        return $this->renderAjax('details', [
             'model' => $model,
-            'strictThumb' => null,
         ]);
     }
 
@@ -158,13 +147,12 @@ class FileController extends Controller
     }
 
     /** 
-     * Render model info
+     * Render file information
      * 
      * @param int $id
-     * @param string $strictThumb only this thumb will be selected
      * @return string
      */
-    public function actionInfo($id, $strictThumb = null)
+    public function actionDetails($id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -175,9 +163,8 @@ class FileController extends Controller
         ]);
         
         Yii::$app->assetManager->bundles = false;
-        return $this->renderAjax('info', [
+        return $this->renderAjax('details', [
             'model' => $model,
-            'strictThumb' => $strictThumb,
         ]);
     }
 }

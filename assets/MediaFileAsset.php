@@ -1,23 +1,21 @@
 <?php
-
 namespace vommuan\filemanager\assets;
 
 use yii\web\AssetBundle;
 
-class FilemanagerAsset extends AssetBundle
+class MediaFileAsset extends AssetBundle
 {
-    public $sourcePath = '@filemanager/assets/source';
+    public $sourcePath = '@filemanager/assets/module.blocks';
     
     public $css = [
-        'css/filemanager.css',
+        'media-file/media-file.css',
     ];
     
     public $js = [
-        'js/filemanager.js',
+		'media-file/media-file.js',
     ];
     
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
-        'yii\web\JqueryAsset',
     ];
 }

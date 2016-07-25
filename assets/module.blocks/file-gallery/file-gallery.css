@@ -1,0 +1,16 @@
+.file-gallery__checker {
+  display: none;
+}
+
+.file-gallery__checker_checked {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 3px;
+  font-size: 2em;
+}
+
+.gallery-items__item {
+  padding-left: 0;
+  padding-right: 0;
+}
