@@ -1,6 +1,18 @@
+function mediaFileLinkClick(event) {
+	event.preventDefault();
+	
+	var mediaFile = new MediaFile(this);
+	var fileGallery = new FileGallery(this);
+	
+	mediaFile.click();
+	fileGallery.itemClick();
+}
+
 $(document).ready(function() {
     var fileInfoContainer = $("#fileinfo");
-
+	
+	$('.media-file__link').on("click", mediaFileLinkClick);
+	
     fileInfoContainer.on("click", '[role="delete"]', function(e) {
         e.preventDefault();
 

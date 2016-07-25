@@ -1,11 +1,10 @@
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-	<div class="col-xs-4 col-sm-2 item" data-key="{%=file.id%}">
+	<div class="col-xs-4 col-sm-2 gallery-items__item media-file" data-key="{%=file.id%}">
 		{% if (file.thumbnailUrl) { %}
-			<a href="#mediafile" class="thumbnail">
-				<img src="{%=file.thumbnailUrl%}" alt="">
-				<span class="glyphicon glyphicon-check checked"></span>
+			<a href="#mediafile" class="thumbnail media-file__link">
+				<img src="{%=file.thumbnailUrl%}" alt="" class="media-file__image">
 			</a>
 		{% } %}
 		{% if (file.error) { %}

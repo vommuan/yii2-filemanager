@@ -81,7 +81,7 @@ class FileController extends Controller
 				'name'         => $handler->filename,
 				'type'         => $handler->type,
 				'size'         => $handler->size,
-				'deleteUrl'    => Url::to(['file/delete', 'id' => $handler->id]),
+				'deleteUrl'    => Url::to(['delete', 'id' => $handler->id]),
 				'deleteType'   => 'POST',
 			];
 		} else {

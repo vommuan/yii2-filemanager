@@ -18,9 +18,3 @@ function MediaFile(item) {
 		}
 	};
 }
-
-$('.media-file__link').on("click", function() {
-	var mediaFile = new MediaFile(this);
-	
-	mediaFile.click();
-});

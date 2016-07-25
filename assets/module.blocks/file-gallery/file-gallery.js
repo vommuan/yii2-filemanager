@@ -64,11 +64,3 @@ function FileGallery(item) {
 		}
 	}
 }
-
-$('.media-file__link').on("click", function(event) {
-	event.preventDefault();
-	
-	var fileGallery = new FileGallery(this);
-	
-	fileGallery.itemClick();
-});

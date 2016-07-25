@@ -32,12 +32,12 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			'attribute' => 'file',
 			'clientOptions' => [
 				'autoUpload' => true,
-				'filesContainer' => '.items',
+				'filesContainer' => '.gallery-items',
 				'prependFiles' => true,
 			],
 			'clientEvents' => [
 				'fileuploadcompleted' => 'function(event, data) {
-					$("[data-key=\'" + data.result.files[0].id + "\'] a").bind("click", mediaFileClick);
+					$("[data-key=\'" + data.result.files[0].id + "\'] .media-file__link").on("click", mediaFileLinkClick);
 				}',
 			],
 			'url' => ['upload'],
