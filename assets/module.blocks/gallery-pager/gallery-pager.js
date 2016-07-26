@@ -1,4 +1,6 @@
 function GalleryPager(gallery) {
+	'use strict';
+	
 	var _gallery = gallery; // jQuery
 	
 	function countPages() {
@@ -10,11 +12,7 @@ function GalleryPager(gallery) {
 		
 		var url = new Url();
 		url.query.page = newPageNumber;
-		url.protocol = '';
-		url.user = '';
-		url.pass = '';
-		url.host = '';
-		url.port = '';
+		url.protocol = url.user = url.pass = url.host = url.port = '';
 		
 		var newPageItem = $('<li/>').append(
 			$('<a/>', {
@@ -24,24 +22,18 @@ function GalleryPager(gallery) {
 			})
 		);
 		
-		var paginations = _gallery.find('.pagination');
-		
-		for (var i = 0; i < paginations.length; i++) {
-			paginations.eq(i).find('li.next').before(newPageItem.clone());
-		}
+		_gallery.find('.pagination').each(function(index, element) {
+			$(element).find('li.next').before(newPageItem.clone());
+		});
 	}
 	
 	function deletePage() {
-		var paginations = _gallery.find('.pagination');
-		
-		for (var i = 0; i < paginations.length; i++) {
-			paginations.eq(i).find('li:not(.prev, .next)').last().remove();
-		}
+		_gallery.find('.pagination').each(function(index, element) {
+			$(element).find('li:not(.prev, .next)').last().remove();
+		});
 	}
 	
 	this.update = function(pagination) {
-		console.log(pagination);
-		
 		if (countPages() < pagination.pages) {
 			addPage();
 		} else if (countPages() > pagination.pages) {
