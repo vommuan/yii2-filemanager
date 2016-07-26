@@ -13,10 +13,12 @@ class FileGalleryAsset extends AssetBundle
     
     public $js = [
 		'file-gallery/file-gallery.js',
+		'gallery-pager/gallery-pager.js',
     ];
     
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
+        'vommuan\filemanager\assets\DomUrlAsset',
         'vommuan\filemanager\assets\MediaFileAsset',
     ];
 }

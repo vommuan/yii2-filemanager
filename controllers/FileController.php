@@ -54,6 +54,21 @@ class FileController extends Controller
 			'dataProvider' => $model->search(),
         ]);
     }
+    
+    /**
+     * Ajax responce for pagination update
+     */
+    protected function getPagination()
+    {
+		$dataProvider = (new MediaFileSearch())->search();
+        $dataProvider->prepare();
+        
+        return [
+			'pages'       => $dataProvider->pagination->pageCount,
+			'files'       => $dataProvider->totalCount,
+			'filesOnPage' => MediaFileSearch::PAGE_SIZE,
+		];
+	}
 
     /**
      * Provides upload file
@@ -65,9 +80,7 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $model = new UploadFileForm();
-        
-        $handler = $model->getHandler();
+        $handler = (new UploadFileForm())->getHandler();
         
         $saved = $handler->save();
         
@@ -75,7 +88,7 @@ class FileController extends Controller
         
         if ($saved) {
 			$response['files'][] = [
-				'id'          => $handler->id,
+				'id'           => $handler->id,
 				'url'          => $handler->url,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
 				'name'         => $handler->filename,
@@ -83,6 +96,7 @@ class FileController extends Controller
 				'size'         => $handler->size,
 				'deleteUrl'    => Url::to(['delete', 'id' => $handler->id]),
 				'deleteType'   => 'POST',
+				'pagination'   => $this->getPagination(),
 			];
 		} else {
 			$response['files'][] = [

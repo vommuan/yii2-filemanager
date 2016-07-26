@@ -22,8 +22,8 @@
         "yiisoft/yii2-imagine": ">=2.0.3",
         "pendalf89/yii2-tinymce": "@dev",
         "kartik-v/yii2-widget-alert": "~1.1.0",
-        "kartik-v/yii2-widget-select2": "~2.0.8",
-        "2amigos/yii2-file-upload-widget": "~1.0.4"
+        "2amigos/yii2-file-upload-widget": "~1.0.4",
+        "bower-asset/domurl": "~2.1"
     },
     "autoload": {
         "psr-4": {

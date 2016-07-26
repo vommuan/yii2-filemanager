@@ -11,6 +11,11 @@ use vommuan\filemanager\Module;
 class MediaFileSearch extends MediaFile
 {
     /**
+     * Number of files on one page
+     */
+    const PAGE_SIZE = 30;
+    
+    /**
      * Creates data provider instance with search query applied
      * 
      * @param array $params
@@ -24,7 +29,7 @@ class MediaFileSearch extends MediaFile
 			'query' => $query,
 		]);
 
-		$dataProvider->pagination->defaultPageSize = 30;
+		$dataProvider->pagination->defaultPageSize = self::PAGE_SIZE;
 		
 		if (Module::getInstance()->manageOwnFiles || (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			$query->joinWith('owner');
