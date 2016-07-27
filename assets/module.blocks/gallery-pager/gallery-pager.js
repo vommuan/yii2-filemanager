@@ -4,7 +4,7 @@ function GalleryPager(gallery) {
 	var _gallery = gallery; // jQuery
 	
 	function countPages() {
-		return _gallery.find('.pagination').eq(0).find('li:not(.prev, .next)').length;
+		return _gallery.find('.pagination').eq(0).find('li:not(.first, .prev, .next, .last)').length;
 	}
 	
 	function addPage() {
@@ -28,9 +28,26 @@ function GalleryPager(gallery) {
 	}
 	
 	function deletePage() {
+		var reload = isLastPage();
+		
+		if (reload) {
+			var url = new Url();
+			url.query.page = getCurrentPage() - 1;
+			
+			if (0 == url.query.page) {
+				reload = false;
+			}
+		}
+		
 		_gallery.find('.pagination').each(function(index, element) {
-			$(element).find('li:not(.prev, .next)').last().remove();
+			if (countPages() > 1) {
+				$(element).find('li:not(.first, .prev, .next, .last)').last().remove();
+			}
 		});
+		
+		if (reload) {
+			window.location = url;
+		}
 	}
 	
 	this.update = function(pagination) {
@@ -46,4 +63,16 @@ function GalleryPager(gallery) {
 		
 		return true;
 	}
+	
+	function getCurrentPage() {
+		var pagination = _gallery.find('.pagination').eq(0);
+		
+		return pagination.find('li:not(.first, .prev, .next, .last)').index(pagination.find('li.active')) + 1;
+	}
+	
+	function isLastPage() {
+		return getCurrentPage() == countPages();
+	}
+	
+	this.isLastPage = isLastPage;
 }

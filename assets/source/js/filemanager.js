@@ -1,11 +1,8 @@
 function mediaFileLinkClick(event) {
 	event.preventDefault();
 	
-	var mediaFile = new MediaFile(this);
-	var fileGallery = new FileGallery(this);
-	
-	mediaFile.click();
-	fileGallery.itemClick();
+	(new MediaFile(this)).click();
+	(new FileGallery(this)).itemClick();
 }
 
 function deleteFile(event) {
@@ -28,9 +25,9 @@ function deleteFile(event) {
 				return;
 			}
 			
-			var galleryPager = new GalleryPager(
-				$("[data-key=\'" + response.id + "\']").closest(".file-gallery")
-			);
+			var gallery = $("[data-key=\'" + response.id + "\']").closest(".file-gallery");
+			var galleryPager = new GalleryPager(gallery);
+			var gallerySummary = new GallerySummary(gallery);
 			
 			$("#fileinfo").html('');
 			$('[data-key="' + response.id + '"]').fadeOut(function() {
@@ -38,6 +35,7 @@ function deleteFile(event) {
 			});
 			
 			galleryPager.update(response.pagination);
+			gallerySummary.update(response.pagination);
 		}
 	});
 }

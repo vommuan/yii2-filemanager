@@ -14,6 +14,7 @@ class FileGalleryAsset extends AssetBundle
     public $js = [
 		'file-gallery/file-gallery.js',
 		'gallery-pager/gallery-pager.js',
+		'gallery-summary/gallery-summary.js',
     ];
     
     public $depends = [
