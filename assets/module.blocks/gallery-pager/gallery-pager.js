@@ -10,9 +10,9 @@ function GalleryPager(gallery) {
 	function addPage() {
 		var newPageNumber = countPages() + 1;
 		
-		var url = new Url();
+		var url = new Url(); // library bower/domurl
 		url.query.page = newPageNumber;
-		url.protocol = url.user = url.pass = url.host = url.port = '';
+		url.protocol = url.user = url.pass = url.host = url.port = ''; // make relative url
 		
 		var newPageItem = $('<li/>').append(
 			$('<a/>', {
@@ -34,10 +34,16 @@ function GalleryPager(gallery) {
 	}
 	
 	this.update = function(pagination) {
+		if (countPages() == pagination.pages) {
+			return true;
+		}
+		
 		if (countPages() < pagination.pages) {
 			addPage();
 		} else if (countPages() > pagination.pages) {
 			deletePage();
 		}
+		
+		return true;
 	}
 }

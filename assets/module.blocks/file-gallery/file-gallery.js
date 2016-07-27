@@ -5,7 +5,7 @@ function FileGallery(item) {
 	var _item = item;
 	var _ajaxRequest = null;
 	
-	this.itemClick = function() {
+	function itemClick() {
 		toggleChecker();
 		loadDetails();
 	};
@@ -31,7 +31,15 @@ function FileGallery(item) {
 	}
 	
 	function setAjaxLoader() {
-		$("#fileinfo").html('<div class="loading"><span class="glyphicon glyphicon-refresh spin"></span></div>');
+		$("#fileinfo").html(
+			$('<div/>', {
+				'class': 'loading'
+			}).append(
+				$('<span/>', {
+					'class': 'glyphicon glyphicon-refresh spin'
+				})
+			)
+		);
 	}
 	
 	function loadDetails() {
@@ -62,5 +70,10 @@ function FileGallery(item) {
 		} else {
 			$("#fileinfo").html('');
 		}
+	}
+	
+	return {
+		'itemClick': itemClick,
+		'setAjaxLoader': setAjaxLoader
 	}
 }

@@ -8,49 +8,54 @@ function mediaFileLinkClick(event) {
 	fileGallery.itemClick();
 }
 
-$(document).ready(function() {
-    var fileInfoContainer = $("#fileinfo");
-	
-	$('.media-file__link').on("click", mediaFileLinkClick);
-	
-    fileInfoContainer.on("click", '[role="delete"]', function(e) {
-        e.preventDefault();
+function deleteFile(event) {
+	event.preventDefault();
+        
+	var confirmMessage = $(this).data("message");
 
-        var url = $(this).attr("href");
-        var id = $(this).data("id");
-        var confirmMessage = $(this).data("message");
+	$.ajax({
+		type: "POST",
+		url: $(this).attr("href"),
+		beforeSend: function() {
+			if (!confirm(confirmMessage)) {
+				return false;
+			}
+			
+			FileGallery().setAjaxLoader();
+		},
+		success: function(response) {
+			if (!response.success) {
+				return;
+			}
+			
+			var galleryPager = new GalleryPager(
+				$("[data-key=\'" + response.id + "\']").closest(".file-gallery")
+			);
+			
+			$("#fileinfo").html('');
+			$('[data-key="' + response.id + '"]').fadeOut(function() {
+				$(this).remove();
+			});
+			
+			galleryPager.update(response.pagination);
+		}
+	});
+}
+
+$(function() {
+	$('.file-gallery').on("click", '.media-file__link', mediaFileLinkClick);
+	
+    $("#fileinfo").on("click", '[role="delete"]', deleteFile);
+
+    $("#fileinfo").on("submit", "#control-form", function(event) {
+        event.preventDefault();
 
         $.ajax({
             type: "POST",
-            url: url,
-            data: "id=" + id,
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
             beforeSend: function() {
-                if (!confirm(confirmMessage)) {
-                    return false;
-                }
-                $("#fileinfo").html('<div class="loading"><span class="glyphicon glyphicon-refresh spin"></span></div>');
-            },
-            success: function(json) {
-                if (json.success) {
-                    $("#fileinfo").html('');
-                    $('[data-key="' + id + '"]').fadeOut();
-                }
-            }
-        });
-    });
-
-    fileInfoContainer.on("submit", "#control-form", function(e) {
-        e.preventDefault();
-
-        var url = $(this).attr("action");
-        var data = $(this).serialize();
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: data,
-            beforeSend: function() {
-                setAjaxLoader();
+                FileGallery().setAjaxLoader();
             },
             success: function(html) {
                 $("#fileinfo").html(html);

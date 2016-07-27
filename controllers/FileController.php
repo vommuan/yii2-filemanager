@@ -157,7 +157,11 @@ class FileController extends Controller
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		
-        return ['success' => 'true'];
+        return [
+			'success' => 'true',
+			'id' => $id,
+			'pagination' => $this->getPagination(),
+		];
     }
 
     /** 

@@ -37,10 +37,10 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 			],
 			'clientEvents' => [
 				'fileuploadcompleted' => 'function(event, data) {
-					var link = $("[data-key=\'" + data.result.files[0].id + "\'] .media-file__link");
-					var galleryPager = new GalleryPager(link.closest(".file-gallery"));
+					var galleryPager = new GalleryPager(
+						$("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery")
+					);
 					
-					link.on("click", mediaFileLinkClick);
 					galleryPager.update(data.result.files[0].pagination);
 				}',
 			],
