@@ -1,14 +1,14 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\Module;
 
 /* @var $this yii\web\View */
 /* @var $model vommuan\filemanager\models\MediaFile */
 /* @var $form yii\widgets\ActiveForm */
 
-$bundle = FilemanagerAsset::register($this);
+$bundle = FileManagerAsset::register($this);
 ?>
 
 <div class="row">

@@ -8,7 +8,7 @@ use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\widgets\PageHeader;
 use vommuan\filemanager\widgets\FileGallery;
 use vommuan\filemanager\assets\ModalAsset;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileManagerAsset;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 
 $this->params['breadcrumbs'][] = $this->title;
 
 ModalAsset::register($this);
-$this->params['moduleBundle'] = FilemanagerAsset::register($this);
+$this->params['moduleBundle'] = FileManagerAsset::register($this);
 ?>
 
 <?= PageHeader::widget([
