@@ -74,5 +74,6 @@ function GalleryPager(gallery) {
 		return getCurrentPage() == countPages();
 	}
 	
+	this.getCurrentPage = getCurrentPage;
 	this.isLastPage = isLastPage;
 }

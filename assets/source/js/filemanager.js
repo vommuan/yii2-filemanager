@@ -5,6 +5,20 @@ function mediaFileLinkClick(event) {
 	(new FileGallery(this)).itemClick();
 }
 
+function uploadFromNextPage(gallery) {
+	$.ajax({
+		type: "POST",
+		data: 'page=' + (new GalleryPager(gallery)).getCurrentPage(),
+		url: $(gallery).find('.gallery-items').eq(0).data('next-page-file-url'),
+		success: function(response) {
+			if (!response.success) {
+				return;
+			}
+			$(gallery).find('.gallery-items').eq(0).append(response.html);
+		}
+	});
+}
+
 function deleteFile(event) {
 	event.preventDefault();
         
@@ -32,6 +46,7 @@ function deleteFile(event) {
 			$("#fileinfo").html('');
 			$('[data-key="' + response.id + '"]').fadeOut(function() {
 				$(this).remove();
+				uploadFromNextPage(gallery);
 			});
 			
 			galleryPager.update(response.pagination);

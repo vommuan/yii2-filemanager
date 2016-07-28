@@ -16,6 +16,17 @@ class MediaFileSearch extends MediaFile
     const PAGE_SIZE = 30;
     
     /**
+     * Get last file on page
+     * 
+     * @param integer $page
+     * @return MediaFileSearch
+     */
+    public function searchLastOnPage($page) {
+		return self::find()->orderBy(['created_at' => SORT_DESC])
+			->offset($page * self::PAGE_SIZE - 1)->one();
+	}
+    
+    /**
      * Creates data provider instance with search query applied
      * 
      * @param array $params

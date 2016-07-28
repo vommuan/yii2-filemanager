@@ -56,6 +56,25 @@ class FileController extends Controller
     }
     
     /**
+     * Upload file from next page
+     */
+    public function actionNextPageFile()
+    {
+		$model = (new MediaFileSearch())->searchLastOnPage(Yii::$app->request->post('page'));
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return [
+			'success' => isset($model) ? true : false,
+			'html' => isset($model) 
+				? $this->renderPartial('next-page-file', [
+					'model' => $model,
+				])
+				: '',
+		];
+	}
+    
+    /**
      * Ajax responce for pagination update
      */
     protected function getPagination()
@@ -84,18 +103,12 @@ class FileController extends Controller
         
         $saved = $handler->save();
         
-        $bundle = FilemanagerAsset::register($this->view);
+        $bundle = FileGalleryAsset::register($this->view);
         
         if ($saved) {
 			$response['files'][] = [
 				'id'           => $handler->id,
-				'url'          => $handler->url,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
-				'name'         => $handler->filename,
-				'type'         => $handler->type,
-				'size'         => $handler->size,
-				'deleteUrl'    => Url::to(['delete', 'id' => $handler->id]),
-				'deleteType'   => 'POST',
 				'pagination'   => $this->getPagination(),
 			];
 		} else {
