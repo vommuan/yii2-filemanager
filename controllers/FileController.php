@@ -12,7 +12,7 @@ use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileGalleryAsset;
 use yii\helpers\Url;
 
 class FileController extends Controller
