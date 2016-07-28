@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\widgets\PageHeader;
 use vommuan\filemanager\widgets\FileGallery;
 use vommuan\filemanager\assets\ModalAsset;
@@ -36,8 +37,21 @@ $this->params['moduleBundle'] = FilemanagerAsset::register($this);
 				'prependFiles' => true,
 			],
 			'clientEvents' => [
+				'fileuploadstart' => 'function(event) {
+					$(".file-gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
+						$(this).fadeOut(function() {
+							$(this).remove();
+						})
+					});
+				}',
 				'fileuploadcompleted' => 'function(event, data) {
-					$("[data-key=\'" + data.result.files[0].id + "\'] .media-file__link").on("click", mediaFileLinkClick);
+					var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
+					
+					var galleryPager = new GalleryPager(gallery);
+					var gallerySummary = new GallerySummary(gallery);
+					
+					galleryPager.update(data.result.files[0].pagination);
+					gallerySummary.update(data.result.files[0].pagination);
 				}',
 			],
 			'url' => ['upload'],

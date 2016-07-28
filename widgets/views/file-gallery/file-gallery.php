@@ -10,6 +10,13 @@ $bundle = FileGalleryAsset::register($this);
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
 		'layout' => $this->render('__layout/file-gallery__layout'),
+		'pager' => [
+			'hideOnSinglePage' => false,
+			'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
+			'prevPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-backward']),
+			'nextPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-forward']),
+			'lastPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-forward']),
+		],
 		'itemOptions' => [
 			'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
 		],

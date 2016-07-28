@@ -54,6 +54,40 @@ class FileController extends Controller
 			'dataProvider' => $model->search(),
         ]);
     }
+    
+    /**
+     * Upload file from next page
+     */
+    public function actionNextPageFile()
+    {
+		$model = (new MediaFileSearch())->searchLastOnPage(Yii::$app->request->post('page'));
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return [
+			'success' => isset($model) ? true : false,
+			'html' => isset($model) 
+				? $this->renderPartial('next-page-file', [
+					'model' => $model,
+				])
+				: '',
+		];
+	}
+    
+    /**
+     * Ajax responce for pagination update
+     */
+    protected function getPagination()
+    {
+		$dataProvider = (new MediaFileSearch())->search();
+        $dataProvider->prepare();
+        
+        return [
+			'pages'       => $dataProvider->pagination->pageCount,
+			'files'       => $dataProvider->totalCount,
+			'filesOnPage' => MediaFileSearch::PAGE_SIZE,
+		];
+	}
 
     /**
      * Provides upload file
@@ -65,24 +99,17 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $model = new UploadFileForm();
-        
-        $handler = $model->getHandler();
+        $handler = (new UploadFileForm())->getHandler();
         
         $saved = $handler->save();
         
-        $bundle = FilemanagerAsset::register($this->view);
+        $bundle = FileGalleryAsset::register($this->view);
         
         if ($saved) {
 			$response['files'][] = [
-				'id'          => $handler->id,
-				'url'          => $handler->url,
+				'id'           => $handler->id,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
-				'name'         => $handler->filename,
-				'type'         => $handler->type,
-				'size'         => $handler->size,
-				'deleteUrl'    => Url::to(['delete', 'id' => $handler->id]),
-				'deleteType'   => 'POST',
+				'pagination'   => $this->getPagination(),
 			];
 		} else {
 			$response['files'][] = [
@@ -143,7 +170,11 @@ class FileController extends Controller
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		
-        return ['success' => 'true'];
+        return [
+			'success' => 'true',
+			'id' => $id,
+			'pagination' => $this->getPagination(),
+		];
     }
 
     /** 

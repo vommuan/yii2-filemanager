@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use vommuan\filemanager\assets\FilemanagerAsset;
@@ -40,7 +39,6 @@ $bundle = FilemanagerAsset::register($this);
 					], [
 						'class' => 'text-danger',
 						'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-						'data-id' => $model->mediaFile->id,
 						'role' => 'delete',
 					]
 				);?>
