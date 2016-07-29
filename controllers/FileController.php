@@ -12,8 +12,7 @@ use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\assets\FilemanagerAsset;
-use yii\helpers\Url;
+use vommuan\filemanager\assets\FileGalleryAsset;
 
 class FileController extends Controller
 {
@@ -50,21 +49,44 @@ class FileController extends Controller
 		$model = new MediaFileSearch();
 		
         return $this->render('index', [
-			'model' => $model,
+			'uploadModel' => new UploadFileForm(),
 			'dataProvider' => $model->search(),
         ]);
     }
-
-    public function actionUploadManager()
+    
+    /**
+     * Upload file from next page
+     */
+    public function actionNextPageFile()
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+		$model = (new MediaFileSearch())->searchLastOnPage(Yii::$app->request->post('page'));
 		
-        return $this->render('upload-manager', [
-            'model' => new UploadFileForm(),
-        ]);
-    }
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return [
+			'success' => isset($model) ? true : false,
+			'html' => isset($model) 
+				? $this->renderPartial('next-page-file', [
+					'model' => $model,
+				])
+				: '',
+		];
+	}
+    
+    /**
+     * Ajax responce for pagination update
+     */
+    protected function getPagination()
+    {
+		$dataProvider = (new MediaFileSearch())->search();
+        $dataProvider->prepare();
+        
+        return [
+			'pages'       => $dataProvider->pagination->pageCount,
+			'files'       => $dataProvider->totalCount,
+			'filesOnPage' => MediaFileSearch::PAGE_SIZE,
+		];
+	}
 
     /**
      * Provides upload file
@@ -76,23 +98,17 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $model = new UploadFileForm();
-        
-        $handler = $model->getHandler();
+        $handler = (new UploadFileForm())->getHandler();
         
         $saved = $handler->save();
         
-        $bundle = FilemanagerAsset::register($this->view);
+        $bundle = FileGalleryAsset::register($this->view);
         
         if ($saved) {
 			$response['files'][] = [
-				'url'          => $handler->url,
+				'id'           => $handler->id,
 				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
-				'name'         => $handler->filename,
-				'type'         => $handler->type,
-				'size'         => $handler->size,
-				'deleteUrl'    => Url::to(['file/delete', 'id' => $handler->id]),
-				'deleteType'   => 'POST',
+				'pagination'   => $this->getPagination(),
 			];
 		} else {
 			$response['files'][] = [
@@ -130,10 +146,8 @@ class FileController extends Controller
 
         Yii::$app->session->setFlash('mediafileUpdateResult', $message);
 
-        Yii::$app->assetManager->bundles = false;
-        return $this->renderAjax('info', [
+        return $this->renderAjax('details', [
             'model' => $model,
-            'strictThumb' => null,
         ]);
     }
 
@@ -154,17 +168,20 @@ class FileController extends Controller
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		
-        return ['success' => 'true'];
+        return [
+			'success' => 'true',
+			'id' => $id,
+			'pagination' => $this->getPagination(),
+		];
     }
 
     /** 
-     * Render model info
+     * Render file information
      * 
      * @param int $id
-     * @param string $strictThumb only this thumb will be selected
      * @return string
      */
-    public function actionInfo($id, $strictThumb = null)
+    public function actionDetails($id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -174,10 +191,8 @@ class FileController extends Controller
 			'mediaFile' => MediaFile::findOne($id)
         ]);
         
-        Yii::$app->assetManager->bundles = false;
-        return $this->renderAjax('info', [
+        return $this->renderAjax('details', [
             'model' => $model,
-            'strictThumb' => $strictThumb,
         ]);
     }
 }

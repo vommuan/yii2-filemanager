@@ -1,12 +1,11 @@
 <?php
-use yii\helpers\ArrayHelper;
-use yii\widgets\ListView;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\bootstrap\ActiveForm;
+use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
+use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\widgets\PageHeader;
+use vommuan\filemanager\widgets\FileGallery;
 use vommuan\filemanager\assets\ModalAsset;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileManagerAsset;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,46 +15,51 @@ $this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 
 $this->params['breadcrumbs'][] = $this->title;
 
 ModalAsset::register($this);
-$this->params['moduleBundle'] = FilemanagerAsset::register($this);
+$this->params['moduleBundle'] = FileManagerAsset::register($this);
 ?>
 
-<div class="page-header">
-	<h1>
-		<span class="glyphicon glyphicon-picture"></span>
-		<?= $this->title;?>
-	</h1>
-</div>
+<?= PageHeader::widget([
+	'icon' => 'picture',
+	'title' => $this->title,
+]);?>
 
 <div class="row">
-	<div id="filemanager" class="col-xs-12" data-url-info="<?= Url::to(['file/info']);?>">
-		<?= ListView::widget([
-			'dataProvider' => $dataProvider,
-			'layout' => 
-				Html::tag('div', '{summary}', ['class' => 'col-xs-12']) 
-				. Html::tag('div', '{pager}', ['class' => 'col-xs-12'])
-				. Html::tag('div', '{items}', ['class' => 'col-xs-12 col-sm-8 items'])
-				. Html::tag(
-					'div', 
-					Html::tag('div', '', ['id' => 'fileinfo']),
-					['class' => 'col-xs-12 col-sm-4']
-				)
-				. Html::tag('div', '{pager}', ['class' => 'col-xs-12']),
-			'options' => [
-				'class' => 'files-gallery row',
+	<div class="col-xs-12">
+		<?= FileUploadUI::widget([
+			'model' => $uploadModel,
+			'attribute' => 'file',
+			'clientOptions' => [
+				'autoUpload' => true,
+				'filesContainer' => '.gallery-items',
+				'prependFiles' => true,
 			],
-			'itemOptions' => [
-				'class' => 'col-xs-4 col-sm-2 item',
+			'clientEvents' => [
+				'fileuploadstart' => 'function(event) {
+					$(".file-gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
+						$(this).fadeOut(function() {
+							$(this).remove();
+						})
+					});
+				}',
+				'fileuploadcompleted' => 'function(event, data) {
+					var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
+					
+					var galleryPager = new GalleryPager(gallery);
+					var gallerySummary = new GallerySummary(gallery);
+					
+					galleryPager.update(data.result.files[0].pagination);
+					gallerySummary.update(data.result.files[0].pagination);
+				}',
 			],
-			'itemView' => function ($model, $key, $index, $widget) {
-				return Html::a(
-					Html::img($model->getIcon($this->params['moduleBundle']->baseUrl))
-						. Html::tag('span', '', ['class' => 'glyphicon glyphicon-check checked']),
-					'#mediafile', [
-						'class' => 'thumbnail',
-						'data-key' => $key,
-					]
-				);
-			},
+			'url' => ['upload'],
+			'formView' => '/fileuploadui/form',
+			'uploadTemplateView' => '/fileuploadui/upload',
+			'downloadTemplateView' => '/fileuploadui/download',
+			'gallery' => false,
 		]);?>
 	</div>
 </div>
+
+<?= FileGallery::widget([
+	'dataProvider' => $dataProvider,
+]);?>

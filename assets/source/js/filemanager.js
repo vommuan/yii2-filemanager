@@ -1,76 +1,74 @@
-$(document).ready(function() {
-    var ajaxRequest = null,
-        fileInfoContainer = $("#fileinfo"),
-        strictThumb = $(window.frameElement).parents('[role="filemanager-modal"]').attr("data-thumb");
+function mediaFileLinkClick(event) {
+	event.preventDefault();
+	
+	(new MediaFile(this)).click();
+	(new FileGallery(this)).itemClick();
+}
 
-    function setAjaxLoader() {
-        $("#fileinfo").html('<div class="loading"><span class="glyphicon glyphicon-refresh spin"></span></div>');
-    }
+function uploadFromNextPage(gallery) {
+	$.ajax({
+		type: "POST",
+		data: 'page=' + (new GalleryPager(gallery)).getCurrentPage(),
+		url: $(gallery).find('.gallery-items').eq(0).data('next-page-file-url'),
+		success: function(response) {
+			if (!response.success) {
+				return;
+			}
+			$(gallery).find('.gallery-items').eq(0).append(response.html);
+		}
+	});
+}
 
-    $('[href="#mediafile"]').on("click", function(e) {
-        e.preventDefault();
+function deleteFile(event) {
+	event.preventDefault();
+        
+	var confirmMessage = $(this).data("message");
 
-        if (ajaxRequest) {
-            ajaxRequest.abort();
-            ajaxRequest = null;
-        }
+	$.ajax({
+		type: "POST",
+		url: $(this).attr("href"),
+		beforeSend: function() {
+			if (!confirm(confirmMessage)) {
+				return false;
+			}
+			
+			FileGallery().setAjaxLoader();
+		},
+		success: function(response) {
+			if (!response.success) {
+				return;
+			}
+			
+			var gallery = $("[data-key=\'" + response.id + "\']").closest(".file-gallery");
+			var galleryPager = new GalleryPager(gallery);
+			var gallerySummary = new GallerySummary(gallery);
+			
+			$("#fileinfo").html('');
+			$('[data-key="' + response.id + '"]').fadeOut(function() {
+				$(this).remove();
+				uploadFromNextPage(gallery);
+			});
+			
+			galleryPager.update(response.pagination);
+			gallerySummary.update(response.pagination);
+		}
+	});
+}
 
-        $(".item a").removeClass("active");
-        $(this).addClass("active");
-        var id = $(this).attr("data-key"),
-            url = $("#filemanager").attr("data-url-info");
+$(function() {
+	$('.file-gallery').on("click", '.media-file__link', mediaFileLinkClick);
+	
+    $("#fileinfo").on("click", '[role="delete"]', deleteFile);
 
-        ajaxRequest = $.ajax({
-            type: "GET",
-            url: url,
-            data: "id=" + id + "&strictThumb=" + strictThumb,
-            beforeSend: function() {
-                setAjaxLoader();
-            },
-            success: function(html) {
-                $("#fileinfo").html(html);
-            }
-        });
-    });
-
-    fileInfoContainer.on("click", '[role="delete"]', function(e) {
-        e.preventDefault();
-
-        var url = $(this).attr("href"),
-            id = $(this).attr("data-id"),
-            confirmMessage = $(this).attr("data-message");
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: "id=" + id,
-            beforeSend: function() {
-                if (!confirm(confirmMessage)) {
-                    return false;
-                }
-                $("#fileinfo").html('<div class="loading"><span class="glyphicon glyphicon-refresh spin"></span></div>');
-            },
-            success: function(json) {
-                if (json.success) {
-                    $("#fileinfo").html('');
-                    $('[data-key="' + id + '"]').fadeOut();
-                }
-            }
-        });
-    });
-
-    fileInfoContainer.on("submit", "#control-form", function(e) {
-        e.preventDefault();
-
-        var url = $(this).attr("action"),
-            data = $(this).serialize();
+    $("#fileinfo").on("submit", "#control-form", function(event) {
+        event.preventDefault();
 
         $.ajax({
             type: "POST",
-            url: url,
-            data: data,
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
             beforeSend: function() {
-                setAjaxLoader();
+                FileGallery().setAjaxLoader();
             },
             success: function(html) {
                 $("#fileinfo").html(html);

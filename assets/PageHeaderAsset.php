@@ -1,15 +1,16 @@
 <?php
-
 namespace vommuan\filemanager\assets;
 
 use yii\web\AssetBundle;
 
-class ModalAsset extends AssetBundle
+class PageHeaderAsset extends AssetBundle
 {
-    public $sourcePath = '@filemanager/assets/source';
+    public $sourcePath = '@filemanager/assets/module.blocks';
+    
     public $css = [
-        'css/modal.css',
+        'page-header/page-header.css',
     ];
+    
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
     ];

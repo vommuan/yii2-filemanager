@@ -21,10 +21,6 @@ class TopMenu extends Widget
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-picture']) . ' ' . Module::t('main', 'Files'),
 				'url' => Url::to([$this->controller . '/index']),
 				'encode' => false,
-			], [
-				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-upload']) . ' ' . Module::t('main', 'Upload'),
-				'url' => Url::to([$this->controller . '/upload-manager']),
-				'encode' => false,
 			],
 		];
 	}

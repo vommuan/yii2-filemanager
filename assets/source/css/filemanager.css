@@ -1,44 +1,24 @@
 /*------------------------------------*\
-    #VARIABLES
-\*------------------------------------*/
-/*------------------------------------*\
-    #MAIN
-\*------------------------------------*/
-#header {
-  font-size: 1.4em;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 5px;
-}
-/*------------------------------------*\
     #ITEMS
 \*------------------------------------*/
-.files-gallery .items .item {
+.template-upload {
   padding-left: 0;
   padding-right: 0;
 }
 
-.files-gallery .items .item a {
-  position: relative;
-  display: inline-block;
+.template-upload .preview .progress {
+  margin: 20px 0;
+  width: 100%;
 }
-.files-gallery .items .item a img:hover {
-  opacity: 0.9;
-}
-.files-gallery .items .item a .checked {
+
+.template-upload .preview canvas {
   display: none;
-  position: absolute;
-  top: 5px;
-  right: 6px;
-  font-size: 2em;
 }
-.files-gallery .items .item .active {
-  outline: 5px solid #5ba6f7;
-  outline-offset: -5px;
+
+.template-upload .thumbnail {
+  margin-bottom: 0;
 }
-.files-gallery .items .item .active .checked {
-  display: inline-block;
-}
+
 /*------------------------------------*\
     #PAGINATION
 \*------------------------------------*/

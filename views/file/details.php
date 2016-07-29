@@ -1,15 +1,14 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileGalleryAsset;
 use vommuan\filemanager\Module;
 
 /* @var $this yii\web\View */
 /* @var $model vommuan\filemanager\models\MediaFile */
 /* @var $form yii\widgets\ActiveForm */
 
-$bundle = FilemanagerAsset::register($this);
+$bundle = FileGalleryAsset::register($this);
 ?>
 
 <div class="row">
@@ -35,12 +34,11 @@ $bundle = FilemanagerAsset::register($this);
 			<li>
 				<?= Html::a(
 					Module::t('main', 'Delete'), [
-						'file/delete/', 
+						'delete',
 						'id' => $model->mediaFile->id
 					], [
 						'class' => 'text-danger',
 						'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-						'data-id' => $model->mediaFile->id,
 						'role' => 'delete',
 					]
 				);?>
@@ -54,7 +52,7 @@ $bundle = FilemanagerAsset::register($this);
 		<?php 
 		$form = ActiveForm::begin([
 			'action' => [
-				'file/update',
+				'update',
 				'id' => $model->mediaFile->id,
 			],
 			'enableClientValidation' => false,
