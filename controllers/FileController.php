@@ -146,7 +146,6 @@ class FileController extends Controller
 
         Yii::$app->session->setFlash('mediafileUpdateResult', $message);
 
-        Yii::$app->assetManager->bundles = false;
         return $this->renderAjax('details', [
             'model' => $model,
         ]);
