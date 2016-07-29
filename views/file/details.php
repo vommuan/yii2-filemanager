@@ -34,7 +34,7 @@ $bundle = FileGalleryAsset::register($this);
 			<li>
 				<?= Html::a(
 					Module::t('main', 'Delete'), [
-						'file/delete/', 
+						'delete',
 						'id' => $model->mediaFile->id
 					], [
 						'class' => 'text-danger',
@@ -52,7 +52,7 @@ $bundle = FileGalleryAsset::register($this);
 		<?php 
 		$form = ActiveForm::begin([
 			'action' => [
-				'file/update',
+				'update',
 				'id' => $model->mediaFile->id,
 			],
 			'enableClientValidation' => false,
