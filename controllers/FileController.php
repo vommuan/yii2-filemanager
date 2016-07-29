@@ -13,7 +13,6 @@ use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
 use vommuan\filemanager\assets\FileGalleryAsset;
-use yii\helpers\Url;
 
 class FileController extends Controller
 {
@@ -193,7 +192,6 @@ class FileController extends Controller
 			'mediaFile' => MediaFile::findOne($id)
         ]);
         
-        Yii::$app->assetManager->bundles = false;
         return $this->renderAjax('details', [
             'model' => $model,
         ]);

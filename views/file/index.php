@@ -1,7 +1,4 @@
 <?php
-use yii\widgets\ListView;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFileSearch;
