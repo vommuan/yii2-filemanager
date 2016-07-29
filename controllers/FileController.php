@@ -12,8 +12,7 @@ use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\assets\FilemanagerAsset;
-use yii\helpers\Url;
+use vommuan\filemanager\assets\FileGalleryAsset;
 
 class FileController extends Controller
 {
@@ -147,7 +146,6 @@ class FileController extends Controller
 
         Yii::$app->session->setFlash('mediafileUpdateResult', $message);
 
-        Yii::$app->assetManager->bundles = false;
         return $this->renderAjax('details', [
             'model' => $model,
         ]);
@@ -193,7 +191,6 @@ class FileController extends Controller
 			'mediaFile' => MediaFile::findOne($id)
         ]);
         
-        Yii::$app->assetManager->bundles = false;
         return $this->renderAjax('details', [
             'model' => $model,
         ]);

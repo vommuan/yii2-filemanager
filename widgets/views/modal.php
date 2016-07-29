@@ -1,9 +1,9 @@
 <?php
 use vommuan\filemanager\assets\ModalAsset;
-use vommuan\filemanager\assets\FilemanagerAsset;
+use vommuan\filemanager\assets\FileManagerAsset;
 
 ModalAsset::register($this);
-$this->params['moduleBundle'] = FilemanagerAsset::register($this);
+$this->params['moduleBundle'] = FileManagerAsset::register($this);
 ?>
 
 <div role="filemanager-modal" class="modal" tabindex="-1"

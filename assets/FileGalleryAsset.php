@@ -5,21 +5,20 @@ use yii\web\AssetBundle;
 
 class FileGalleryAsset extends AssetBundle
 {
-    public $sourcePath = '@filemanager/assets/module.blocks';
+    public $sourcePath = '@filemanager/assets/module.blocks/file-gallery';
     
     public $css = [
-        'file-gallery/file-gallery.css',
+        'file-gallery.css',
     ];
     
     public $js = [
-		'file-gallery/file-gallery.js',
-		'gallery-pager/gallery-pager.js',
-		'gallery-summary/gallery-summary.js',
+		'file-gallery.js',
     ];
     
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
-        'vommuan\filemanager\assets\DomUrlAsset',
         'vommuan\filemanager\assets\MediaFileAsset',
+        'vommuan\filemanager\assets\GalleryPagerAsset',
+        'vommuan\filemanager\assets\GallerySummaryAsset',
     ];
 }

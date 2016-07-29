@@ -4,7 +4,7 @@ namespace vommuan\filemanager\assets;
 
 use yii\web\AssetBundle;
 
-class FilemanagerAsset extends AssetBundle
+class FileManagerAsset extends AssetBundle
 {
     public $sourcePath = '@filemanager/assets/source';
     
