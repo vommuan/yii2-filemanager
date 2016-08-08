@@ -114,7 +114,7 @@ class FileController extends Controller
 			$response['files'][] = [
 				'name'  => Inflector::slug($handler->file->baseName) . '.' . $handler->file->extension,
 				'size'  => $handler->file->size,
-				'error' => Module::t('main', 'This file already exists.'),
+				'error' => Module::t('main', 'This file already exists.'), // TODO: handle different error types
 			];
 		}
         
