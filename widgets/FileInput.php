@@ -81,7 +81,12 @@ class FileInput extends InputWidget
      * @var string Optional, if set, in container will be inserted selected image
      */
     public $imageContainer = '';
-
+	
+	/**
+	 * @var string default image url
+	 */
+	public $defaultImage = '';
+	
     /**
      * @var string JavaScript function, which will be called before insert file data to input.
      * Argument data contains file data.
@@ -125,6 +130,7 @@ class FileInput extends InputWidget
         $this->resetButtonOptions['role'] = 'clear-input';
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
+        $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
     }
 
     /**

@@ -82,7 +82,14 @@ $(document).ready(function() {
 	$('[role="clear-input"]').on("click", function(e) {
 		e.preventDefault();
 
-		$("#" + $(this).attr("data-clear-element-id")).val("");
-		$($(this).attr("data-image-container")).empty();
+		$("#" + $(this).data('clear-element-id')).val('');
+		
+		var imageContainer = $($(this).data('image-container'));
+		var defaultImage = $('<img/>', {
+			'src': $(this).data('default-image')
+		});
+		
+		imageContainer.empty();
+		imageContainer.append(defaultImage);
 	});
 });
