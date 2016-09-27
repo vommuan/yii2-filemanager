@@ -103,8 +103,6 @@ class FileController extends Controller
         
         $mediaFile = (new UploadFileForm())->getHandler();
         
-        //$response = [];
-        
         try {
 			$saved = $mediaFile->save();
 			

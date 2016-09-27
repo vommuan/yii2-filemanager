@@ -173,10 +173,7 @@ class ImageThumbnail extends Model
      */
     protected function getPath($alias)
     {
-		return implode('/', [
-			$this->handler->routes->basePath,
-			$this->getUrl($alias),
-		]);
+		return $this->handler->routes->getPathByUrl($this->getUrl($alias));
 	}
 
     /**
@@ -241,7 +238,7 @@ class ImageThumbnail extends Model
         $thumbs = $this->getThumbnails();
         
         for ($i = 0; $i < count($thumbs); $i++) {
-			$thumbnailFile = $this->handler->routes->basePath . '/' . $thumbs[$i]->url;
+			$thumbnailFile = $this->handler->routes->getPathByUrl($thumbs[$i]->url);
 			if (is_file($thumbnailFile)) {
 				unlink($thumbnailFile);
 			}

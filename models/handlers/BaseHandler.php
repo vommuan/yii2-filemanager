@@ -75,7 +75,7 @@ class BaseHandler extends Model
 	{
 		return (bool) MediaFile::findOne([
 			'url' => implode('/', [
-				$this->_routes->structure,
+				$this->_routes->urlPath,
 				$filename,
 			]),
 		]);
@@ -131,10 +131,7 @@ class BaseHandler extends Model
 			return false;
 		}
 		
-		return implode('/', [
-			$this->_routes->structure,
-			$this->activeRecord->filename,
-		]);
+		return $this->_routes->urlPath . '/' . $this->activeRecord->filename;
 	}
 	
 	/**
@@ -148,10 +145,7 @@ class BaseHandler extends Model
 			return false;
 		}
 		
-		return implode('/', [
-			$this->_routes->basePath,
-			$this->activeRecord->url,
-		]);
+		return $this->_routes->getPathByUrl($this->activeRecord->url);
 	}
 	
 	/**
@@ -229,13 +223,10 @@ class BaseHandler extends Model
 	 */
 	public function delete()
 	{
-		$status = unlink($this->_routes->basePath . '/' . $this->activeRecord->url);
+		$status = unlink($this->_routes->getPathByUrl($this->activeRecord->url));
 		
 		FileHelper::removeDirectory(
-			implode('/', [
-				$this->_routes->basePath,
-				pathinfo($this->activeRecord->url, PATHINFO_DIRNAME),
-			]),
+			$this->_routes->getPathByUrl(pathinfo($this->activeRecord->url, PATHINFO_DIRNAME)),
 			['onlyEmpty' => true]
 		);
 		
