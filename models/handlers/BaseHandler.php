@@ -4,6 +4,8 @@ namespace vommuan\filemanager\models\handlers;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
+use yii\base\Exception;
+use yii\base\UserException;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\Routes;
@@ -159,7 +161,12 @@ class BaseHandler extends Model
 	 */
 	protected function fileSave()
 	{
-		FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
+		try {
+			FileHelper::createDirectory($this->_routes->absolutePath, 0777, true);
+		} catch (Exception $e) {
+			throw new UserException($e->getMessage(), $e->getCode());
+		}
+		
 		$this->activeRecord->file->saveAs($this->absoluteFileName);
 		$this->afterFileSave();
 		

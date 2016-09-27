@@ -42,6 +42,11 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 					});
 				}',
 				'fileuploadcompleted' => 'function(event, data) {
+					if (undefined !== data.result.files[0].error) {
+						alert(data.result.files[0].error);
+						return;
+					}
+					
 					var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
 					
 					var galleryPager = new GalleryPager(gallery);

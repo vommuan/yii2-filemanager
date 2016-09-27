@@ -1,4 +1,5 @@
 <?php
+
 namespace vommuan\filemanager\models\handlers;
 
 use yii\base\Model;
@@ -45,12 +46,12 @@ class HandlerFactory extends Model
 	 * 
 	 * @return mixed
 	 */
-	public static function getHandler($activeRecord)
+	public static function getHandler($mediaFile)
 	{
-		if (self::isImage($activeRecord->type)) {
-			return new ImageHandler(['activeRecord' => $activeRecord]);
+		if (self::isImage($mediaFile->type)) {
+			return new ImageHandler(['activeRecord' => $mediaFile]);
 		} else {
-			return new BaseHandler(['activeRecord' => $activeRecord]);
+			return new BaseHandler(['activeRecord' => $mediaFile]);
 		}
 	}
 }
