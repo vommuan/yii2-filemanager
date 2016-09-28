@@ -6,10 +6,10 @@ use vommuan\filemanager\assets\FileGalleryAsset;
 
 $bundle = FileGalleryAsset::register($this);
 ?>
-<div class="file-gallery" data-details-url="<?= Url::to(['details']);?>" data-multiple='false'>
+<div class="file-gallery" data-details-url="<?= Url::to(['/filemanager/file/details', 'modal' => $modal]);?>" data-multiple='false'>
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
-		'layout' => $this->render('__layout/file-gallery__layout'),
+		'layout' => $this->render('file-gallery__layout'),
 		'pager' => [
 			'hideOnSinglePage' => false,
 			'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
@@ -21,7 +21,7 @@ $bundle = FileGalleryAsset::register($this);
 			'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
 		],
 		'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
-			return $this->render('__item/gallery-items__item', [
+			return $this->render('gallery-items__item', [
 				'model' => $model,
 				'bundle' => $bundle,
 			]);

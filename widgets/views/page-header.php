@@ -1,4 +1,5 @@
 <?php
+
 use vommuan\filemanager\assets\PageHeaderAsset;
 
 PageHeaderAsset::register($this);

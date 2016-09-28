@@ -4,6 +4,7 @@ namespace vommuan\filemanager\widgets;
 use Yii;
 use yii\helpers\Html;
 use yii\widgets\InputWidget;
+use vommuan\filemanager\assets\FileInputAsset;
 use yii\helpers\Url;
 
 /**
@@ -126,19 +127,18 @@ class FileInput extends InputWidget
         }
 
         $this->buttonOptions['role'] = 'filemanager-launch';
-        $this->buttonOptions['data-toogle'] = 'modal';
-        $this->buttonOptions['data-target'] = '#filemanager-modal';
         $this->resetButtonOptions['role'] = 'clear-input';
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
         $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
     }
 
-	protected function renderInput()
-	{
-		$replace = [];
-		
-		if ($this->hasModel()) {
+    /**
+     * Runs the widget.
+     */
+    public function run()
+    {
+        if ($this->hasModel()) {
             $replace['{input}'] = Html::activeTextInput($this->model, $this->attribute, $this->options);
         } else {
             $replace['{input}'] = Html::textInput($this->name, $this->value, $this->options);
@@ -146,23 +146,22 @@ class FileInput extends InputWidget
 
         $replace['{button}'] = Html::tag($this->buttonTag, $this->buttonName, $this->buttonOptions);
         $replace['{reset-button}'] = Html::tag($this->resetButtonTag, $this->resetButtonName, $this->resetButtonOptions);
-		
-		return strtr($this->template, $replace);
-	}
 
-    /**
-     * Runs the widget.
-     */
-    public function run()
-    {
+        FileInputAsset::register($this->view);
+
         if (!empty($this->callbackBeforeInsert)) {
-            $this->view->registerJs(
-				"$('#{$this->options['id']}').on('fileInsert', {$this->callbackBeforeInsert});"
-			);
+            $this->view->registerJs('$("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');');
         }
 
-        return $this->render('modal', [
-			'input' => $this->renderInput(),
+        $modal = $this->render('modal-old', [
+            'inputId' => $this->options['id'],
+            'btnId' => $this->buttonOptions['id'],
+            'frameId' => $this->options['id'] . '-frame',
+            'frameSrc' => Url::to($this->frameSrc), 
+            'imageContainer' => $this->imageContainer,
+            'pasteData' => $this->pasteData,
         ]);
+
+        return strtr($this->template, $replace) . $modal;
     }
 }

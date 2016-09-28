@@ -47,11 +47,9 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-		$model = new MediaFileSearch();
-		
         return $this->render('index', [
 			'uploadModel' => new UploadFileForm(),
-			'dataProvider' => $model->search(),
+			'dataProvider' => (new MediaFileSearch())->search(),
         ]);
     }
     
@@ -134,10 +132,12 @@ class FileController extends Controller
 
     /**
      * Updated mediafile by id
+     * 
+     * @param $modal
      * @param $id
      * @return array
      */
-    public function actionUpdate($id)
+    public function actionUpdate($modal, $id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -157,6 +157,7 @@ class FileController extends Controller
 
         return $this->renderAjax('details', [
             'model' => $model,
+            'modal' => $modal,
         ]);
     }
 
@@ -187,10 +188,11 @@ class FileController extends Controller
     /** 
      * Render file information
      * 
+     * @param boolean $modal
      * @param int $id
      * @return string
      */
-    public function actionDetails($id)
+    public function actionDetails($modal, $id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -202,6 +204,7 @@ class FileController extends Controller
         
         return $this->renderAjax('details', [
             'model' => $model,
+            'modal' => $modal,
         ]);
     }
 }

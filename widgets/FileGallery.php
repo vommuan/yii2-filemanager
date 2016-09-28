@@ -9,11 +9,13 @@ use yii\base\Widget;
 class FileGallery extends Widget
 {
 	public $dataProvider;
+	public $modal;
 	
 	public function run()
 	{
 		return $this->render('file-gallery/file-gallery', [
 			'dataProvider' => $this->dataProvider,
+			'modal' => $this->modal,
 		]);
 	}
 }

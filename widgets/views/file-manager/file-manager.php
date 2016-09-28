@@ -1,4 +1,5 @@
 <?php
+
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFileSearch;
@@ -9,8 +10,6 @@ use vommuan\filemanager\assets\FileManagerAsset;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Module::t('main', 'Files');
 
 ModalAsset::register($this);
 $this->params['moduleBundle'] = FileManagerAsset::register($this);
@@ -40,6 +39,11 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 					});
 				}',
 				'fileuploadcompleted' => 'function(event, data) {
+					if (undefined !== data.result.files[0].error) {
+						alert(data.result.files[0].error);
+						return;
+					}
+					
 					var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
 					
 					var galleryPager = new GalleryPager(gallery);
@@ -49,10 +53,10 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 					gallerySummary.update(data.result.files[0].pagination);
 				}',
 			],
-			'url' => ['upload'],
-			'formView' => '/fileuploadui/form',
-			'uploadTemplateView' => '/fileuploadui/upload',
-			'downloadTemplateView' => '/fileuploadui/download',
+			'url' => ['filemanager/file/upload'],
+			'formView' => '@filemanager/views/fileuploadui/form',
+			'uploadTemplateView' => '@filemanager/views/fileuploadui/upload',
+			'downloadTemplateView' => '@filemanager/views/fileuploadui/download',
 			'gallery' => false,
 		]);?>
 	</div>
@@ -60,4 +64,5 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 
 <?= FileGallery::widget([
 	'dataProvider' => $dataProvider,
+	'modal' => $modal,
 ]);?>
