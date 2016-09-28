@@ -52,6 +52,11 @@ class Module extends \yii\base\Module
      * @var boolean
      */
     public $thumbsAutoCreate = true;
+    
+    /**
+     * @var boolean
+     */
+    public $thumbnailSaveOriginProportions = false;
 
     /**
      * @var array max image sizes, [width, height]

@@ -23,9 +23,7 @@ class ImageHandler extends BaseHandler
 	 */
 	protected function initImageThumbnail()
 	{
-		$this->_imageThumbnail = new ImageThumbnail([
-			'handler' => $this,
-		]);
+		$this->_imageThumbnail = new ImageThumbnail(['handler' => $this]);
 	}
 	
 	/**
