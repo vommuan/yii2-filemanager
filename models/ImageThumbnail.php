@@ -95,6 +95,42 @@ class ImageThumbnail extends Model
 		
 		return $this->_config[$alias]['size'];
 	}
+	
+	/**
+	 * Compute proportions for thumbnail
+	 * 
+	 * @param string $filePath origin file absolute path 
+	 * @param array $sizes original thumbnail sizes
+	 * @return array modify sizes
+	 */
+	protected function computeProportions($filePath, $sizes)
+	{
+		if (Module::getInstance()->thumbnailSaveOriginProportions) {
+			return $sizes;
+		} 
+		
+		$fileSizes = array_slice(getimagesize($filePath), 0, 2);
+		
+		if ($fileSizes[0] > $sizes[0] && $fileSizes[1] > $sizes[1]) {
+			return $sizes;
+		}
+		
+		$newSizes = [];
+		
+		if ($fileSizes[0] < $sizes[0]) {
+			$newSizes[0] = $fileSizes[0];
+			$newSizes[1] = round($fileSizes[0] * $sizes[1] / $sizes[0]);
+			
+			return $newSizes;
+		}
+		
+		if ($fileSizes[1] < $sizes[1]) {
+			$newSizes[1] = $fileSizes[1];
+			$newSizes[0] = round($fileSizes[1] * $sizes[0] / $sizes[1]);
+			
+			return $newSizes;
+		}
+	}
     
     /**
      * Create thumbnail file for this image
@@ -114,15 +150,16 @@ class ImageThumbnail extends Model
 			true
 		);
 		
-		list ($width, $height) = $sizes;
+		list ($width, $height) = $this->computeProportions($this->handler->absoluteFileName, $sizes);
 		
 		Image::$driver = [Image::DRIVER_GD2, Image::DRIVER_GMAGICK, Image::DRIVER_IMAGICK];
-		Image::thumbnail($this->handler->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)->save(
-			implode('/', [
-				$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url),
-				$this->generateFileName($width, $height),
-			])
-		);
+		Image::thumbnail($this->handler->absoluteFileName, $width, $height, ImageInterface::THUMBNAIL_OUTBOUND)
+			->save(
+				implode('/', [
+					$this->handler->routes->getThumbsAbsolutePath($this->handler->activeRecord->url),
+					$this->generateFileName($width, $height),
+				])
+			);
 		
 		$thumbnail = new Thumbnail([
 			'alias' => $alias,
@@ -173,10 +210,7 @@ class ImageThumbnail extends Model
      */
     protected function getPath($alias)
     {
-		return implode('/', [
-			$this->handler->routes->basePath,
-			$this->getUrl($alias),
-		]);
+		return $this->handler->routes->getPathByUrl($this->getUrl($alias));
 	}
 
     /**
@@ -241,7 +275,7 @@ class ImageThumbnail extends Model
         $thumbs = $this->getThumbnails();
         
         for ($i = 0; $i < count($thumbs); $i++) {
-			$thumbnailFile = $this->handler->routes->basePath . '/' . $thumbs[$i]->url;
+			$thumbnailFile = $this->handler->routes->getPathByUrl($thumbs[$i]->url);
 			if (is_file($thumbnailFile)) {
 				unlink($thumbnailFile);
 			}

@@ -7,6 +7,7 @@ use yii\web\Response;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Inflector;
+use yii\base\UserException;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
@@ -98,29 +99,37 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $handler = (new UploadFileForm())->getHandler();
-        
-        $saved = $handler->save();
-        
         $bundle = FileGalleryAsset::register($this->view);
         
-        if ($saved) {
-			$response['files'][] = [
-				'id'           => $handler->id,
-				'thumbnailUrl' => $handler->getIcon($bundle->baseUrl),
-				'pagination'   => $this->getPagination(),
-			];
-		} else {
-			$response['files'][] = [
-				'name'  => Inflector::slug($handler->file->baseName) . '.' . $handler->file->extension,
-				'size'  => $handler->file->size,
-				'error' => Module::t('main', 'This file already exists.'), // TODO: handle different error types
-			];
-		}
+        $mediaFile = (new UploadFileForm())->getHandler();
         
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        try {
+			$saved = $mediaFile->save();
+			
+			if ($saved) {
+				$response['files'][] = [
+					'id'           => $mediaFile->id,
+					'thumbnailUrl' => $mediaFile->getIcon($bundle->baseUrl),
+					'pagination'   => $this->getPagination(),
+				];
+			} else {
+				$response['files'][] = [
+					'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
+					'size'  => $mediaFile->file->size,
+					'error' => Module::t('main', 'This file already exists.'), // TODO: handle different error types
+				];
+			}
+		} catch (UserException $e) {
+			$response['files'][] = [
+				'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
+				'size'  => $mediaFile->file->size,
+				'error' => $e->getMessage(),
+			];
+		} finally {
+			Yii::$app->response->format = Response::FORMAT_JSON;
 		
-        return $response;
+			return $response;
+		}
     }
 
     /**

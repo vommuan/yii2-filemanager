@@ -21,14 +21,15 @@ class Module extends \yii\base\Module
     
     private $_defaultRoutes = [
         /**
-         * Base web directory url
+         * Path for uploaded files
          */
-        'basePath' => '@webroot',
+        'uploadPath' => '@webroot/uploads',
         
         /**
-         * Path for uploaded files in web directory
+         * Symbolic link for uploads path into @webroot directory
+         * If 'uploadPath' contains @webroot, symbolic link will not created
          */
-        'uploadPath' => 'uploads',
+        'symLink' => 'uploads',
         
         /** 
          * Directory format for uploaded files. Default yyyy/mm
@@ -39,7 +40,7 @@ class Module extends \yii\base\Module
         /**
          * Thumbs directory template. Path, where thumb files are located
          */
-        'thumbsDirTemplate' => '{uploadPath}/{dateDirFormat}',
+        'thumbsDirTemplate' => '{dateDirFormat}',
     ];
 
     /**
@@ -51,6 +52,11 @@ class Module extends \yii\base\Module
      * @var boolean
      */
     public $thumbsAutoCreate = true;
+    
+    /**
+     * @var boolean
+     */
+    public $thumbnailSaveOriginProportions = false;
 
     /**
      * @var array max image sizes, [width, height]
