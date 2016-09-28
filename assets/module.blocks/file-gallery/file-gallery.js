@@ -20,7 +20,6 @@ function FileGallery(item) {
 		if ($(_item).closest('.file-gallery').data('multiple')) {
 			checker.toggleClass('file-gallery__checker_checked');
 		} else {
-			alert('single');
 			var sameItem = $(_item).find('.file-gallery__checker').hasClass('file-gallery__checker_checked');
 			
 			$('.gallery-items__item .file-gallery__checker').removeClass('file-gallery__checker_checked');
