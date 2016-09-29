@@ -1,4 +1,5 @@
 <?php
+
 namespace vommuan\filemanager\widgets;
 
 use yii\base\Widget;

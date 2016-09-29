@@ -1,4 +1,5 @@
 <?php
+
 use vommuan\filemanager\Module;
 use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\widgets\FileManager;
@@ -10,7 +11,6 @@ $this->title = Module::t('main', 'Files');
 $this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 'url' => ['default/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->params['moduleBundle'] = FileManagerAsset::register($this);
 ?>
 
 <?= FileManager::widget();?>

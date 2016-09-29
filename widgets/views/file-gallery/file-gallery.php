@@ -1,12 +1,27 @@
 <?php
+
 use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use vommuan\filemanager\Module;
 use vommuan\filemanager\assets\FileGalleryAsset;
 
 $bundle = FileGalleryAsset::register($this);
 ?>
-<div class="file-gallery" data-details-url="<?= Url::to(['/filemanager/file/details', 'modal' => $modal]);?>" data-multiple='false'>
+
+<?= Html::beginTag(
+	'div',
+	[
+		'class' => 'file-gallery',
+		'data' => [
+			'details-url' => Url::to([
+				'/' . Module::getInstance()->uniqueId . '/file/details',
+				'modal' => $modal
+			]),
+			'multiple' => 'false',
+		],
+	]
+);?>
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
 		'layout' => $this->render('file-gallery__layout'),
@@ -30,4 +45,4 @@ $bundle = FileGalleryAsset::register($this);
 	<div class="file-gallery__checker">
 		<span class="glyphicon glyphicon-check"></span>
 	</div>
-</div>
+<?= Html::endTag('div');?>

@@ -1,15 +1,9 @@
 <?php
-//use vommuan\filemanager\assets\ModalAsset;
-//use vommuan\filemanager\assets\FileManagerAsset;
 
 use vommuan\filemanager\assets\FileInputAsset;
 use vommuan\filemanager\widgets\FileManager;
 
-//ModalAsset::register($this);
-//$this->params['moduleBundle'] = FileManagerAsset::register($this);
-
 FileInputAsset::register($this);
-
 ?>
 
 <?= $input;?>
@@ -29,6 +23,6 @@ FileInputAsset::register($this);
 				]);?>
 			</div>
 			<div class="modal-footer"></div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+		</div>
+	</div>
+</div>

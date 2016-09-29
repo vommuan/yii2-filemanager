@@ -47,10 +47,7 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        return $this->render('index', [
-			'uploadModel' => new UploadFileForm(),
-			'dataProvider' => (new MediaFileSearch())->search(),
-        ]);
+        return $this->render('index');
     }
     
     /**
