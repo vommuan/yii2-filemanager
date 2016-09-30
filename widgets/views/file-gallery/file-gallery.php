@@ -1,33 +1,59 @@
 <?php
-use yii\widgets\ListView;
+
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\widgets\ListView;
+use vommuan\filemanager\Module;
 use vommuan\filemanager\assets\FileGalleryAsset;
 
 $bundle = FileGalleryAsset::register($this);
 ?>
-<div class="file-gallery" data-details-url="<?= Url::to(['details']);?>" data-multiple='false'>
-	<?= ListView::widget([
-		'dataProvider' => $dataProvider,
-		'layout' => $this->render('__layout/file-gallery__layout'),
-		'pager' => [
-			'hideOnSinglePage' => false,
-			'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
-			'prevPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-backward']),
-			'nextPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-forward']),
-			'lastPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-forward']),
+
+<?= Html::beginTag(
+	'div',
+	[
+		'class' => 'file-gallery',
+		'data' => [
+			'details-url' => Url::to([
+				'/' . Module::getInstance()->uniqueId . '/file/details',
+				'modal' => $modal
+			]),
+			'multiple' => 'false',
 		],
-		'itemOptions' => [
-			'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
-		],
-		'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
-			return $this->render('__item/gallery-items__item', [
-				'model' => $model,
-				'bundle' => $bundle,
-			]);
-		},
-	]);?>
+	]
+);?>
+	<div class="row file-gallery__layout">
+		<?php Pjax::begin([
+			'linkSelector' => '.pagination a',
+		]);?>
+			<div class="col-xs-12 col-sm-8">
+				<?= ListView::widget([
+					'dataProvider' => $dataProvider,
+					'emptyText' => $this->render('file-gallery__empty-text'),
+					'layout' => $this->render('file-gallery__layout'),
+					'pager' => [
+						'hideOnSinglePage' => false,
+						'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
+						'prevPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-backward']),
+						'nextPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-forward']),
+						'lastPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-forward']),
+					],
+					'itemOptions' => [
+						'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
+					],
+					'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
+						return $this->render('gallery-items__item', [
+							'model' => $model,
+							'bundle' => $bundle,
+						]);
+					},
+				]);?>
+			</div>
+		<?php Pjax::end();?>
+		<div class="col-xs-12 col-sm-4" id="fileinfo"></div>
+	</div>
 	<div class="file-gallery__checker">
 		<span class="glyphicon glyphicon-check"></span>
 	</div>
-</div>
+<?= Html::endTag('div');?>

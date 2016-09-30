@@ -1,21 +1,36 @@
 <?php
-use vommuan\filemanager\assets\ModalAsset;
-use vommuan\filemanager\assets\FileManagerAsset;
 
-ModalAsset::register($this);
-$this->params['moduleBundle'] = FileManagerAsset::register($this);
+use yii\helpers\Html;
+use vommuan\filemanager\assets\FileInputAsset;
+use vommuan\filemanager\widgets\FileManager;
+
+FileInputAsset::register($this);
 ?>
 
-<div role="filemanager-modal" class="modal" tabindex="-1"
-     data-frame-id="<?= $frameId ?>"
-     data-frame-src="<?= $frameSrc ?>"
-     data-btn-id="<?= $btnId ?>"
-     data-input-id="<?= $inputId ?>"
-     data-image-container="<?= isset($imageContainer) ? $imageContainer : '' ?>"
-     data-paste-data="<?= isset($pasteData) ? $pasteData : '' ?>">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body"></div>
-        </div>
-    </div>
-</div>
+<?= $input;?>
+
+<?= Html::beginTag(
+	'div',
+	[
+		'id' => 'filemanager-modal',
+		'class' => 'modal fade',
+		'data' => $data,
+	]
+);?>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h1 class="modal-title"></h1>
+			</div>
+			<div class="modal-body">
+				<?= FileManager::widget([
+					'modal' => true,
+				]);?>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+<?= Html::endTag('div');?>

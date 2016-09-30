@@ -47,12 +47,7 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-		$model = new MediaFileSearch();
-		
-        return $this->render('index', [
-			'uploadModel' => new UploadFileForm(),
-			'dataProvider' => $model->search(),
-        ]);
+        return $this->render('index');
     }
     
     /**
@@ -99,26 +94,20 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $bundle = FileGalleryAsset::register($this->view);
-        
         $mediaFile = (new UploadFileForm())->getHandler();
         
         try {
-			$saved = $mediaFile->save();
-			
-			if ($saved) {
-				$response['files'][] = [
-					'id'           => $mediaFile->id,
-					'thumbnailUrl' => $mediaFile->getIcon($bundle->baseUrl),
-					'pagination'   => $this->getPagination(),
-				];
-			} else {
-				$response['files'][] = [
-					'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
-					'size'  => $mediaFile->file->size,
-					'error' => Module::t('main', 'This file already exists.'), // TODO: handle different error types
-				];
+			if (! $mediaFile->save()) {
+				throw new UserException(Module::t('main', 'This file already exists.'));
 			}
+			
+			$bundle = FileGalleryAsset::register($this->view);
+			
+			$response['files'][] = [
+				'id'           => $mediaFile->id,
+				'thumbnailUrl' => $mediaFile->getIcon($bundle->baseUrl),
+				'pagination'   => $this->getPagination(),
+			];
 		} catch (UserException $e) {
 			$response['files'][] = [
 				'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
@@ -134,10 +123,12 @@ class FileController extends Controller
 
     /**
      * Updated mediafile by id
+     * 
+     * @param $modal
      * @param $id
      * @return array
      */
-    public function actionUpdate($id)
+    public function actionUpdate($modal, $id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -157,6 +148,7 @@ class FileController extends Controller
 
         return $this->renderAjax('details', [
             'model' => $model,
+            'modal' => $modal,
         ]);
     }
 
@@ -187,10 +179,11 @@ class FileController extends Controller
     /** 
      * Render file information
      * 
+     * @param boolean $modal
      * @param int $id
      * @return string
      */
-    public function actionDetails($id)
+    public function actionDetails($modal, $id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -202,6 +195,7 @@ class FileController extends Controller
         
         return $this->renderAjax('details', [
             'model' => $model,
+            'modal' => $modal,
         ]);
     }
 }
