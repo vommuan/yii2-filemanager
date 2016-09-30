@@ -39,11 +39,11 @@ function GalleryPager(gallery) {
 			}
 		}
 		
-		_gallery.find('.pagination').each(function(index, element) {
-			if (countPages() > 1) {
+		if (countPages() > 1) {
+			_gallery.find('.pagination').each(function(index, element) {
 				$(element).find('li:not(.first, .prev, .next, .last)').last().remove();
-			}
-		});
+			});
+		}
 		
 		if (reload) {
 			window.location = url;
