@@ -6,14 +6,14 @@ use yii\web\AssetBundle;
 
 class FileManagerAsset extends AssetBundle
 {
-    public $sourcePath = '@filemanager/assets/source';
+    public $sourcePath = '@filemanager/assets/module.blocks/file-manager';
     
     public $css = [
-        'css/filemanager.css',
+        'file-manager.css',
     ];
     
     public $js = [
-        'js/filemanager.js',
+        'file-manager.js',
     ];
     
     public $depends = [
