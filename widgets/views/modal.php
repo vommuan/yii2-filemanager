@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Html;
 use vommuan\filemanager\assets\FileInputAsset;
 use vommuan\filemanager\widgets\FileManager;
 
@@ -8,7 +9,14 @@ FileInputAsset::register($this);
 
 <?= $input;?>
 
-<div class="modal fade" id='filemanager-modal'>
+<?= Html::beginTag(
+	'div',
+	[
+		'id' => 'filemanager-modal',
+		'class' => 'modal fade',
+		'data' => $data,
+	]
+);?>
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -25,4 +33,4 @@ FileInputAsset::register($this);
 			<div class="modal-footer"></div>
 		</div>
 	</div>
-</div>
+<?= Html::endTag('div');?>

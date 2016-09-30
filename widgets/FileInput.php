@@ -103,12 +103,6 @@ class FileInput extends InputWidget
      */
     public $options = ['class' => 'form-control'];
     
-    /**
-     *
-     * @var array selecte the frameSrc in case you use a different module name
-     */
-    public $frameSrc  = ['/filemanager/modal/index'];
-
     const DATA_ID = 'id';
     const DATA_URL = 'url';
     const DATA_ALT = 'alt';
@@ -163,6 +157,11 @@ class FileInput extends InputWidget
 
         return $this->render('modal', [
 			'input' => $this->renderInput(),
+			'data' => [
+				'input-id' => $this->options['id'],
+				'image-container' => $this->imageContainer,
+				'paste-data' => $this->pasteData,
+			],
         ]);
     }
 }
