@@ -94,26 +94,20 @@ class FileController extends Controller
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
 		}
         
-        $bundle = FileGalleryAsset::register($this->view);
-        
         $mediaFile = (new UploadFileForm())->getHandler();
         
         try {
-			$saved = $mediaFile->save();
-			
-			if ($saved) {
-				$response['files'][] = [
-					'id'           => $mediaFile->id,
-					'thumbnailUrl' => $mediaFile->getIcon($bundle->baseUrl),
-					'pagination'   => $this->getPagination(),
-				];
-			} else {
-				$response['files'][] = [
-					'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
-					'size'  => $mediaFile->file->size,
-					'error' => Module::t('main', 'This file already exists.'), // TODO: handle different error types
-				];
+			if (! $mediaFile->save()) {
+				throw new UserException(Module::t('main', 'This file already exists.'));
 			}
+			
+			$bundle = FileGalleryAsset::register($this->view);
+			
+			$response['files'][] = [
+				'id'           => $mediaFile->id,
+				'thumbnailUrl' => $mediaFile->getIcon($bundle->baseUrl),
+				'pagination'   => $this->getPagination(),
+			];
 		} catch (UserException $e) {
 			$response['files'][] = [
 				'name'  => Inflector::slug($mediaFile->file->baseName) . '.' . $mediaFile->file->extension,
