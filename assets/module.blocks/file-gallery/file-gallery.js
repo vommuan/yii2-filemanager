@@ -14,7 +14,8 @@ function FileGallery(item) {
 		var checker = $(_item).find('.file-gallery__checker');
 		
 		if (0 == checker.length) {
-			checker = $(_item).closest('.file-gallery').find('.file-gallery__checker:last').clone().appendTo(_item);
+			checker = $(_item).closest('.file-gallery').find('.file-gallery__checker:last').clone();
+			checker.appendTo(_item);
 		}
 		
 		if ($(_item).closest('.file-gallery').data('multiple')) {

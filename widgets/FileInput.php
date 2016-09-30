@@ -4,7 +4,6 @@ namespace vommuan\filemanager\widgets;
 use Yii;
 use yii\helpers\Html;
 use yii\widgets\InputWidget;
-use vommuan\filemanager\assets\FileInputAsset;
 use yii\helpers\Url;
 
 /**
@@ -104,12 +103,6 @@ class FileInput extends InputWidget
      */
     public $options = ['class' => 'form-control'];
     
-    /**
-     *
-     * @var array selecte the frameSrc in case you use a different module name
-     */
-    public $frameSrc  = ['/filemanager/modal/index'];
-
     const DATA_ID = 'id';
     const DATA_URL = 'url';
     const DATA_ALT = 'alt';
@@ -127,18 +120,19 @@ class FileInput extends InputWidget
         }
 
         $this->buttonOptions['role'] = 'filemanager-launch';
+        $this->buttonOptions['data-toogle'] = 'modal';
+        $this->buttonOptions['data-target'] = '#filemanager-modal';
         $this->resetButtonOptions['role'] = 'clear-input';
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
         $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
     }
 
-    /**
-     * Runs the widget.
-     */
-    public function run()
-    {
-        if ($this->hasModel()) {
+	protected function renderInput()
+	{
+		$replace = [];
+		
+		if ($this->hasModel()) {
             $replace['{input}'] = Html::activeTextInput($this->model, $this->attribute, $this->options);
         } else {
             $replace['{input}'] = Html::textInput($this->name, $this->value, $this->options);
@@ -146,22 +140,28 @@ class FileInput extends InputWidget
 
         $replace['{button}'] = Html::tag($this->buttonTag, $this->buttonName, $this->buttonOptions);
         $replace['{reset-button}'] = Html::tag($this->resetButtonTag, $this->resetButtonName, $this->resetButtonOptions);
+		
+		return strtr($this->template, $replace);
+	}
 
-        FileInputAsset::register($this->view);
-
+    /**
+     * Runs the widget.
+     */
+    public function run()
+    {
         if (!empty($this->callbackBeforeInsert)) {
-            $this->view->registerJs('$("#' . $this->options['id'] . '").on("fileInsert", ' . $this->callbackBeforeInsert . ');');
+            $this->view->registerJs(
+				"$('#{$this->options['id']}').on('fileInsert', {$this->callbackBeforeInsert});"
+			);
         }
 
-        $modal = $this->render('modal', [
-            'inputId' => $this->options['id'],
-            'btnId' => $this->buttonOptions['id'],
-            'frameId' => $this->options['id'] . '-frame',
-            'frameSrc' => Url::to($this->frameSrc), 
-            'imageContainer' => $this->imageContainer,
-            'pasteData' => $this->pasteData,
+        return $this->render('modal', [
+			'input' => $this->renderInput(),
+			'data' => [
+				'input-id' => $this->options['id'],
+				'image-container' => $this->imageContainer,
+				'paste-data' => $this->pasteData,
+			],
         ]);
-
-        return strtr($this->template, $replace) . $modal;
     }
 }
