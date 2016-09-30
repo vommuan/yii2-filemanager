@@ -24,6 +24,7 @@ $bundle = FileGalleryAsset::register($this);
 );?>
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
+		'emptyText' => $this->render('file-gallery__empty-text'),
 		'layout' => $this->render('file-gallery__layout'),
 		'pager' => [
 			'hideOnSinglePage' => false,

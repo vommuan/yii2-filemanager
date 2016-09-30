@@ -15,6 +15,12 @@ function GallerySummary(gallery) {
 		var filesRange = getRange();
 		
 		if ((new GalleryPager(_gallery)).isLastPage()) {
+			if (0 == filesRange[0] && 0 < pagination.files) {
+				filesRange[0] = 1;
+			} else if (0 == pagination.files) {
+				filesRange[0] = 0;
+			}
+			
 			filesRange[1] = pagination.files;
 			$(_gallery).find('.summary b').first().html(filesRange.join('-'));
 		}
