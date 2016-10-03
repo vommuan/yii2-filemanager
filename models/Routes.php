@@ -53,7 +53,7 @@ class Routes extends Model
 		if (false === strpos($this->uploadPath, $this->webPath)) {
 			$link = $this->webPath . DIRECTORY_SEPARATOR . SystemPathHelper::u2p($this->_config['symLink']);
 			
-			if (!is_link($link)) {
+			if (!is_link($link) && !is_dir($link)) {
 				try {
 					symlink($this->uploadPath, $link);
 				} catch (\Exception $e) {
