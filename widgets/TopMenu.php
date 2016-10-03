@@ -43,11 +43,11 @@ class TopMenu extends Widget
 	{
 		$menuItems = [];
 		
-		if (Module::getInstance()->rbac && Yii::$app->user->can('filemanagerManageOwnFiles')) {
+		if (!Module::getInstance()->rbac || Yii::$app->user->can('filemanagerManageOwnFiles')) {
 			$menuItems = array_merge($menuItems, $this->getManageFilesItems());
 		}
 		
-		if ('modal' != $this->controller && Module::getInstance()->rbac && Yii::$app->user->can('filemanagerManageSettings')) {
+		if (!Module::getInstance()->rbac || Yii::$app->user->can('filemanagerManageSettings')) {
 			$menuItems = array_merge($menuItems, $this->getManageSettingsItems());
 		}
 		

@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\base\UserException;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\helpers\FileHelper;
+use vommuan\filemanager\models\helpers\SystemPathHelper;
 
 /**
  * This is the helper model class for route paths
@@ -49,8 +50,8 @@ class Routes extends Model
      */
     private function initSymLink()
     {
-		if (false === strpos($this->uploadPath, Yii::getAlias('@app/web'))) {
-			$link = Yii::getAlias('@app/web') . '/' . $this->_config['symLink'];
+		if (false === strpos($this->uploadPath, $this->webPath)) {
+			$link = $this->webPath . DIRECTORY_SEPARATOR . SystemPathHelper::u2p($this->_config['symLink']);
 			
 			if (!is_link($link)) {
 				try {
@@ -74,13 +75,23 @@ class Routes extends Model
     }
     
     /**
+     * Get @app/web path
+     * 
+     * @return string
+     */
+    protected function getWebPath()
+    {
+		return SystemPathHelper::u2p(Yii::getAlias('@app/web'));
+	}
+    
+    /**
      * Get base path of web directory
      * 
      * @return string
      */
     protected function getUploadPath()
     {
-        return Yii::getAlias($this->_config['uploadPath']);
+        return SystemPathHelper::u2p(Yii::getAlias($this->_config['uploadPath']));
     }
     
     /**
@@ -89,10 +100,12 @@ class Routes extends Model
      */
     protected function getBaseUrlPath()
     {
-		if (0 === strpos($this->uploadPath, Yii::getAlias('@app/web'))) {
-			return ltrim(
-				str_replace(Yii::getAlias('@app/web'), '', $this->uploadPath), 
-				'/'
+		if (0 === strpos($this->uploadPath, $this->webPath)) {
+			return SystemPathHelper::p2u(
+				ltrim(
+					str_replace($this->webPath, '', $this->uploadPath), 
+					DIRECTORY_SEPARATOR
+				)
 			);
 		} else {
 			return $this->_config['symLink'];
@@ -151,7 +164,7 @@ class Routes extends Model
      */
     public function getAbsolutePath()
     {
-        return $this->uploadPath . '/' . $this->dateDirectory;
+        return $this->uploadPath . DIRECTORY_SEPARATOR . SystemPathHelper::u2p($this->dateDirectory);
     }
     
     /**
@@ -197,6 +210,6 @@ class Routes extends Model
     {
         $this->dateDirectory = $this->getOriginDateDirectory($fileUrl);
         
-        return $this->uploadPath . '/' . $this->renderThumbnailDirectory();
+        return $this->uploadPath . DIRECTORY_SEPARATOR . SystemPathHelper::u2p($this->renderThumbnailDirectory());
     }
 }
