@@ -1,10 +1,8 @@
 <?php
 namespace vommuan\filemanager\widgets;
 
-use Yii;
 use yii\helpers\Html;
 use yii\widgets\InputWidget;
-use yii\helpers\Url;
 
 /**
  * Class FileInput
