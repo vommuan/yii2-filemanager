@@ -19,13 +19,14 @@ $bundle = FileGalleryAsset::register($this);
 				'/' . Module::getInstance()->uniqueId . '/file/details',
 				'modal' => $modal
 			]),
+			'details-target' => '#file-info_' . $modalId,
 			'multiple' => $multiple,
 		],
 	]
 );?>
 	<div class="row file-gallery__layout">
 		<?php Pjax::begin([
-			'linkSelector' => '.pagination a',
+			'linkSelector' => (!empty($modalId) ? '#' . $modalId . ' ' : '') . '.pagination a',
 		]);?>
 			<div class="col-xs-12 col-sm-8">
 				<?= ListView::widget([
@@ -51,7 +52,7 @@ $bundle = FileGalleryAsset::register($this);
 				]);?>
 			</div>
 		<?php Pjax::end();?>
-		<div class="col-xs-12 col-sm-4" id="fileinfo"></div>
+		<div class="col-xs-12 col-sm-4" id="<?= 'file-info_' . $modalId;?>" class="file-info"></div>
 	</div>
 	<div class="file-gallery__checker">
 		<span class="glyphicon glyphicon-check"></span>

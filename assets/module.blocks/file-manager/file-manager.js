@@ -43,7 +43,7 @@ function deleteFile(event) {
 			var galleryPager = new GalleryPager(gallery);
 			var gallerySummary = new GallerySummary(gallery);
 			
-			$("#fileinfo").html('');
+			$(gallery.data('details-target')).html('');
 			$('[data-key="' + response.id + '"]').fadeOut(function() {
 				$(this).remove();
 				uploadFromNextPage(gallery);
@@ -58,10 +58,12 @@ function deleteFile(event) {
 $(function() {
 	$('.file-gallery').on("click", '.media-file__link', mediaFileLinkClick);
 	
-    $("#fileinfo").on("click", '[role="delete"]', deleteFile);
+    $('[id^="file-info_"]').on("click", '[role="delete"]', deleteFile);
 
-    $("#fileinfo").on("submit", "#control-form", function(event) {
+    $('[id^="file-info_"]').on("submit", ".control-form", function(event) {
         event.preventDefault();
+        
+        var fileInfo = $(this).closest('.file-gallery').data('details-target');
 
         $.ajax({
             type: "POST",
@@ -71,7 +73,7 @@ $(function() {
                 FileGallery().setAjaxLoader();
             },
             success: function(html) {
-                $("#fileinfo").html(html);
+                $(fileInfo).html(html);
             }
         });
     });

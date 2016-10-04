@@ -114,7 +114,7 @@ class FileInput extends InputWidget
 
         $this->buttonOptions['role'] = 'filemanager-launch';
         $this->buttonOptions['data-toogle'] = 'modal';
-        $this->buttonOptions['data-target'] = '#filemanager-modal';
+        $this->buttonOptions['data-target'] = '#filemanager-modal-' . $this->options['id'];
         $this->resetButtonOptions['role'] = 'clear-input';
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
@@ -153,6 +153,7 @@ class FileInput extends InputWidget
         return $this->render('modal', [
 			'input' => $this->renderInput(),
 			'multiple' => $this->multiple,
+			'modalId' => 'filemanager-modal-' . $this->options['id'],
 			'data' => [
 				'input-id' => $this->options['id'],
 				'image-container' => $this->imageContainer,

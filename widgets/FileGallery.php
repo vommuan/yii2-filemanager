@@ -13,6 +13,8 @@ class FileGallery extends Widget
 	
 	public $modal;
 	
+	public $modalId;
+	
 	public $multiple;
 	
 	public function run()
@@ -20,6 +22,7 @@ class FileGallery extends Widget
 		return $this->render('file-gallery/file-gallery', [
 			'dataProvider' => $this->dataProvider,
 			'modal' => $this->modal,
+			'modalId' => $this->modalId,
 			'multiple' => $this->multiple,
 		]);
 	}

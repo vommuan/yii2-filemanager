@@ -58,7 +58,7 @@ $bundle = FileGalleryAsset::register($this);
 			],
 			'enableClientValidation' => false,
 			'options' => [
-				'id' => 'control-form',
+				'class' => 'control-form',
 			],
 		]);
 			
@@ -75,7 +75,7 @@ $bundle = FileGalleryAsset::register($this);
 			
 			<?php
 			if ($modal) :?>
-				<?= Html::button(Module::t('main', 'Insert'), ['id' => 'insert-btn', 'class' => 'btn btn-primary']);?>
+				<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary insert-btn']);?>
 				<?php
 			endif;?>
 

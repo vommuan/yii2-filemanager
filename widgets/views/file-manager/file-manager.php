@@ -27,5 +27,6 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 <?= FileGallery::widget([
 	'dataProvider' => $dataProvider,
 	'modal' => $modal,
+	'modalId' => $modalId,
 	'multiple' => $multiple,
 ]);?>

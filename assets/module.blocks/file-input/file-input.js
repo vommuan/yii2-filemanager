@@ -20,10 +20,10 @@ $(document).ready(function() {
 		}
 	});
 	
-	$("#fileinfo").on("click", "#insert-btn", function(e) {
+	$('[id^="file-info_"]').on('click', '.insert-btn', function(e) {
 		e.preventDefault();
 		
-		var modal = $(this).closest('#filemanager-modal');
+		var modal = $(this).closest('.filemanager-modal');
 		var imageContainer = $(modal.attr("data-image-container"));
 		var input = $("#" + modal.attr("data-input-id"));
 		
@@ -41,14 +41,14 @@ $(document).ready(function() {
 						alt: data.eq(i).attr('alt'),
 						class: 'selected-image'
 					})
-				)
+				);
 			};
 		}
 		
 		if (false == modal.find('.file-gallery').eq(0).data('multiple')) {
 			input.val(data.eq(0).closest('.media-file').data('key'));
 		} else {
-			var inputData = {};
+			var inputData = [];
 			
 			for (var i = 0; i < data.length; i++) {
 				inputData[i] = data.eq(i).closest('.media-file').data('key');

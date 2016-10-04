@@ -32,7 +32,7 @@ function FileGallery(item) {
 	}
 	
 	function setAjaxLoader() {
-		$("#fileinfo").html(
+		$($(_item).closest('.file-gallery').data('details-target')).html(
 			$('<div/>', {
 				'class': 'loading'
 			}).append(
@@ -54,7 +54,7 @@ function FileGallery(item) {
 			url: $(_item).closest('.file-gallery').data("details-url"),
 			beforeSend: setAjaxLoader,
 			success: function(html) {
-				$("#fileinfo").html(html);
+				$($(_item).closest('.file-gallery').data('details-target')).html(html);
 			}
 		};
 		
@@ -69,7 +69,7 @@ function FileGallery(item) {
 			
 			_ajaxRequest = $.ajax(requestParams);
 		} else {
-			$("#fileinfo").html('');
+			$($(_item).closest('.file-gallery').data('details-target')).html('');
 		}
 	}
 	

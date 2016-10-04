@@ -29,14 +29,14 @@
 /*------------------------------------*\
     #DASHBOARD
 \*------------------------------------*/
-#fileinfo .loading {
+.file-info .loading {
   width: 298px;
   margin-top: 50px;
   font-size: 5em;
   color: #5ba6f7;
   text-align: center;
 }
-#fileinfo ul {
+.file-info ul {
   padding: 0;
   list-style: none;
 }
