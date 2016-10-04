@@ -19,7 +19,7 @@ $bundle = FileGalleryAsset::register($this);
 				'/' . Module::getInstance()->uniqueId . '/file/details',
 				'modal' => $modal
 			]),
-			'multiple' => 'false',
+			'multiple' => $multiple,
 		],
 	]
 );?>

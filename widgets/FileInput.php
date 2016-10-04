@@ -92,20 +92,15 @@ class FileInput extends InputWidget
     public $callbackBeforeInsert = '';
 
     /**
-     * @var string This data will be inserted in input field
-     */
-    public $pasteData = self::DATA_URL;
-
-    /**
      * @var array widget html options
      */
     public $options = ['class' => 'form-control'];
     
-    const DATA_ID = 'id';
-    const DATA_URL = 'url';
-    const DATA_ALT = 'alt';
-    const DATA_DESCRIPTION = 'description';
-
+    /**
+     * @boolean One or more insert images
+     */
+    public $multiple = false;
+    
     /**
      * @inheritdoc
      */
@@ -124,6 +119,8 @@ class FileInput extends InputWidget
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
         $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
+        
+        $this->multiple = ($this->multiple) ? 'true' : 'false';
     }
 
 	protected function renderInput()
@@ -155,10 +152,10 @@ class FileInput extends InputWidget
 
         return $this->render('modal', [
 			'input' => $this->renderInput(),
+			'multiple' => $this->multiple,
 			'data' => [
 				'input-id' => $this->options['id'],
 				'image-container' => $this->imageContainer,
-				'paste-data' => $this->pasteData,
 			],
         ]);
     }
