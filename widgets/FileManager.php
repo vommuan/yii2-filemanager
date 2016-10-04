@@ -13,12 +13,15 @@ class FileManager extends Widget
 {
 	public $modal = false;
 	
+	public $multiple = 'false';
+	
 	public function run()
 	{
 		return $this->render('file-manager/file-manager', [
 			'uploadModel' => new UploadFileForm(),
 			'dataProvider' => (new MediaFileSearch())->search(),
 			'modal' => $this->modal,
+			'multiple' => $this->multiple,
 		]);
 	}
 }
