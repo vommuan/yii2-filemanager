@@ -28,6 +28,7 @@ FileInputAsset::register($this);
 			<div class="modal-body">
 				<?= FileManager::widget([
 					'modal' => true,
+					'multiple' => $multiple,
 				]);?>
 			</div>
 			<div class="modal-footer"></div>

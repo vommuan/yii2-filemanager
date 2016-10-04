@@ -59,14 +59,19 @@ class FileController extends Controller
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		
-		return [
-			'success' => isset($model) ? true : false,
-			'html' => isset($model) 
-				? $this->renderPartial('next-page-file', [
+		if (isset($model)) {
+			return [
+				'success' => true,
+				'html' => $this->renderPartial('next-page-file', [
 					'model' => $model,
-				])
-				: '',
-		];
+				]),
+			];
+		} else {
+			return [
+				'success' => false,
+				'html' => '',
+			];
+		}
 	}
     
     /**

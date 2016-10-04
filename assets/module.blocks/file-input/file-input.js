@@ -1,22 +1,3 @@
-function getFormData(form) {
-	var formArray = form.serializeArray();
-	var modelMap = {
-			'UpdateFileForm[alt]': 'alt',
-			'UpdateFileForm[description]': 'description',
-			url: 'url',
-			id: 'id'
-		};
-	var data = [];
-
-	for (var i = 0; i < formArray.length; i++) {
-		if (modelMap[formArray[i].name]) {
-			data[modelMap[formArray[i].name]] = formArray[i].value;
-		}
-	}
-
-	return data;
-}
-
 $(document).ready(function() {
 	$('[role="filemanager-launch"]').on("click", function(e) {
 		e.preventDefault();
@@ -44,18 +25,38 @@ $(document).ready(function() {
 		
 		var modal = $(this).closest('#filemanager-modal');
 		var imageContainer = $(modal.attr("data-image-container"));
-		var pasteData = modal.attr("data-paste-data");
 		var input = $("#" + modal.attr("data-input-id"));
 		
-		var data = getFormData($(this).parents("#control-form"));
+		var data = modal.find('.media-file__link_checked img');
 		
 		input.trigger("fileInsert", [data]);
 
 		if (imageContainer) {
-			imageContainer.html('<img src="' + data.url + '" alt="' + data.alt + '">');
+			imageContainer.empty();
+			
+			for (var i = 0; i < data.length; i++) {
+				imageContainer.append(
+					$('<img/>', {
+						src: data.eq(i).attr('src'),
+						alt: data.eq(i).attr('alt'),
+						class: 'selected-image'
+					})
+				)
+			};
 		}
-
-		input.val(data[pasteData]);
+		
+		if (false == modal.find('.file-gallery').eq(0).data('multiple')) {
+			input.val(data.eq(0).closest('.media-file').data('key'));
+		} else {
+			var inputData = {};
+			
+			for (var i = 0; i < data.length; i++) {
+				inputData[i] = data.eq(i).closest('.media-file').data('key');
+			}
+			
+			input.val(JSON.stringify(inputData));
+		}
+		
 		modal.modal("hide");
 	});
 });
