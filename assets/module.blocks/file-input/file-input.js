@@ -1,62 +1,141 @@
-$(document).ready(function() {
-	$('[role="filemanager-launch"]').on("click", function(e) {
-		e.preventDefault();
-		$($(this).data('target')).modal('show');
-	});
-
-	$('[role="clear-input"]').on("click", function(e) {
-		e.preventDefault();
-
-		$("#" + $(this).data('clear-element-id')).val('');
-		
-		var imageContainer = $($(this).data('image-container'));
-		
-		imageContainer.empty();
-		
-		if ('' != $(this).data('default-image')) {
-			var defaultImage = $('<img/>', {'src': $(this).data('default-image')});
-			
-			imageContainer.append(defaultImage);
-		}
-	});
+function FileInputWidget() {
+	'use strict';
 	
-	$('[id^="file-info_"]').on('click', '.insert-btn', function(e) {
-		e.preventDefault();
+	var _widget;
+	var _fileManager;
+	
+	function init(initConfig) {
+		_widget = initConfig.widget;
+		initConfig.modalView = this;
 		
-		var modal = $(this).closest('.filemanager-modal');
-		var imageContainer = $(modal.attr("data-image-container"));
-		var input = $("#" + modal.attr("data-input-id"));
+		if (undefined == _fileManager) {
+			_fileManager = (new FileManager()).init(initConfig);
+		}
 		
-		var data = modal.find('.media-file__link_checked img');
+		return this;
+	}
+	
+	function show() {
+		if (undefined == _widget) {
+			console.log('Warning. Call init() before show().');
+			return this;
+		}
 		
-		input.trigger("fileInsert", [data]);
+		_widget.modal('show');
+		
+		return this;
+	}
+	
+	function hide() {
+		if (undefined == _widget) {
+			console.log('Warning. Call init() before hide().');
+			return this;
+		}
+		
+		_widget.modal("hide");
+		
+		return this;
+	}
+	
+	return {
+		'init': init,
+		'show': show,
+		'hide': hide
+	};
+}
 
-		if (imageContainer) {
-			imageContainer.empty();
-			
-			for (var i = 0; i < data.length; i++) {
-				imageContainer.append(
-					$('<img/>', {
-						src: data.eq(i).attr('src'),
-						alt: data.eq(i).attr('alt'),
-						class: 'selected-image'
-					})
-				);
-			};
-		}
+function ImageContainer() {
+	'use strict';
+	
+	var _form;
+	var _container;
+	var _defaultImageUrl;
+	
+	function init(form) {
+		_form = form;
+		_container = $(_form.find('[role="clear-input"]').eq(0).data('image-container'));
+		_defaultImageUrl = _form.find('[role="clear-input"]').eq(0).data('default-image');
 		
-		if (false == modal.find('.file-gallery').eq(0).data('multiple')) {
-			input.val(data.eq(0).closest('.media-file').data('key'));
+		return this;
+	}
+	
+	function setDefault() {
+		_container.empty();
+		
+		if ('' != _defaultImageUrl) {
+			var defaultImage = $('<img/>', {'src': _defaultImageUrl, 'alt': ''});
+			
+			_container.append(defaultImage);
+		}
+	}
+	
+	return {
+		'init': init,
+		get container() {
+			return _container;
+		},
+		'setDefault': setDefault
+	}
+}
+
+function InputForm() {
+	'use strict';
+	
+	var _form;
+	var _imageContainer;
+	var _fileInputWidget;
+	
+	function init(form) {
+		_form = form;
+		_imageContainer = (new ImageContainer()).init(_form);
+		
+		_form.on('click', '[role="filemanager-launch"]', launchButtonClick);
+		_form.on('click', '[role="clear-input"]', clearButtonClick);
+		
+		return this;
+	}
+	
+	function launchButtonClick(event) {
+		event.preventDefault();
+		
+		var launchButton = $(event.currentTarget);
+		
+		if (undefined == _fileInputWidget) {
+			_fileInputWidget = (new FileInputWidget()).init({
+				'widget': $(launchButton.data('target')),
+				'input': _form.find('.input-widget-form__input').eq(0),
+				'imageContainer': _imageContainer.container
+			}).show();
 		} else {
-			var inputData = [];
-			
-			for (var i = 0; i < data.length; i++) {
-				inputData[i] = data.eq(i).closest('.media-file').data('key');
-			}
-			
-			input.val(JSON.stringify(inputData));
+			_fileInputWidget.show();
 		}
+	}
+	
+	function clearInput(input) {
+		input.val('');
+	}
+	
+	function clearButtonClick(event) {
+		event.preventDefault();
 		
-		modal.modal("hide");
+		var clearButton = $(event.currentTarget);
+		var input = $("#" + clearButton.data('clear-element-id'));
+		
+		clearInput(input);
+		_imageContainer.setDefault();
+	}
+	
+	return {
+		'init': init
+	};
+}
+
+$(document).ready(function() {
+	'use strict';
+	
+	$('.input-widget-form').each(function(index, element) {
+		var form = $(element);
+		
+		(new InputForm()).init(form);
 	});
 });

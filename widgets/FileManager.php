@@ -13,7 +13,7 @@ class FileManager extends Widget
 {
 	public $modal = false;
 	
-	public $modalId = '';
+	public $parentWidgetId = '';
 	
 	public $multiple = 'false';
 	
@@ -23,7 +23,7 @@ class FileManager extends Widget
 			'uploadModel' => new UploadFileForm(),
 			'dataProvider' => (new MediaFileSearch())->search(),
 			'modal' => $this->modal,
-			'modalId' => $this->modalId,
+			'modalId' => $this->parentWidgetId,
 			'multiple' => $this->multiple,
 		]);
 	}

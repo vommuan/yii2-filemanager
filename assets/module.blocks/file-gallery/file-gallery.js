@@ -1,27 +1,30 @@
 /**
  * File gallery handler
  */
-function FileGallery(item) {
-	var _item = item;
+function FileGallery() {
+	var _gallery;
+	var _multiple;
 	var _ajaxRequest = null;
 	
-	function itemClick() {
-		toggleChecker();
-		loadDetails();
+	function init(gallery) {
+		_gallery = gallery;
+		_multiple = _gallery.data('multiple');
+		
+		return this;
+	}
+	
+	function itemClick(item) {
+		toggleChecker(item);
+		loadDetails(item);
 	};
 	
-	function toggleChecker() {
-		var checker = $(_item).find('.file-gallery__checker');
+	function toggleChecker(item) {
+		var checker = item.find('.file-gallery__checker');
 		
-		if (0 == checker.length) {
-			checker = $(_item).closest('.file-gallery').find('.file-gallery__checker:last').clone();
-			checker.appendTo(_item);
-		}
-		
-		if ($(_item).closest('.file-gallery').data('multiple')) {
+		if (_multiple) {
 			checker.toggleClass('file-gallery__checker_checked');
 		} else {
-			var sameItem = $(_item).find('.file-gallery__checker').hasClass('file-gallery__checker_checked');
+			var sameItem = item.find('.file-gallery__checker').hasClass('file-gallery__checker_checked');
 			
 			$('.gallery-items__item .file-gallery__checker').removeClass('file-gallery__checker_checked');
 			
@@ -32,7 +35,7 @@ function FileGallery(item) {
 	}
 	
 	function setAjaxLoader() {
-		$($(_item).closest('.file-gallery').data('details-target')).html(
+		$(_gallery.data('details-target')).html(
 			$('<div/>', {
 				'class': 'loading'
 			}).append(
@@ -43,7 +46,7 @@ function FileGallery(item) {
 		);
 	}
 	
-	function loadDetails() {
+	function loadDetails(item) {
 		if (_ajaxRequest) {
 			_ajaxRequest.abort();
 			_ajaxRequest = null;
@@ -51,29 +54,29 @@ function FileGallery(item) {
 		
 		var requestParams = {
 			type: "GET",
-			url: $(_item).closest('.file-gallery').data("details-url"),
+			url: _gallery.data("details-url"),
 			beforeSend: setAjaxLoader,
 			success: function(html) {
-				$($(_item).closest('.file-gallery').data('details-target')).html(html);
+				$(_gallery.data('details-target')).html(html);
 			}
 		};
 		
-		if ($(_item).find('.file-gallery__checker').hasClass('file-gallery__checker_checked')) {
-			requestParams.data = "id=" + $(_item).closest('.gallery-items__item').data("key");
+		if (item.find('.file-gallery__checker').hasClass('file-gallery__checker_checked')) {
+			requestParams.data = "id=" + item.closest('.gallery-items__item').data("key");
 			
 			_ajaxRequest = $.ajax(requestParams);
 		} else if ($('.gallery-items__item .file-gallery__checker_checked').length > 0) {
-			requestParams.data = "id=" + $(_item).closest('.file-gallery')
-				.find('.gallery-items__item .file-gallery__checker_checked').filter(':last')
+			requestParams.data = "id=" + _gallery.find('.file-gallery__checker_checked').filter(':last')
 				.closest('.gallery-items__item').data("key");
 			
 			_ajaxRequest = $.ajax(requestParams);
 		} else {
-			$($(_item).closest('.file-gallery').data('details-target')).html('');
+			$(_gallery.data('details-target')).html('');
 		}
 	}
 	
 	return {
+		'init': init,
 		'itemClick': itemClick,
 		'setAjaxLoader': setAjaxLoader
 	}

@@ -1,7 +1,13 @@
-function GalleryPager(gallery) {
+function GalleryPager() {
 	'use strict';
 	
-	var _gallery = gallery; // jQuery
+	var _gallery;
+	
+	function init(gallery) {
+		_gallery = gallery;
+		
+		return this;
+	}
 	
 	function countPages() {
 		return _gallery.find('.pagination').eq(0).find('li:not(.first, .prev, .next, .last)').length;
@@ -50,7 +56,7 @@ function GalleryPager(gallery) {
 		}
 	}
 	
-	this.update = function(pagination) {
+	function update(pagination) {
 		if (countPages() == pagination.pages) {
 			return true;
 		}
@@ -74,6 +80,10 @@ function GalleryPager(gallery) {
 		return getCurrentPage() == countPages();
 	}
 	
-	this.getCurrentPage = getCurrentPage;
-	this.isLastPage = isLastPage;
+	return {
+		'init': init,
+		'update': update,
+		'getCurrentPage': getCurrentPage,
+		'isLastPage': isLastPage
+	}
 }

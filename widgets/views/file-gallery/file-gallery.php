@@ -31,8 +31,8 @@ $bundle = FileGalleryAsset::register($this);
 			<div class="col-xs-12 col-sm-8">
 				<?= ListView::widget([
 					'dataProvider' => $dataProvider,
-					'emptyText' => $this->render('file-gallery__empty-text'),
-					'layout' => $this->render('file-gallery__layout'),
+					'emptyText' => $this->render('file-gallery__empty-text', ['modalId' => $modalId]),
+					'layout' => $this->render('file-gallery__layout', ['modalId' => $modalId]),
 					'pager' => [
 						'hideOnSinglePage' => false,
 						'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
@@ -52,9 +52,6 @@ $bundle = FileGalleryAsset::register($this);
 				]);?>
 			</div>
 		<?php Pjax::end();?>
-		<div class="col-xs-12 col-sm-4" id="<?= 'file-info_' . $modalId;?>" class="file-info"></div>
-	</div>
-	<div class="file-gallery__checker">
-		<span class="glyphicon glyphicon-check"></span>
+		<div class="col-xs-12 col-sm-4 file-info" id="<?= 'file-info_' . $modalId;?>"></div>
 	</div>
 <?= Html::endTag('div');?>
