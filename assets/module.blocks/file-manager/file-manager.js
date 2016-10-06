@@ -11,17 +11,28 @@ function FileManager() {
 	var _selectedFiles;
 	var _multiple = false;
 	
+	function markFiles() {
+		_selectedFiles.forEach(function(item) {
+			var checkedItem = _gallery.find('.media-file[data-key="' + item + '"] .media-file__link').eq(0);
+			selectFile(checkedItem);
+		});
+	}
+	
 	function initSelectedFiles() {
+		unselectFiles();
+		
+		if (undefined == _input || '' == _input.val()) {
+			_selectedFiles = [];
+			return;
+		}
+		
 		if (_multiple) {
 			_selectedFiles = JSON.parse(_input.val());
 		} else {
 			_selectedFiles = [Number(_input.val())];
 		}
 		
-		_selectedFiles.forEach(function(item) {
-			var checkedItem = _gallery.find('.media-file[data-key="' + item + '"] .media-file__link').eq(0);
-			selectFile(checkedItem);
-		});
+		markFiles();
 	}
 	
 	function init(initConfig) {
@@ -41,6 +52,7 @@ function FileManager() {
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
+		_widget.on('pjax:success', markFiles);
 		
 		return this;
 	}
@@ -62,8 +74,13 @@ function FileManager() {
 	}
 	
 	function selectFile(item) {
-		(new MediaFile()).init(item, _multiple).click();
-		(new FileGallery()).init(_gallery).itemClick(item);
+		(new MediaFile()).init(_gallery).click(item);
+		(new FileGallery()).init(_gallery).click(item);
+	}
+	
+	function unselectFiles() {
+		(new MediaFile()).init(_gallery).uncheckAll();
+		(new FileGallery()).init(_gallery).uncheckAll();
 	}
 	
 	function mediaFileLinkClick(event) {
@@ -125,41 +142,26 @@ function FileManager() {
 	function insertButtonClick(event) {
 		event.preventDefault();
 		
+		if (undefined == _input || undefined == _modalView) {
+			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
+			return;
+		}
+		
 		if (false == _multiple) {
 			_input.val(_selectedFiles[0]);
 		} else {
 			_input.val(JSON.stringify(_selectedFiles));
 		}
 		
-		/*var data = _widget.find('.media-file__link_checked img');
+		_input.trigger("fileInsert", _selectedFiles);
 		
-		_input.trigger("fileInsert", [data]);
-
 		if (_imageContainer) {
 			_imageContainer.empty();
 			
-			for (var i = 0; i < data.length; i++) {
-				_imageContainer.append(
-					$('<img/>', {
-						src: data.eq(i).attr('src'),
-						alt: data.eq(i).attr('alt'),
-						class: 'selected-image'
-					})
-				);
-			};
+			_imageContainer.load(_gallery.data('insert-files-load'), {
+				'selectedFiles': JSON.stringify(_selectedFiles)
+			});
 		}
-		
-		if (false == _multiple) {
-			_input.val(data.eq(0).closest('.media-file').data('key'));
-		} else {
-			var inputData = [];
-			
-			for (var i = 0; i < data.length; i++) {
-				inputData[i] = data.eq(i).closest('.media-file').data('key');
-			}
-			
-			_input.val(JSON.stringify(inputData));
-		}*/
 		
 		_modalView.hide();
 	}
@@ -184,6 +186,7 @@ function FileManager() {
 	}
 	
 	return {
-		'init': init
+		'init': init,
+		'initSelectedFiles': initSelectedFiles
 	};
 }

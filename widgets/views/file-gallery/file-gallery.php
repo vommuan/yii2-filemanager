@@ -17,9 +17,12 @@ $bundle = FileGalleryAsset::register($this);
 		'data' => [
 			'details-url' => Url::to([
 				'/' . Module::getInstance()->uniqueId . '/file/details',
-				'modal' => $modal
+				'modal' => $modal,
 			]),
 			'details-target' => '#file-info_' . $modalId,
+			'insert-files-load' => Url::to([
+				'/' . Module::getInstance()->uniqueId . '/file/insert-files-load',
+			]),
 			'multiple' => $multiple,
 		],
 	]

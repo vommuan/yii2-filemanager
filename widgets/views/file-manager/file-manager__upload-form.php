@@ -4,13 +4,14 @@ use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFileSearch;
 
-//var_dump(!empty($modalId) ? '#' . $modalId . '_gallery-items' : '.gallery-items');
-
 ?>
 
 <?= FileUploadUI::widget([
 	'model' => $uploadModel,
 	'attribute' => 'file',
+	'options' => [
+		'id' => (!empty($modalId) ? $modalId . '-' : '') . 'fileupload',
+	],
 	'clientOptions' => [
 		'autoUpload' => true,
 		'filesContainer' => !empty($modalId) ? '#' . $modalId . '_gallery-items' : '.gallery-items',
@@ -25,7 +26,6 @@ use vommuan\filemanager\models\MediaFileSearch;
 			});
 		}',
 		'fileuploadcompleted' => 'function(event, data) {
-			console.log("complete");
 			var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
 			
 			var pager = (new GalleryPager()).init(gallery);

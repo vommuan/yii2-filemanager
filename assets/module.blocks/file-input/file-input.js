@@ -21,6 +21,7 @@ function FileInputWidget() {
 			return this;
 		}
 		
+		_fileManager.initSelectedFiles();
 		_widget.modal('show');
 		
 		return this;

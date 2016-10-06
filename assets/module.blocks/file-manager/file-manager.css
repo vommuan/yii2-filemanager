@@ -22,9 +22,14 @@
 /*------------------------------------*\
     #PAGINATION
 \*------------------------------------*/
-.pagination {
+.file-gallery .pagination {
   display: block;
   margin-top: 10px;
+}
+
+.file-gallery .pagination > li > a,
+.file-gallery .pagination > li > span {
+  border: 1px solid #ddd;
 }
 /*------------------------------------*\
     #DASHBOARD
@@ -39,15 +44,6 @@
 .file-info ul {
   padding: 0;
   list-style: none;
-}
-/*------------------------------------*\
-    #UPLOAD MANAGER
-\*------------------------------------*/
-#uploadmanager {
-  padding: 0 15px 0 0;
-}
-#uploadmanager .progress {
-  margin-top: 10px;
 }
 /*------------------------------------*\
     #SPIN ICONS

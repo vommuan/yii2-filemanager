@@ -13,7 +13,7 @@ function FileGallery() {
 		return this;
 	}
 	
-	function itemClick(item) {
+	function click(item) {
 		toggleChecker(item);
 		loadDetails(item);
 	};
@@ -26,7 +26,7 @@ function FileGallery() {
 		} else {
 			var sameItem = item.find('.file-gallery__checker').hasClass('file-gallery__checker_checked');
 			
-			$('.gallery-items__item .file-gallery__checker').removeClass('file-gallery__checker_checked');
+			uncheckAll();
 			
 			if (!sameItem) {
 				checker.addClass('file-gallery__checker_checked');
@@ -34,7 +34,16 @@ function FileGallery() {
 		}
 	}
 	
+	function uncheckAll() {
+		_gallery.find('.file-gallery__checker').removeClass('file-gallery__checker_checked');
+	}
+	
 	function setAjaxLoader() {
+		if (undefined == _gallery) {
+			console.log('Error. FileGallery: call init() before setAjaxLoader().');
+			return;
+		}
+		
 		$(_gallery.data('details-target')).html(
 			$('<div/>', {
 				'class': 'loading'
@@ -77,7 +86,8 @@ function FileGallery() {
 	
 	return {
 		'init': init,
-		'itemClick': itemClick,
+		'click': click,
+		'uncheckAll': uncheckAll,
 		'setAjaxLoader': setAjaxLoader
 	}
 }

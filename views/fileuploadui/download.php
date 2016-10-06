@@ -5,6 +5,9 @@
 		{% if (file.thumbnailUrl) { %}
 			<a href="#mediafile" class="thumbnail media-file__link">
 				<img src="{%=file.thumbnailUrl%}" alt="" class="media-file__image">
+				<div class="file-gallery__checker">
+					<span class="glyphicon glyphicon-check"></span>
+				</div>
 			</a>
 		{% } %}
 		{% if (file.error) { %}
