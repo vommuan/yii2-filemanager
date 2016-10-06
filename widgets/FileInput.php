@@ -101,9 +101,9 @@ class FileInput extends InputWidget
     protected function initOptions()
     {
 		if (!empty($this->options['class'])) {
-			$this->options['class'] = $this->defaultOptions . ' ' . $this->options['class'];
+			$this->options['class'] = $this->defaultOptions['class'] . ' ' . $this->options['class'];
 		} else {
-			$this->options['class'] = $this->defaultOptions;
+			$this->options['class'] = $this->defaultOptions['class'];
 		}
 	}
     
