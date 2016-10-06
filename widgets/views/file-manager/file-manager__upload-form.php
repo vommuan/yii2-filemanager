@@ -9,9 +9,12 @@ use vommuan\filemanager\models\MediaFileSearch;
 <?= FileUploadUI::widget([
 	'model' => $uploadModel,
 	'attribute' => 'file',
+	'options' => [
+		'id' => (!empty($modalId) ? $modalId . '-' : '') . 'fileupload',
+	],
 	'clientOptions' => [
 		'autoUpload' => true,
-		'filesContainer' => '.gallery-items',
+		'filesContainer' => !empty($modalId) ? '#' . $modalId . '_gallery-items' : '.gallery-items',
 		'prependFiles' => true,
 	],
 	'clientEvents' => [
@@ -25,11 +28,9 @@ use vommuan\filemanager\models\MediaFileSearch;
 		'fileuploadcompleted' => 'function(event, data) {
 			var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
 			
-			var galleryPager = new GalleryPager(gallery);
-			var gallerySummary = new GallerySummary(gallery);
-			
-			galleryPager.update(data.result.files[0].pagination);
-			gallerySummary.update(data.result.files[0].pagination);
+			var pager = (new GalleryPager()).init(gallery);
+			pager.update(data.result.files[0].pagination);
+			(new GallerySummary()).init(gallery, pager).update(data.result.files[0].pagination);
 		}',
 	],
 	'url' => ['/' . Module::getInstance()->uniqueId . '/file/upload'],

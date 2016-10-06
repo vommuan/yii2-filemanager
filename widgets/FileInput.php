@@ -42,7 +42,7 @@ class FileInput extends InputWidget
     /**
      * @var string widget template
      */
-    public $template = '<div class="input-group">{input}<span class="input-group-btn">{button}{reset-button}</span></div>';
+    public $template = '<div class="input-widget-form input-group">{input}<span class="input-group-btn">{button}{reset-button}</span></div>';
 
     /**
      * @var string button tag
@@ -91,15 +91,21 @@ class FileInput extends InputWidget
      */
     public $callbackBeforeInsert = '';
 
-    /**
-     * @var array widget html options
-     */
-    public $options = ['class' => 'form-control'];
+    protected $defaultOptions = ['class' => 'input-widget-form__input form-control'];
     
     /**
      * @boolean One or more insert images
      */
     public $multiple = false;
+    
+    protected function initOptions()
+    {
+		if (!empty($this->options['class'])) {
+			$this->options['class'] = $this->defaultOptions . ' ' . $this->options['class'];
+		} else {
+			$this->options['class'] = $this->defaultOptions;
+		}
+	}
     
     /**
      * @inheritdoc
@@ -107,6 +113,8 @@ class FileInput extends InputWidget
     public function init()
     {
         parent::init();
+        
+        $this->initOptions();
 
         if (empty($this->buttonOptions['id'])) {
             $this->buttonOptions['id'] = $this->options['id'] . '-btn';
@@ -114,7 +122,7 @@ class FileInput extends InputWidget
 
         $this->buttonOptions['role'] = 'filemanager-launch';
         $this->buttonOptions['data-toogle'] = 'modal';
-        $this->buttonOptions['data-target'] = '#filemanager-modal';
+        $this->buttonOptions['data-target'] = '#' . $this->id;
         $this->resetButtonOptions['role'] = 'clear-input';
         $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
         $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
@@ -152,11 +160,8 @@ class FileInput extends InputWidget
 
         return $this->render('modal', [
 			'input' => $this->renderInput(),
+			'widgetId' => $this->id,
 			'multiple' => $this->multiple,
-			'data' => [
-				'input-id' => $this->options['id'],
-				'image-container' => $this->imageContainer,
-			],
         ]);
     }
 }

@@ -12,9 +12,8 @@ FileInputAsset::register($this);
 <?= Html::beginTag(
 	'div',
 	[
-		'id' => 'filemanager-modal',
-		'class' => 'modal fade',
-		'data' => $data,
+		'id' => $widgetId,
+		'class' => 'filemanager-modal modal fade',
 	]
 );?>
 	<div class="modal-dialog" role="document">
@@ -28,6 +27,7 @@ FileInputAsset::register($this);
 			<div class="modal-body">
 				<?= FileManager::widget([
 					'modal' => true,
+					'parentWidgetId' => $widgetId,
 					'multiple' => $multiple,
 				]);?>
 			</div>

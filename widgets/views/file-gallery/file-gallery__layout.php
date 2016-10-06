@@ -13,6 +13,7 @@ use vommuan\filemanager\Module;
 		'div',
 		'{items}',
 		[
+			'id' => $modalId . '_gallery-items',
 			'class' => 'col-xs-12 gallery-items',
 			'data' => [
 				'next-page-file-url' => Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']),

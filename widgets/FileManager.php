@@ -13,6 +13,8 @@ class FileManager extends Widget
 {
 	public $modal = false;
 	
+	public $parentWidgetId = '';
+	
 	public $multiple = 'false';
 	
 	public function run()
@@ -21,6 +23,7 @@ class FileManager extends Widget
 			'uploadModel' => new UploadFileForm(),
 			'dataProvider' => (new MediaFileSearch())->search(),
 			'modal' => $this->modal,
+			'modalId' => $this->parentWidgetId,
 			'multiple' => $this->multiple,
 		]);
 	}

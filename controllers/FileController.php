@@ -7,6 +7,7 @@ use yii\web\Response;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Inflector;
+use yii\helpers\ArrayHelper;
 use yii\base\UserException;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
@@ -203,4 +204,16 @@ class FileController extends Controller
             'modal' => $modal,
         ]);
     }
+    
+    /**
+     * 
+     */
+    public function actionInsertFilesLoad()
+    {
+		$filesId = json_decode(ArrayHelper::getValue(Yii::$app->request->post(), 'selectedFiles', '[]'));
+		
+		return $this->renderAjax('insert-files-load', [
+			'mediaFiles' => MediaFile::findAll($filesId),
+		]);
+	}
 }

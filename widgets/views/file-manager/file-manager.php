@@ -20,6 +20,7 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 	<div class="col-xs-12">
 		<?= $this->render('file-manager__upload-form', [
 			'uploadModel' => $uploadModel,
+			'modalId' => $modalId,
 		]);?>
 	</div>
 </div>
@@ -27,5 +28,6 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 <?= FileGallery::widget([
 	'dataProvider' => $dataProvider,
 	'modal' => $modal,
+	'modalId' => $modalId,
 	'multiple' => $multiple,
 ]);?>
