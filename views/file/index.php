@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\widgets\FileManager;
@@ -19,10 +18,6 @@ $this->registerJs("(new FileManager()).init({
 });");
 
 ?>
-<?= Html::beginTag(
-	'div', [
-		'id' => $widgetId
-	]
-);?>
+<div id="<?= $widgetId;?>">
 	<?= FileManager::widget();?>
-<?= Html::endTag('div');?>
+</div>
