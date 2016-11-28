@@ -18,6 +18,14 @@ $detailsTarget = '#file-info_' . $modalId;
 
 $insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/insert-files-load']);
 
+$pagerParams = [
+	'hideOnSinglePage' => false,
+	'firstPageLabel' => '&#8676;',
+	'prevPageLabel' => '&larr;',
+	'nextPageLabel' => '&rarr;',
+	'lastPageLabel' => '&#8677;',
+];
+
 ?>
 
 <div class="file-gallery gallery" data-details-url="<?= $detailsUrl;?>" data-details-target="<?= $detailsTarget;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-multiple="<?= $multiple;?>">
@@ -28,15 +36,12 @@ $insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/inser
 			<div class="col-xs-12 col-sm-8">
 				<?= ListView::widget([
 					'dataProvider' => $dataProvider,
-					'emptyText' => $this->render('file-manager__empty-text', ['modalId' => $modalId]),
+					'emptyText' => $this->render('gallery__empty-text', [
+						'modalId' => $modalId,
+						'pagerParams' => $pagerParams,
+					]),
 					'layout' => $this->render('gallery__layout', ['modalId' => $modalId]),
-					'pager' => [
-						'hideOnSinglePage' => false,
-						'firstPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-backward']),
-						'prevPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-backward']),
-						'nextPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-forward']),
-						'lastPageLabel' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-fast-forward']),
-					],
+					'pager' => $pagerParams,
 					'itemOptions' => [
 						'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
 					],
