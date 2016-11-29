@@ -63,7 +63,7 @@ class FileController extends Controller
 		if (isset($model)) {
 			return [
 				'success' => true,
-				'html' => $this->renderPartial('next-page-file', [
+				'html' => $this->renderPartial('media-file', [
 					'model' => $model,
 				]),
 			];

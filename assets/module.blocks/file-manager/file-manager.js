@@ -41,7 +41,7 @@ function FileManager() {
 		_imageContainer = initConfig.imageContainer;
 		_modalView = initConfig.modalView;
 		
-		_gallery = _widget.find('.file-gallery').eq(0);
+		_gallery = _widget.find('.gallery').eq(0);
 		_pager = (new GalleryPager()).init(_gallery);
 		_summary = (new GallerySummary()).init(_gallery, _pager);
 		_multiple = _gallery.data('multiple');
@@ -57,7 +57,7 @@ function FileManager() {
 		return this;
 	}
 	
-	function toogleSelectedFiles(item) {
+	function toggleSelectedFiles(item) {
 		var imageId = item.closest('.media-file').data('key');
 		
 		if (_multiple) {
@@ -80,7 +80,6 @@ function FileManager() {
 	
 	function unselectFiles() {
 		(new MediaFile()).init(_gallery).uncheckAll();
-		(new FileGallery()).init(_gallery).uncheckAll();
 	}
 	
 	function mediaFileLinkClick(event) {
@@ -89,7 +88,7 @@ function FileManager() {
 		var item = $(event.currentTarget);
 		
 		selectFile(item);
-		toogleSelectedFiles(item);
+		toggleSelectedFiles(item);
 	}
 
 	function uploadFromNextPage() {
@@ -127,7 +126,7 @@ function FileManager() {
 					return;
 				}
 				
-				$(_gallery.data('details-target')).html('');
+				_gallery.closest('.file-manager__content').find('.file-details').empty();
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
 					uploadFromNextPage();
@@ -170,7 +169,6 @@ function FileManager() {
 		event.preventDefault();
         
         var submitForm = $(event.currentTarget);
-        var fileInfo = _gallery.data('details-target');
 
         $.ajax({
             type: "POST",
@@ -180,7 +178,7 @@ function FileManager() {
                 (new FileGallery()).init(_gallery).setAjaxLoader();
             },
             success: function(html) {
-                $(fileInfo).html(html);
+                _gallery.closest('.file-manager__content').find('.file-details').html(html);
             }
         });
 	}

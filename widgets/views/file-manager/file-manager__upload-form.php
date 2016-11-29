@@ -19,14 +19,14 @@ use vommuan\filemanager\models\MediaFileSearch;
 	],
 	'clientEvents' => [
 		'fileuploadstart' => 'function(event) {
-			$(".file-gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
+			$(".gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
 				$(this).fadeOut(function() {
 					$(this).remove();
 				})
 			});
 		}',
 		'fileuploadcompleted' => 'function(event, data) {
-			var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".file-gallery");
+			var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".gallery");
 			
 			var pager = (new GalleryPager()).init(gallery);
 			pager.update(data.result.files[0].pagination);

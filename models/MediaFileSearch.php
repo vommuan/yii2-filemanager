@@ -23,7 +23,7 @@ class MediaFileSearch extends MediaFile
      */
     public function searchLastOnPage($page) {
 		return self::find()->orderBy(['created_at' => SORT_DESC])
-			->offset($page * self::PAGE_SIZE - 1)->one();
+			->offset($page * self::PAGE_SIZE - 1)->one(); // TODO: добавить права доступа на последний файл
 	}
     
     /**
@@ -38,9 +38,10 @@ class MediaFileSearch extends MediaFile
 		
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'defaultPageSize' => self::PAGE_SIZE,
+			],
 		]);
-
-		$dataProvider->pagination->defaultPageSize = self::PAGE_SIZE;
 		
 		if (Module::getInstance()->manageOwnFiles || (Module::getInstance()->rbac && !Yii::$app->user->can('filemanagerManageFiles') && Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			$query->joinWith('owner');
@@ -50,7 +51,7 @@ class MediaFileSearch extends MediaFile
 				$query->andFilterWhere([Owner::tableName() . '.user_id' => Yii::$app->user->id]);
 			}
 		}
-
+		
 		return $dataProvider;
     }
 }
