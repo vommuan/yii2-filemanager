@@ -24,7 +24,7 @@
 	border: 1px solid #ddd;
 }
 
-#standalone-filemanager .file-details .insert-btn {
+#standalone-filemanager .file-details-form .file-details-form__insert-button {
 	display: none;
 }
 
@@ -36,7 +36,7 @@
 	text-align: center;
 }
 
-.file-details ul {
+.file-details .details-list {
 	padding: 0;
 	list-style: none;
 }

@@ -150,7 +150,7 @@ class FileController extends Controller
             $message = Module::t('main', 'Changes saved!');
         }
 
-        Yii::$app->session->setFlash('mediafileUpdateResult', $message);
+        Yii::$app->session->setFlash('mediaFileUpdateResult', $message);
 
         return $this->renderAjax('details', [
             'model' => $model,
