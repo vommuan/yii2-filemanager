@@ -1,6 +1,5 @@
 .template-upload {
-	padding-left: 0;
-	padding-right: 0;
+	padding: 0;
 }
 
 .template-upload .preview .progress {
@@ -25,6 +24,10 @@
 	border: 1px solid #ddd;
 }
 
+#standalone-filemanager .file-details-form .file-details-form__insert-button {
+	display: none;
+}
+
 .file-details .loading {
 	width: 298px;
 	margin-top: 50px;
@@ -33,7 +36,7 @@
 	text-align: center;
 }
 
-.file-details ul {
+.file-details .details-list {
 	padding: 0;
 	list-style: none;
 }

@@ -5,12 +5,9 @@ use yii\helpers\Url;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
-$detailsUrl = Url::to([
-	'/' . Module::getInstance()->uniqueId . '/file/details',
-	'modal' => !empty($modalId),
-]);
-
+$detailsUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/details']);
 $insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/insert-files-load']);
+$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
 
 $pagerParams = [
 	'hideOnSinglePage' => false,
@@ -21,7 +18,6 @@ $pagerParams = [
 ];
 
 $galleryItemsId = $modalId . '_gallery-items';
-$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
 
 ?>
 
