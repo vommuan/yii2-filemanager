@@ -36,7 +36,7 @@ $pagerParams = [
 			'pager' => $pagerParams,
 			'itemOptions' => ['tag' => false],
 			'itemView' => function ($model, $key, $index, $widget) {
-				return $this->render('gallery-items__item', [
+				return $this->render('@filemanager/views/file/media-file', [
 					'model' => $model,
 				]);
 			},
