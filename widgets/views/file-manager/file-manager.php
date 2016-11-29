@@ -29,7 +29,6 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 	<div class="row file-manager__content">
 		<?= $this->render('gallery', [
 			'dataProvider' => $dataProvider,
-			'modal' => $modal,
 			'modalId' => $modalId,
 			'multiple' => $multiple,
 		]);?>

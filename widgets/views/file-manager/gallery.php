@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 
 $detailsUrl = Url::to([
 	'/' . Module::getInstance()->uniqueId . '/file/details',
-	'modal' => $modal,
+	'modal' => !empty($modalId),
 ]);
 
 $insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/insert-files-load']);
