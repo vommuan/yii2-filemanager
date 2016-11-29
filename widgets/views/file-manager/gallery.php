@@ -1,12 +1,9 @@
 <?php
 
-use vommuan\filemanager\assets\FileGalleryAsset;
 use vommuan\filemanager\Module;
 use yii\helpers\Url;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
-
-$bundle = FileGalleryAsset::register($this);
 
 $detailsUrl = Url::to([
 	'/' . Module::getInstance()->uniqueId . '/file/details',
@@ -37,13 +34,10 @@ $pagerParams = [
 			]),
 			'layout' => $this->render('gallery__layout', ['modalId' => $modalId]),
 			'pager' => $pagerParams,
-			'itemOptions' => [
-				'class' => 'col-xs-4 col-sm-2 gallery-items__item media-file',
-			],
-			'itemView' => function ($model, $key, $index, $widget) use ($bundle) {
+			'itemOptions' => ['tag' => false],
+			'itemView' => function ($model, $key, $index, $widget) {
 				return $this->render('gallery-items__item', [
 					'model' => $model,
-					'bundle' => $bundle,
 				]);
 			},
 		]);?>
