@@ -20,6 +20,9 @@ $pagerParams = [
 	'lastPageLabel' => '&#8677;',
 ];
 
+$galleryItemsId = $modalId . '_gallery-items';
+$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
+
 ?>
 
 <div class="col-xs-12 col-sm-8 gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-multiple="<?= $multiple;?>">
@@ -29,10 +32,14 @@ $pagerParams = [
 		<?= ListView::widget([
 			'dataProvider' => $dataProvider,
 			'emptyText' => $this->render('gallery__empty-text', [
-				'modalId' => $modalId,
 				'pagerParams' => $pagerParams,
+				'galleryItemsId' => $galleryItemsId,
+				'nextPageFileUrl' => $nextPageFileUrl,
 			]),
-			'layout' => $this->render('gallery__layout', ['modalId' => $modalId]),
+			'layout' => $this->render('gallery__layout', [
+				'galleryItemsId' => $galleryItemsId,
+				'nextPageFileUrl' => $nextPageFileUrl,
+			]),
 			'pager' => $pagerParams,
 			'itemOptions' => ['tag' => false],
 			'itemView' => function ($model, $key, $index, $widget) {

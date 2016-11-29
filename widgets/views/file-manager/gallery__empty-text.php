@@ -1,13 +1,7 @@
 <?php
 
-use vommuan\filemanager\Module;
 use yii\data\Pagination;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\LinkPager;
-
-$itemsId = $modalId . '_gallery-items';
-$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
 
 ?>
 
@@ -27,7 +21,7 @@ $nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-
 	$this->endBlock();
 	?>
 </div>
-<div class="gallery__items gallery-items" id="<?= $itemsId;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>"></div>
+<div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>"></div>
 <div class="gallery__pager">
 	<?= $this->blocks['empty-text-pagination'];?>
 </div>
