@@ -57,7 +57,7 @@ function FileManager() {
 		return this;
 	}
 	
-	function toogleSelectedFiles(item) {
+	function toggleSelectedFiles(item) {
 		var imageId = item.closest('.media-file').data('key');
 		
 		if (_multiple) {
@@ -80,7 +80,6 @@ function FileManager() {
 	
 	function unselectFiles() {
 		(new MediaFile()).init(_gallery).uncheckAll();
-		(new FileGallery()).init(_gallery).uncheckAll();
 	}
 	
 	function mediaFileLinkClick(event) {
@@ -89,7 +88,7 @@ function FileManager() {
 		var item = $(event.currentTarget);
 		
 		selectFile(item);
-		toogleSelectedFiles(item);
+		toggleSelectedFiles(item);
 	}
 
 	function uploadFromNextPage() {

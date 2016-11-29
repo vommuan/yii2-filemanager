@@ -2,7 +2,7 @@
   display: none;
 }
 
-.file-gallery__checker_checked {
+.media-file__link_checked .file-gallery__checker {
   display: inline-block;
   position: absolute;
   top: 0;
