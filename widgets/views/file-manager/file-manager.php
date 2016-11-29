@@ -1,9 +1,5 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\widgets\Pjax;
-use yii\widgets\ListView;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\widgets\PageHeader;
 use vommuan\filemanager\assets\FileManagerAsset;
@@ -30,7 +26,7 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 		]);?>
 	</div>
 
-	<div class="file-manager__content">
+	<div class="row file-manager__content">
 		<?= $this->render('gallery', [
 			'dataProvider' => $dataProvider,
 			'modal' => $modal,
@@ -38,6 +34,6 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 			'multiple' => $multiple,
 		]);?>
 		
-		<div class="file-details"></div>
+		<div class="col-xs-12 col-sm-4 file-details"></div>
 	</div>
 </div>

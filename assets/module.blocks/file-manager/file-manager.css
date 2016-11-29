@@ -25,7 +25,7 @@
 	border: 1px solid #ddd;
 }
 
-.file-info .loading {
+.file-details .loading {
 	width: 298px;
 	margin-top: 50px;
 	font-size: 5em;
@@ -33,7 +33,7 @@
 	text-align: center;
 }
 
-.file-info ul {
+.file-details ul {
 	padding: 0;
 	list-style: none;
 }

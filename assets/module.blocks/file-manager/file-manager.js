@@ -126,7 +126,7 @@ function FileManager() {
 					return;
 				}
 				
-				$(_gallery.data('details-target')).html('');
+				_gallery.closest('.file-manager__content').find('.file-details').empty();
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
 					uploadFromNextPage();
@@ -169,7 +169,6 @@ function FileManager() {
 		event.preventDefault();
         
         var submitForm = $(event.currentTarget);
-        var fileInfo = _gallery.data('details-target');
 
         $.ajax({
             type: "POST",
@@ -179,7 +178,7 @@ function FileManager() {
                 (new FileGallery()).init(_gallery).setAjaxLoader();
             },
             success: function(html) {
-                $(fileInfo).html(html);
+                _gallery.closest('.file-manager__content').find('.file-details').html(html);
             }
         });
 	}

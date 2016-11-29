@@ -3,10 +3,12 @@
  */
 function FileGallery() {
 	var _gallery;
+	var _fileDetails;
 	var _ajaxRequest = null;
 	
 	function init(gallery) {
 		_gallery = gallery;
+		_fileDetails = _gallery.closest('.file-manager__content').find('.file-details');
 		
 		return this;
 	}
@@ -21,7 +23,7 @@ function FileGallery() {
 			return;
 		}
 		
-		$(_gallery.data('details-target')).html(
+		_fileDetails.html(
 			$('<div/>', {
 				'class': 'loading'
 			}).append(
@@ -43,7 +45,7 @@ function FileGallery() {
 			url: _gallery.data("details-url"),
 			beforeSend: setAjaxLoader,
 			success: function(html) {
-				$(_gallery.data('details-target')).html(html);
+				_fileDetails.html(html);
 			}
 		};
 		
@@ -57,7 +59,7 @@ function FileGallery() {
 			
 			_ajaxRequest = $.ajax(requestParams);
 		} else {
-			$(_gallery.data('details-target')).html('');
+			_fileDetails.empty();
 		}
 	}
 	
