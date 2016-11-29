@@ -1,6 +1,5 @@
 .template-upload {
-	padding-left: 0;
-	padding-right: 0;
+	padding: 0;
 }
 
 .template-upload .preview .progress {
@@ -23,6 +22,10 @@
 .gallery .gallery__pager .pagination > li > a,
 .gallery .gallery__pager .pagination > li > span {
 	border: 1px solid #ddd;
+}
+
+#standalone-filemanager .file-details .insert-btn {
+	display: none;
 }
 
 .file-details .loading {

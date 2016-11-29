@@ -53,7 +53,6 @@ $bundle = FileGalleryAsset::register($this);
 		$form = ActiveForm::begin([
 			'action' => [
 				'update',
-				'modal' => $modal,
 				'id' => $model->mediaFile->id,
 			],
 			'enableClientValidation' => false,
@@ -73,11 +72,7 @@ $bundle = FileGalleryAsset::register($this);
 
 			<?= Html::hiddenInput('id', $model->mediaFile->id);?>
 			
-			<?php
-			if ($modal) :?>
-				<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary insert-btn']);?>
-				<?php
-			endif;?>
+			<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary insert-btn']);?>
 
 			<?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success']);?>
 

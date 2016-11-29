@@ -1,20 +1,21 @@
 <?php
+
 namespace vommuan\filemanager\controllers;
 
-use Yii;
-use yii\web\Controller;
-use yii\web\Response;
-use yii\web\ForbiddenHttpException;
-use yii\filters\VerbFilter;
-use yii\helpers\Inflector;
-use yii\helpers\ArrayHelper;
-use yii\base\UserException;
+use vommuan\filemanager\assets\FileGalleryAsset;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
-use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\assets\FileGalleryAsset;
+use vommuan\filemanager\models\UploadFileForm;
+use Yii;
+use yii\base\UserException;
+use yii\filters\VerbFilter;
+use yii\helpers\Inflector;
+use yii\helpers\ArrayHelper;
+use yii\web\Controller;
+use yii\web\Response;
+use yii\web\ForbiddenHttpException;
 
 class FileController extends Controller
 {
@@ -130,11 +131,10 @@ class FileController extends Controller
     /**
      * Updated mediafile by id
      * 
-     * @param $modal
      * @param $id
      * @return array
      */
-    public function actionUpdate($modal, $id)
+    public function actionUpdate($id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -154,7 +154,6 @@ class FileController extends Controller
 
         return $this->renderAjax('details', [
             'model' => $model,
-            'modal' => $modal,
         ]);
     }
 
@@ -185,11 +184,10 @@ class FileController extends Controller
     /** 
      * Render file information
      * 
-     * @param boolean $modal
      * @param int $id
      * @return string
      */
-    public function actionDetails($modal, $id)
+    public function actionDetails($id)
     {
         if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
 			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
@@ -201,7 +199,6 @@ class FileController extends Controller
         
         return $this->renderAjax('details', [
             'model' => $model,
-            'modal' => $modal,
         ]);
     }
     
