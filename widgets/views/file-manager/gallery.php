@@ -28,7 +28,7 @@ $pagerParams = [
 
 ?>
 
-<div class="file-gallery gallery" data-details-url="<?= $detailsUrl;?>" data-details-target="<?= $detailsTarget;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-multiple="<?= $multiple;?>">
+<div class="gallery" data-details-url="<?= $detailsUrl;?>" data-details-target="<?= $detailsTarget;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-multiple="<?= $multiple;?>">
 	<div class="row">
 		<?php Pjax::begin([
 			'linkSelector' => (!empty($modalId) ? '#' . $modalId . ' ' : '') . '.pagination a',
