@@ -13,3 +13,7 @@
 .gallery-items__item {
   padding: 0;
 }
+
+.selected-file {
+	display: inline-block;
+}
