@@ -12,14 +12,16 @@ $bundle = FileGalleryAsset::register($this);
 
 <?php 
 foreach ($mediaFiles as $mediaFile) :?>
-	<?= Html::img(
-		$mediaFile->getIcon($bundle->baseUrl), [
-			'alt' => $mediaFile->alt,
-			'class' => 'selected-image',
-			'data' => [
-				'id' => $mediaFile->id,
-			],
-		]
-	);?>
+	<div class="selected-file">
+		<?= Html::img(
+			$mediaFile->getIcon($bundle->baseUrl), [
+				'alt' => $mediaFile->alt,
+				'class' => 'selected-file__image',
+				'data' => [
+					'id' => $mediaFile->id,
+				],
+			]
+		);?>
+	</div>
 	<?php
 endforeach;?>
