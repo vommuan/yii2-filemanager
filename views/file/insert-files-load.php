@@ -11,12 +11,15 @@ $bundle = FileGalleryAsset::register($this);
 ?>
 
 <?php 
-for ($i = 0; $i < count($mediaFiles); $i++) :?>
+foreach ($mediaFiles as $mediaFile) :?>
 	<?= Html::img(
-		$mediaFiles[$i]->getIcon($bundle->baseUrl), [
-			'alt' => $mediaFiles[$i]->alt,
+		$mediaFile->getIcon($bundle->baseUrl), [
+			'alt' => $mediaFile->alt,
 			'class' => 'selected-image',
+			'data' => [
+				'id' => $mediaFile->id,
+			],
 		]
 	);?>
 	<?php
-endfor;?>
+endforeach;?>
