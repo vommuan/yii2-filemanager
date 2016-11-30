@@ -4,8 +4,8 @@
 	<div class="col-xs-4 col-sm-2 gallery-items__item media-file" data-key="{%=file.id%}">
 		{% if (file.thumbnailUrl) { %}
 			<a href="#mediafile" class="thumbnail media-file__link">
-				<img src="{%=file.thumbnailUrl%}" alt="" class="media-file__image">
-				<div class="file-gallery__checker">
+				<img src="{%=file.thumbnailUrl%}" alt="">
+				<div class="checker">
 					<span class="glyphicon glyphicon-check"></span>
 				</div>
 			</a>

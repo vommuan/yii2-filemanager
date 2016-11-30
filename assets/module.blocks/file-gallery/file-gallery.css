@@ -1,8 +1,8 @@
-.file-gallery__checker {
+.checker {
   display: none;
 }
 
-.file-gallery__checker_checked {
+.media-file__link_checked .checker {
   display: inline-block;
   position: absolute;
   top: 0;
@@ -11,6 +11,5 @@
 }
 
 .gallery-items__item {
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
 }

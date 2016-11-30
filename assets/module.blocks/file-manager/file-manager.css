@@ -1,63 +1,59 @@
-/*------------------------------------*\
-    #ITEMS
-\*------------------------------------*/
 .template-upload {
-  padding-left: 0;
-  padding-right: 0;
+	padding: 0;
 }
 
 .template-upload .preview .progress {
-  margin: 20px 0;
-  width: 100%;
+	margin: 20px 0;
+	width: 100%;
 }
 
 .template-upload .preview canvas {
-  display: none;
+	display: none;
 }
 
 .template-upload .thumbnail {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 
-/*------------------------------------*\
-    #PAGINATION
-\*------------------------------------*/
-.file-gallery .pagination {
-  display: block;
-  margin-top: 10px;
+.gallery .gallery__items {
+	overflow: hidden;
 }
 
-.file-gallery .pagination > li > a,
-.file-gallery .pagination > li > span {
-  border: 1px solid #ddd;
+.gallery .gallery__pager .pagination > li > a,
+.gallery .gallery__pager .pagination > li > span {
+	border: 1px solid #ddd;
 }
-/*------------------------------------*\
-    #DASHBOARD
-\*------------------------------------*/
-.file-info .loading {
-  width: 298px;
-  margin-top: 50px;
-  font-size: 5em;
-  color: #5ba6f7;
-  text-align: center;
+
+#standalone-filemanager .file-details-form .file-details-form__insert-button {
+	display: none;
 }
-.file-info ul {
-  padding: 0;
-  list-style: none;
+
+.file-details .loading {
+	width: 298px;
+	margin-top: 50px;
+	font-size: 5em;
+	color: #5ba6f7;
+	text-align: center;
 }
+
+.file-details .details-list {
+	padding: 0;
+	list-style: none;
+}
+
 /*------------------------------------*\
     #SPIN ICONS
 \*------------------------------------*/
 .spin {
-  -webkit-animation: spin 1s infinite linear;
-  -moz-animation: spin 1s infinite linear;
-  -o-animation: spin 1s infinite linear;
-  animation: spin 1s infinite linear;
-  -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-  -ms-transform-origin: 50% 50%;
-  /* IE 9 */
+	-webkit-animation: spin 1s infinite linear;
+	-moz-animation: spin 1s infinite linear;
+	-o-animation: spin 1s infinite linear;
+	animation: spin 1s infinite linear;
+	-webkit-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+	-ms-transform-origin: 50% 50%;
 }
+
 @-moz-keyframes spin {
   from {
     -moz-transform: rotate(0deg);
