@@ -1,9 +1,10 @@
 <?php
+
 namespace vommuan\filemanager\models;
 
+use vommuan\filemanager\Module;
 use Yii;
 use yii\data\ActiveDataProvider;
-use vommuan\filemanager\Module;
 
 /**
  * 

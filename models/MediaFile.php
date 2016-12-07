@@ -314,7 +314,10 @@ class MediaFile extends ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 		$this->handler->afterSave($insert);
-		$this->addOwner();
+		
+		if ($insert && !empty(Yii::$app->user->id)) {
+			$this->addOwner();
+		}
 	}
     
     /**
