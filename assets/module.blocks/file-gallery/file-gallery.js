@@ -4,18 +4,38 @@
 function FileGallery() {
 	var _gallery;
 	var _fileDetails;
+	var _multiple;
 	var _ajaxRequest = null;
 	
 	function init(gallery) {
 		_gallery = gallery;
 		_fileDetails = _gallery.closest('.file-manager__content').find('.file-details');
+		_multiple = _gallery.data('multiple');
 		
 		return this;
 	}
 	
 	function click(item) {
+		if (_multiple) {
+			item.toggleClass('media-file__link_checked');
+		} else {
+			var sameItem = item.hasClass('media-file__link_checked');
+			
+			uncheckAll();
+			
+			if (!sameItem) {
+				item.addClass('media-file__link_checked');
+			}
+		}
+		
 		loadDetails(item);
+		
+		return this;
 	};
+	
+	function uncheckAll() {
+		_gallery.find('.media-file__link').removeClass('media-file__link_checked');
+	}
 	
 	function setAjaxLoader() {
 		if (undefined == _gallery) {
@@ -66,6 +86,7 @@ function FileGallery() {
 	return {
 		'init': init,
 		'click': click,
+		'uncheckAll': uncheckAll,
 		'setAjaxLoader': setAjaxLoader
 	}
 }

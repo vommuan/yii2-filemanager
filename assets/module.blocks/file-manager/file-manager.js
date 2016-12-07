@@ -74,12 +74,11 @@ function FileManager() {
 	}
 	
 	function selectFile(item) {
-		(new MediaFile()).init(_gallery).click(item);
 		(new FileGallery()).init(_gallery).click(item);
 	}
 	
 	function unselectFiles() {
-		(new MediaFile()).init(_gallery).uncheckAll();
+		(new FileGallery()).init(_gallery).uncheckAll();
 	}
 	
 	function mediaFileLinkClick(event) {
