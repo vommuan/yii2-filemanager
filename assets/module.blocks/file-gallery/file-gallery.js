@@ -4,28 +4,23 @@
 function FileGallery() {
 	var _gallery;
 	var _fileDetails;
-	var _multiple;
 	var _ajaxRequest = null;
 	
 	function init(gallery) {
 		_gallery = gallery;
 		_fileDetails = _gallery.closest('.file-manager__content').find('.file-details');
-		_multiple = _gallery.data('multiple');
 		
 		return this;
 	}
 	
 	function click(item) {
-		if (_multiple) {
+		if (_gallery.data('multiple')) {
 			item.toggleClass('media-file__link_checked');
+		} else if (item.hasClass('media-file__link_checked')) {
+			item.removeClass('media-file__link_checked');
 		} else {
-			var sameItem = item.hasClass('media-file__link_checked');
-			
 			uncheckAll();
-			
-			if (!sameItem) {
-				item.addClass('media-file__link_checked');
-			}
+			item.addClass('media-file__link_checked');
 		}
 		
 		loadDetails(item);
@@ -45,12 +40,9 @@ function FileGallery() {
 		
 		_fileDetails.html(
 			$('<div/>', {
-				'class': 'loading'
-			}).append(
-				$('<span/>', {
-					'class': 'glyphicon glyphicon-refresh spin'
-				})
-			)
+				'class': 'loading',
+				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
+			})
 		);
 	}
 	
@@ -73,7 +65,7 @@ function FileGallery() {
 			requestParams.data = "id=" + item.closest('.gallery-items__item').data("key");
 			
 			_ajaxRequest = $.ajax(requestParams);
-		} else if ($('.gallery-items__item .media-file__link_checked').length > 0) {
+		} else if ($('.gallery-items__item .media-file__link_checked').length) {
 			requestParams.data = "id=" + _gallery.find('.media-file__link_checked').filter(':last')
 				.closest('.gallery-items__item').data("key");
 			

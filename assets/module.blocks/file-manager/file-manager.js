@@ -118,14 +118,13 @@ function FileManager() {
 					return false;
 				}
 				
-				(new FileGallery()).init(_gallery).setAjaxLoader();
+				_gallery.closest('.file-manager__content').find('.file-details').empty();
 			},
 			success: function(response) {
 				if (!response.success) {
 					return;
 				}
 				
-				_gallery.closest('.file-manager__content').find('.file-details').empty();
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
 					uploadFromNextPage();
