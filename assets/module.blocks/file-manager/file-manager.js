@@ -95,7 +95,7 @@ function FileManager() {
 		$.ajax({
 			type: "POST",
 			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.find('.gallery-items').eq(0).data('next-page-file-url'),
+			url: _gallery.data('next-page-file-url'),
 			success: function(response) {
 				if (!response.success) {
 					return;

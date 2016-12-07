@@ -21,7 +21,7 @@ use yii\widgets\LinkPager;
 	$this->endBlock();
 	?>
 </div>
-<div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>"></div>
+<div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>"></div>
 <div class="gallery__pager">
 	<?= $this->blocks['empty-text-pagination'];?>
 </div>
