@@ -53,7 +53,7 @@ function FileManager() {
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
-		_widget.on('pjax:success', markFiles);
+		//_widget.on('pjax:success', markFiles);
 		
 		return this;
 	}
@@ -138,10 +138,9 @@ function FileManager() {
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
 					uploadFromNextPage();
+					_pager.update(response.pagination);
+					_summary.update(response.pagination);
 				});
-				
-				_pager.update(response.pagination);
-				_summary.update(response.pagination);
 			}
 		});
 	}

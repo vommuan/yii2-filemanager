@@ -146,12 +146,9 @@ function GalleryPager() {
 	}
 	
 	function addPage() {
-		var url = new Url(getPageLink(), true); // library bower/domurl
-		url.query.page = getNextPage();
-		
 		var newPageItem = $('<li/>').append(
 			$('<a/>', {
-				'href': url,
+				'href': getPageLink(getNextPage()),
 				'data-page': getNextPage() - 1,
 				'text': getNextPage()
 			})
@@ -162,10 +159,21 @@ function GalleryPager() {
 		});
 		
 		initLastPage();
+		
+		var dataPage = getCurrentPage() - 1;
+		
+		click(_pagination.find(_pageSelector + ' a[data-page="' + dataPage + '"]').eq(0));
 	}
 	
 	function deletePage() {
 		var reload = isLastPage() && countPages() > 1;
+		
+		if (reload) {
+			var href = getPageLink(getPreviousPage());
+			var dataPage = getPreviousPage() - 1;
+		} else {
+			var dataPage = getCurrentPage() - 1;
+		}
 		
 		if (countPages() > 1) {
 			_pagination.each(function(index, element) {
@@ -174,11 +182,10 @@ function GalleryPager() {
 		}
 		
 		if (reload) {
-			var url = new Url(getPageLink(), true);
-			url.query.page = getPreviousPage();
-			
-			_pagination.closest('.gallery').find('.gallery__items').load(url.toString());
+			_pagination.closest('.gallery').find('.gallery__items').load(href);
 		}
+		
+		click(_pagination.find(_pageSelector + ' a[data-page="' + dataPage + '"]').eq(0));
 	}
 	
 	function update(pagination) {
