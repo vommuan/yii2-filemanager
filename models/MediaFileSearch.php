@@ -60,6 +60,7 @@ class MediaFileSearch extends MediaFile
 			'query' => $query,
 			'pagination' => [
 				'defaultPageSize' => self::PAGE_SIZE,
+				'route' => '/' . Module::getInstance()->uniqueId . '/file/page',
 			],
 		]);
 		

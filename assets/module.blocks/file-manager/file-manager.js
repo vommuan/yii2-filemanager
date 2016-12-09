@@ -48,6 +48,7 @@ function FileManager() {
 		
 		initSelectedFiles();
 		
+		_widget.on('click', '.pagination a', paginationClick);
 		_widget.on('click', '.media-file__link', mediaFileLinkClick);
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
@@ -55,6 +56,15 @@ function FileManager() {
 		_widget.on('pjax:success', markFiles);
 		
 		return this;
+	}
+	
+	function paginationClick(event) {
+		event.preventDefault();
+		
+		var link = $(event.currentTarget);
+		
+		_gallery.find('.gallery__items').load(link.attr('href'));
+		_pager.click(link);
 	}
 	
 	function toggleSelectedFiles(item) {
