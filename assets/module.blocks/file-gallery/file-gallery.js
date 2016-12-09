@@ -14,8 +14,23 @@ function FileGallery() {
 	}
 	
 	function click(item) {
+		if (_gallery.data('multiple')) {
+			item.toggleClass('media-file__link_checked');
+		} else if (item.hasClass('media-file__link_checked')) {
+			item.removeClass('media-file__link_checked');
+		} else {
+			uncheckAll();
+			item.addClass('media-file__link_checked');
+		}
+		
 		loadDetails(item);
+		
+		return this;
 	};
+	
+	function uncheckAll() {
+		_gallery.find('.media-file__link').removeClass('media-file__link_checked');
+	}
 	
 	function setAjaxLoader() {
 		if (undefined == _gallery) {
@@ -25,12 +40,9 @@ function FileGallery() {
 		
 		_fileDetails.html(
 			$('<div/>', {
-				'class': 'loading'
-			}).append(
-				$('<span/>', {
-					'class': 'glyphicon glyphicon-refresh spin'
-				})
-			)
+				'class': 'loading',
+				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
+			})
 		);
 	}
 	
@@ -53,7 +65,7 @@ function FileGallery() {
 			requestParams.data = "id=" + item.closest('.gallery-items__item').data("key");
 			
 			_ajaxRequest = $.ajax(requestParams);
-		} else if ($('.gallery-items__item .media-file__link_checked').length > 0) {
+		} else if ($('.gallery-items__item .media-file__link_checked').length) {
 			requestParams.data = "id=" + _gallery.find('.media-file__link_checked').filter(':last')
 				.closest('.gallery-items__item').data("key");
 			
@@ -66,6 +78,7 @@ function FileGallery() {
 	return {
 		'init': init,
 		'click': click,
+		'uncheckAll': uncheckAll,
 		'setAjaxLoader': setAjaxLoader
 	}
 }

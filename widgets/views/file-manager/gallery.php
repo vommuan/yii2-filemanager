@@ -21,7 +21,7 @@ $galleryItemsId = $modalId . '_gallery-items';
 
 ?>
 
-<div class="col-xs-12 col-sm-8 gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-multiple="<?= $multiple;?>">
+<div class="col-xs-12 col-sm-8 gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>" data-multiple="<?= $multiple;?>">
 	<?php Pjax::begin([
 		'linkSelector' => (!empty($modalId) ? '#' . $modalId . ' ' : '') . '.pagination a',
 	]);?>
@@ -30,11 +30,9 @@ $galleryItemsId = $modalId . '_gallery-items';
 			'emptyText' => $this->render('gallery__empty-text', [
 				'pagerParams' => $pagerParams,
 				'galleryItemsId' => $galleryItemsId,
-				'nextPageFileUrl' => $nextPageFileUrl,
 			]),
 			'layout' => $this->render('gallery__layout', [
 				'galleryItemsId' => $galleryItemsId,
-				'nextPageFileUrl' => $nextPageFileUrl,
 			]),
 			'pager' => $pagerParams,
 			'itemOptions' => ['tag' => false],

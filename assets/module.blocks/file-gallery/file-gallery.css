@@ -1,19 +1,33 @@
-.checker {
-  display: none;
-}
-
-.media-file__link_checked .checker {
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  right: 3px;
-  font-size: 2em;
+.selected-file {
+	display: inline-block;
 }
 
 .gallery-items__item {
-  padding: 0;
+	padding: 0;
 }
 
-.selected-file {
+.checker {
+	display: none;
+}
+
+.media-file .media-file__link {
+	position: relative;
+	margin-bottom: 0;
+}
+
+.media-file .media-file__link:hover {
+	opacity: 0.9;
+}
+
+.media-file .media-file__link_checked {
+	outline: #5ba6f7 solid 3px;
+	outline-offset: -3px;
+}
+
+.media-file .media-file__link_checked .checker {
 	display: inline-block;
+	position: absolute;
+	top: 0;
+	right: 3px;
+	font-size: 2em;
 }
