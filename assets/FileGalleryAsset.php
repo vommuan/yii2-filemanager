@@ -17,7 +17,6 @@ class FileGalleryAsset extends AssetBundle
     
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
-        'vommuan\filemanager\assets\MediaFileAsset',
         'vommuan\filemanager\assets\GalleryPagerAsset',
         'vommuan\filemanager\assets\GallerySummaryAsset',
     ];

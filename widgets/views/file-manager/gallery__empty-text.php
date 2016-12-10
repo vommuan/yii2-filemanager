@@ -1,5 +1,6 @@
 <?php
 
+use vommuan\filemanager\Module;
 use yii\data\Pagination;
 use yii\widgets\LinkPager;
 
@@ -14,14 +15,17 @@ use yii\widgets\LinkPager;
 		echo LinkPager::widget(
 			array_merge(
 				$pagerParams, [
-					'pagination' => new Pagination(['totalCount' => 1]), // if point 0 intead of 1, pages not be displayed
+					'pagination' => new Pagination([
+						'route' => '/' . Module::getInstance()->uniqueId . '/file/page',
+						'totalCount' => 1
+					]), // if point 0 intead of 1, pages not be displayed
 				]
 			)
 		);
 	$this->endBlock();
 	?>
 </div>
-<div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>"></div>
+<div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>"></div>
 <div class="gallery__pager">
 	<?= $this->blocks['empty-text-pagination'];?>
 </div>

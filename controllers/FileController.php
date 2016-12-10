@@ -53,6 +53,15 @@ class FileController extends Controller
     }
     
     /**
+     * 
+     */
+    public function actionPage($page = 1) {
+		return $this->renderAjax('page', [
+			'dataProvider' => (new MediaFileSearch())->search(),
+		]);
+	}
+    
+    /**
      * Upload file from next page
      */
     public function actionNextPageFile()

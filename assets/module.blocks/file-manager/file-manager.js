@@ -48,13 +48,22 @@ function FileManager() {
 		
 		initSelectedFiles();
 		
+		_widget.on('click', '.pagination a', paginationClick);
 		_widget.on('click', '.media-file__link', mediaFileLinkClick);
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
-		_widget.on('pjax:success', markFiles);
 		
 		return this;
+	}
+	
+	function paginationClick(event) {
+		event.preventDefault();
+		
+		var link = $(event.currentTarget);
+		
+		_gallery.find('.gallery__items').load(link.attr('href'), markFiles);
+		_pager.click(link);
 	}
 	
 	function toggleSelectedFiles(item) {
@@ -74,12 +83,11 @@ function FileManager() {
 	}
 	
 	function selectFile(item) {
-		(new MediaFile()).init(_gallery).click(item);
 		(new FileGallery()).init(_gallery).click(item);
 	}
 	
 	function unselectFiles() {
-		(new MediaFile()).init(_gallery).uncheckAll();
+		(new FileGallery()).init(_gallery).uncheckAll();
 	}
 	
 	function mediaFileLinkClick(event) {
@@ -95,12 +103,16 @@ function FileManager() {
 		$.ajax({
 			type: "POST",
 			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.find('.gallery-items').eq(0).data('next-page-file-url'),
+			url: _gallery.data('next-page-file-url'),
 			success: function(response) {
 				if (!response.success) {
 					return;
 				}
+				
 				_gallery.find('.gallery-items').eq(0).append(response.html);
+				
+				unselectFiles();
+				markFiles();
 			}
 		});
 	}
@@ -119,21 +131,19 @@ function FileManager() {
 					return false;
 				}
 				
-				(new FileGallery()).init(_gallery).setAjaxLoader();
+				_gallery.closest('.file-manager__content').find('.file-details').empty();
 			},
 			success: function(response) {
 				if (!response.success) {
 					return;
 				}
 				
-				_gallery.closest('.file-manager__content').find('.file-details').empty();
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
 					uploadFromNextPage();
+					_pager.update(response.pagination);
+					_summary.update(response.pagination);
 				});
-				
-				_pager.update(response.pagination);
-				_summary.update(response.pagination);
 			}
 		});
 	}
