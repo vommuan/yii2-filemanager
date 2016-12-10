@@ -53,7 +53,6 @@ function FileManager() {
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
-		//_widget.on('pjax:success', markFiles);
 		
 		return this;
 	}
@@ -63,7 +62,7 @@ function FileManager() {
 		
 		var link = $(event.currentTarget);
 		
-		_gallery.find('.gallery__items').load(link.attr('href'));
+		_gallery.find('.gallery__items').load(link.attr('href'), markFiles);
 		_pager.click(link);
 	}
 	
@@ -109,7 +108,11 @@ function FileManager() {
 				if (!response.success) {
 					return;
 				}
+				
 				_gallery.find('.gallery-items').eq(0).append(response.html);
+				
+				unselectFiles();
+				markFiles();
 			}
 		});
 	}

@@ -182,10 +182,10 @@ function GalleryPager() {
 		}
 		
 		if (reload) {
-			_pagination.closest('.gallery').find('.gallery__items').load(href);
+			var link = _pagination.find(_pageSelector + ' a[data-page="' + dataPage + '"]').eq(0);
+			
+			link.trigger('click');
 		}
-		
-		click(_pagination.find(_pageSelector + ' a[data-page="' + dataPage + '"]').eq(0));
 	}
 	
 	function update(pagination) {
