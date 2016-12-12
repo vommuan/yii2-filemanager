@@ -20,8 +20,6 @@ use yii\widgets\InputWidget;
  *     'template' => '<div class="input-group">{input}<span class="input-group-btn">{button}</span></div>',
  *     // Optional, if set, in container will be inserted selected image
  *     'imageContainer' => '.img',
- *     // Default to FileInput::DATA_URL. This data will be inserted in input field
- *     'pasteData' => FileInput::DATA_URL,
  *     // JavaScript function, which will be called before insert file data to input.
  *     // Argument data contains file data.
  *     // data example: [alt: "Witch with cat", description: "123", url: "/uploads/2014/12/cats-100x100.jpeg", id: "45"]

@@ -49,18 +49,54 @@ function ImageContainer() {
 	'use strict';
 	
 	var _form;
+	var _widget;
+	var _gallery;
 	var _container;
 	var _defaultImageUrl;
 	
+	function initFiles() {
+		var input = _form.find('.input-widget-form__input').eq(0);
+		
+		if (undefined == input || '' == input.val()) {
+			setDefault();
+			return;
+		}
+		
+		var multiple = _gallery.data('multiple');
+		
+		if (multiple) {
+			var files = JSON.parse(input.val());
+		} else {
+			var files = [Number(input.val())];
+		}
+		
+		if (files.length && _container) {
+			_container.load(_gallery.data('insert-files-load'), {
+				'selectedFiles': JSON.stringify(files)
+			}, function(data) {
+				_container.trigger('initFiles');
+			});
+		}
+	}
+	
 	function init(form) {
 		_form = form;
+		_widget = $(_form.find('[role="filemanager-launch"]').data('target'));
+		_gallery = _widget.find('.gallery').eq(0)
+		
 		_container = $(_form.find('[role="clear-input"]').eq(0).data('image-container'));
 		_defaultImageUrl = _form.find('[role="clear-input"]').eq(0).data('default-image');
+		
+		initFiles();
 		
 		return this;
 	}
 	
 	function setDefault() {
+		if (!$(_container).length) {
+			return;
+		}
+		
 		_container.empty();
 		
 		if ('' != _defaultImageUrl) {
