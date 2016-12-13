@@ -168,7 +168,8 @@ function FileManager() {
 			_imageContainer.empty();
 			
 			_imageContainer.load(_gallery.data('insert-files-load'), {
-				'selectedFiles': JSON.stringify(_selectedFiles)
+				'selectedFiles': JSON.stringify(_selectedFiles),
+				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});
 		}
 		
