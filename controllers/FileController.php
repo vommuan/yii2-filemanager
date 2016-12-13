@@ -11,8 +11,9 @@ use vommuan\filemanager\models\UploadFileForm;
 use Yii;
 use yii\base\UserException;
 use yii\filters\VerbFilter;
-use yii\helpers\Inflector;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\ForbiddenHttpException;
@@ -216,10 +217,12 @@ class FileController extends Controller
      */
     public function actionInsertFilesLoad()
     {
-		$filesId = json_decode(ArrayHelper::getValue(Yii::$app->request->post(), 'selectedFiles', '[]'));
+		$filesId = Json::decode(ArrayHelper::getValue(Yii::$app->request->post(), 'selectedFiles', '[]'));
+		$imageOptions = ArrayHelper::getValue(Yii::$app->request->post(), 'imageOptions', []);
 		
 		return $this->renderAjax('insert-files-load', [
 			'mediaFiles' => MediaFile::findAll($filesId),
+			'imageOptions' => $imageOptions,
 		]);
 	}
 }

@@ -2,6 +2,7 @@
 namespace vommuan\filemanager\widgets;
 
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\widgets\InputWidget;
 
 /**
@@ -40,7 +41,7 @@ class FileInput extends InputWidget
     /**
      * @var string widget template
      */
-    public $template = '<div class="input-widget-form input-group">{input}<span class="input-group-btn">{button}{reset-button}</span></div>';
+    public $template = '<div class="input-group">{input}<span class="input-group-btn">{button}{reset-button}</span></div>';
 
     /**
      * @var string button tag
@@ -71,7 +72,12 @@ class FileInput extends InputWidget
      * @var array reset button html options
      */
     public $resetButtonOptions = ['class' => 'btn btn-default'];
-
+	
+	/**
+	 * Options for image which included to <img/> tag, but "src"
+	 */
+	public $imageOptions;
+	
     /**
      * @var string Optional, if set, in container will be inserted selected image
      */
@@ -104,6 +110,24 @@ class FileInput extends InputWidget
 			$this->options['class'] = $this->defaultOptions['class'];
 		}
 	}
+	
+	protected function initButtonOptions() {
+		if (empty($this->buttonOptions['id'])) {
+            $this->buttonOptions['id'] = $this->options['id'] . '-btn';
+        }
+
+        $this->buttonOptions['role'] = 'filemanager-launch';
+        $this->buttonOptions['data-toogle'] = 'modal';
+        $this->buttonOptions['data-target'] = '#' . $this->id;
+	}
+	
+	protected function initResetButtonOptions() {
+		$this->resetButtonOptions['role'] = 'clear-input';
+        $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
+        $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
+        $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
+        $this->resetButtonOptions['data-image-options'] = Json::encode($this->imageOptions);
+	}
     
     /**
      * @inheritdoc
@@ -113,18 +137,8 @@ class FileInput extends InputWidget
         parent::init();
         
         $this->initOptions();
-
-        if (empty($this->buttonOptions['id'])) {
-            $this->buttonOptions['id'] = $this->options['id'] . '-btn';
-        }
-
-        $this->buttonOptions['role'] = 'filemanager-launch';
-        $this->buttonOptions['data-toogle'] = 'modal';
-        $this->buttonOptions['data-target'] = '#' . $this->id;
-        $this->resetButtonOptions['role'] = 'clear-input';
-        $this->resetButtonOptions['data-clear-element-id'] = $this->options['id'];
-        $this->resetButtonOptions['data-image-container'] = $this->imageContainer;
-        $this->resetButtonOptions['data-default-image'] = $this->defaultImage;
+        $this->initButtonOptions();
+		$this->initResetButtonOptions();
         
         $this->multiple = ($this->multiple) ? 'true' : 'false';
     }

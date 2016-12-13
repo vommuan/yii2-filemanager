@@ -72,7 +72,8 @@ function ImageContainer() {
 		
 		if (files.length && _container) {
 			_container.load(_gallery.data('insert-files-load'), {
-				'selectedFiles': JSON.stringify(files)
+				'selectedFiles': JSON.stringify(files),
+				'imageOptions': _form.find('[role="clear-input"]').eq(0).data('image-options')
 			}, function(data) {
 				_container.trigger('initFiles');
 			});
