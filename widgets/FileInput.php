@@ -76,7 +76,7 @@ class FileInput extends InputWidget
 	/**
 	 * Options for image which included to <img/> tag, but "src"
 	 */
-	public $imageOptions;
+	public $imageOptions = [];
 	
     /**
      * @var string Optional, if set, in container will be inserted selected image
