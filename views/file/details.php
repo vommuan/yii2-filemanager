@@ -29,7 +29,7 @@ $form = ActiveForm::begin([
 			if ('image' == $model->mediaFile->baseType) :?>
 				<div class="cropper">
 					<div class="thumbnail cropper__image-block">
-						<?= Html::img($model->mediaFile->getFileVariant(), ['class' => 'crop-image']) ?>
+						<?= Html::img($model->mediaFile->getFileVariant() . '?' . $model->mediaFile->updated_at, ['class' => 'crop-image']) ?>
 					</div>
 					<div class="cropper__control-block controls">
 						<button class="btn btn-primary controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left')?>">
@@ -44,7 +44,7 @@ $form = ActiveForm::begin([
 				<?php
 			else :?>
 				<div class="thumbnail">
-					<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl)) ?>
+					<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at) ?>
 				</div>
 				<?php
 			endif;?>

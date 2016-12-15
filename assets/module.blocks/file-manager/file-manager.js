@@ -190,6 +190,7 @@ function FileManager() {
             },
             success: function(html) {
                 _gallery.closest('.file-manager__content').find('.file-details').html(html);
+                cropperInit();
             }
         });
 	}

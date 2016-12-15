@@ -73,9 +73,10 @@ class MediaFile extends ActiveRecord
     public function behaviors()
     {
         return [
-            'timestamp' => [
-                'class' => TimestampBehavior::className(),
-            ]
+			'timestamp' => [
+				'class' => TimestampBehavior::className(),
+				'skipUpdateOnClean' => false,
+			],
         ];
     }
     
@@ -319,6 +320,7 @@ class MediaFile extends ActiveRecord
 	public function afterSave($insert, $changedAttributes)
 	{
 		parent::afterSave($insert, $changedAttributes);
+		
 		$this->handler->afterSave($insert);
 		
 		if ($insert && !empty(Yii::$app->user->id)) {
