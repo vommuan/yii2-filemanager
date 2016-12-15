@@ -58,6 +58,7 @@ function FileGallery() {
 			beforeSend: setAjaxLoader,
 			success: function(html) {
 				_fileDetails.html(html);
+				cropperInit();
 			}
 		};
 		

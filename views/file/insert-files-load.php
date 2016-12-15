@@ -15,7 +15,7 @@ $bundle = FileGalleryAsset::register($this);
 foreach ($mediaFiles as $mediaFile) :?>
 	<div class="selected-file">
 		<?= Html::img(
-			$mediaFile->getIcon($bundle->baseUrl), ArrayHelper::merge(
+			$mediaFile->getIcon($bundle->baseUrl) . '?' . $mediaFile->updated_at, ArrayHelper::merge(
 				[
 					'alt' => $mediaFile->alt,
 					'class' => 'selected-file__image',

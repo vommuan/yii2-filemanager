@@ -25,6 +25,11 @@ use vommuan\filemanager\models\handlers\HandlerFactory;
 class MediaFile extends ActiveRecord
 {
 	/**
+	 * @var integer Rotate angle for images
+	 */
+	public $rotate = 0;
+	
+	/**
 	 * @var vommuan\filemanager\models\handlers\BaseHandler or child class
 	 */
 	protected $handler;
@@ -68,9 +73,10 @@ class MediaFile extends ActiveRecord
     public function behaviors()
     {
         return [
-            'timestamp' => [
-                'class' => TimestampBehavior::className(),
-            ]
+			'timestamp' => [
+				'class' => TimestampBehavior::className(),
+				'skipUpdateOnClean' => false,
+			],
         ];
     }
     
@@ -84,6 +90,7 @@ class MediaFile extends ActiveRecord
             [['filename', 'type'], 'string', 'max' => 255],
             [['url', 'alt', 'description'], 'string'],
             [['size'], 'integer'],
+            [['rotate'], 'integer', 'min' => -360, 'max' => 360],
         ];
     }
     
@@ -313,6 +320,7 @@ class MediaFile extends ActiveRecord
 	public function afterSave($insert, $changedAttributes)
 	{
 		parent::afterSave($insert, $changedAttributes);
+		
 		$this->handler->afterSave($insert);
 		
 		if ($insert && !empty(Yii::$app->user->id)) {

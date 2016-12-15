@@ -18,6 +18,11 @@ class UpdateFileForm extends Model
 	public $mediaFile;
 	
 	/**
+	 * @var integer Rotate angle for images
+	 */
+	public $rotate = 0;
+	
+	/**
 	 * @var string
 	 */
 	private $_alt;
@@ -34,6 +39,7 @@ class UpdateFileForm extends Model
 	{
 		return [
 			[['alt', 'description'], 'string'],
+			[['rotate'], 'integer', 'min' => -360, 'max' => 360],
 		];
 	}
 	
@@ -107,6 +113,7 @@ class UpdateFileForm extends Model
 		
 		$this->mediaFile->alt = $this->_alt;
 		$this->mediaFile->description = $this->_description;
+		$this->mediaFile->rotate = $this->rotate;
 		
         return $this->mediaFile->save();
 	}

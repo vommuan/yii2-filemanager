@@ -12,56 +12,48 @@ use yii\widgets\ActiveForm;
 $bundle = FileGalleryAsset::register($this);
 ?>
 
-<div class="row">
-	<div class="col-xs-12 col-sm-6">
-		<div class="thumbnail">
-			<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl)) ?>
+<?php 
+$form = ActiveForm::begin([
+	'action' => [
+		'update',
+		'id' => $model->mediaFile->id,
+	],
+	'enableClientValidation' => false,
+	'options' => [
+		'class' => 'control-form file-details-form',
+	],
+]);?>
+	<div class="row">
+		<div class="col-xs-12">
+			<?php
+			if ('image' == $model->mediaFile->baseType) :?>
+				<div class="cropper">
+					<div class="thumbnail cropper__image-block">
+						<?= Html::img($model->mediaFile->getFileVariant() . '?' . $model->mediaFile->updated_at, ['class' => 'crop-image']) ?>
+					</div>
+					<div class="cropper__control-block controls">
+						<button class="btn btn-primary controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left')?>">
+							<span class="fa fa-rotate-left"></span>
+						</button>
+						<button class="btn btn-primary controls__rotate controls__rotate_right" title="<?= Module::t('main', 'Rotate right')?>">
+							<span class="fa fa-rotate-right"></span>
+						</button>
+					</div>
+					<?= $form->field($model, 'rotate')->hiddenInput(['class' => 'cropper__rotate-input'])->label(false);?>
+				</div>
+				<?php
+			else :?>
+				<div class="thumbnail">
+					<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at) ?>
+				</div>
+				<?php
+			endif;?>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-6">
-		<ul class="details-list">
-			<li class="details-list__item"><?= $model->mediaFile->filename;?></li>
-			<li class="details-list__item">
-				<?php 
-				echo $model->mediaFile->type;
-				
-				if ('image' == $model->mediaFile->baseType) {
-					echo ', ' . $model->mediaFile->sizes;
-				}
-				?>
-			</li>
-			<li class="details-list__item"><?= Yii::$app->formatter->asDate($model->mediaFile->getLastChanges());?></li>
-			<li class="details-list__item"><?= $model->mediaFile->fileSize;?></li>
-			<li class="details-list__item">
-				<?= Html::a(
-					Module::t('main', 'Delete'), [
-						'delete',
-						'id' => $model->mediaFile->id
-					], [
-						'class' => 'text-danger',
-						'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-						'role' => 'delete',
-					]
-				);?>
-			</li>
-		</ul>
-	</div>
-</div>
 
-<div class="row">
-	<div class="col-xs-12">
-		<?php 
-		$form = ActiveForm::begin([
-			'action' => [
-				'update',
-				'id' => $model->mediaFile->id,
-			],
-			'enableClientValidation' => false,
-			'options' => [
-				'class' => 'control-form file-details-form',
-			],
-		]);
-			
+	<div class="row">
+		<div class="col-xs-12">
+			<?php
 			if ('image' == $model->mediaFile->baseType) {
 				echo $form->field($model, 'alt')->textInput();
 			}
@@ -69,20 +61,31 @@ $bundle = FileGalleryAsset::register($this);
 			echo $form->field($model, 'description')->textarea();
 			?>
 			
-			<?= Html::hiddenInput('url', $model->mediaFile->url);?>
+			<?= Html::hiddenInput('url', $model->mediaFile->url);// What for? Is it legacy code? ?>
 
-			<?= Html::hiddenInput('id', $model->mediaFile->id);?>
+			<?= Html::hiddenInput('id', $model->mediaFile->id);// What for? Is it legacy code? ?>
 			
 			<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary insert-btn file-details-form__insert-button']);?>
 
 			<?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success file-details-form__save-button']);?>
-
+			
+			<?= Html::a(
+				Module::t('main', 'Delete'), [
+					'delete',
+					'id' => $model->mediaFile->id
+				], [
+					'class' => 'btn btn-danger',
+					'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+					'role' => 'delete',
+				]
+			);?>
+			
 			<?php 
 			if ($message = Yii::$app->session->getFlash('mediaFileUpdateResult')) :?>
 				<div class="text-success"><?= $message;?></div>
 				<?php
 			endif; ?>
-			<?php 
-		ActiveForm::end();?>
+		</div>
 	</div>
-</div>
+<?php 
+ActiveForm::end();?>
