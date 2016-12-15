@@ -20,5 +20,6 @@ class FileManagerAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\web\JqueryAsset',
         'vommuan\filemanager\assets\FileGalleryAsset',
+        'vommuan\filemanager\assets\FontAwesomeAsset',
     ];
 }

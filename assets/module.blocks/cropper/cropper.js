@@ -17,15 +17,8 @@ $(function() {
 		toggleDragModeOnDblclick: false,
 		movable: false,
 		zoomable: false,
-		/*crop: function(event) {
-			// Output the result data for cropping image.
-			console.log(event.x);
-			console.log(event.y);
-			console.log(event.width);
-			console.log(event.height);
-			console.log(event.rotate);
-			console.log(event.scaleX);
-			console.log(event.scaleY);
-		}*/
+		crop: function(event) {
+			$(event.currentTarget).closest('.cropper').find('.cropper__rotate-input').eq(0).val(event.rotate);
+		}
 	});
 });

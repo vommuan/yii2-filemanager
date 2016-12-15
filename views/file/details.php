@@ -34,9 +34,14 @@ $form = ActiveForm::begin([
 						<?= Html::img($model->mediaFile->getFileVariant(), ['class' => 'crop-image']) ?>
 					</div>
 					<div class="cropper__control-block controls">
-						<button class="btn btn-primary controls__rotate controls__rotate_left">Left</button>
-						<button class="btn btn-primary controls__rotate controls__rotate_right">Right</button>
+						<button class="btn btn-primary controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left')?>">
+							<span class="fa fa-rotate-left"></span>
+						</button>
+						<button class="btn btn-primary controls__rotate controls__rotate_right" title="<?= Module::t('main', 'Rotate right')?>">
+							<span class="fa fa-rotate-right"></span>
+						</button>
 					</div>
+					<?= $form->field($model, 'rotate')->hiddenInput(['class' => 'cropper__rotate-input'])->label(false);?>
 				</div>
 				<?php
 			else :?>
