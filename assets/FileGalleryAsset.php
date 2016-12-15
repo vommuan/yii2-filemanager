@@ -19,5 +19,6 @@ class FileGalleryAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'vommuan\filemanager\assets\GalleryPagerAsset',
         'vommuan\filemanager\assets\GallerySummaryAsset',
+        'vommuan\filemanager\assets\CropImageAsset',
     ];
 }

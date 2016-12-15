@@ -1,6 +1,5 @@
 <?php
 
-use vommuan\filemanager\assets\CropImageAsset;
 use vommuan\filemanager\assets\FileGalleryAsset;
 use vommuan\filemanager\Module;
 use yii\helpers\Html;
@@ -11,7 +10,6 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 
 $bundle = FileGalleryAsset::register($this);
-CropImageAsset::register($this);
 ?>
 
 <?php 

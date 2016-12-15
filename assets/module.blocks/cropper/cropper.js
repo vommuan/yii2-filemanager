@@ -1,5 +1,5 @@
-$(function() {
-	$('.cropper').on('click', '.controls .controls__rotate', function (event) {
+function cropperInit() {
+	$('.cropper .controls').on('click', '.controls__rotate', function (event) {
 		event.preventDefault();
 		
 		var controlButton = $(event.currentTarget);
@@ -21,4 +21,4 @@ $(function() {
 			$(event.currentTarget).closest('.cropper').find('.cropper__rotate-input').eq(0).val(event.rotate);
 		}
 	});
-});
+}

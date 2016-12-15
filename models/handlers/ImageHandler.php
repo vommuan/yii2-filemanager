@@ -93,12 +93,46 @@ class ImageHandler extends BaseHandler
 	}
 	
 	/**
+	 * Rotate image on specified angle
+	 * 
+	 * @return integer size of file
+	 */
+	protected function rotateImage()
+	{
+		$imagine = Image::getImagine();
+		
+		$imagine->open($this->absoluteFileName)->rotate($this->activeRecord->rotate)->save($this->absoluteFileName);
+		
+		$this->refreshFileVariants();
+		
+		return filesize($this->absoluteFileName);
+	}
+	
+	/**
 	 * @inheritdoc
 	 */
 	protected function afterFileSave()
 	{
 		if (isset(Module::getInstance()->maxImageSizes)) {
 			$this->activeRecord->size = $this->cropImage();
+		}
+	}
+	
+	/**
+	 * Function witch calling before active record MediaFile save
+	 * 
+	 * @return boolean
+	 */
+	public function beforeSave($insert)
+	{
+		if (parent::beforeSave($insert)) {
+			if (isset($this->activeRecord->rotate) && 0 != $this->activeRecord->rotate) {
+				$this->activeRecord->size = $this->rotateImage();
+			}
+			
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
