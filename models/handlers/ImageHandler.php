@@ -1,10 +1,11 @@
 <?php
 namespace vommuan\filemanager\models\handlers;
 
-use yii\imagine\Image;
-use yii\base\ErrorException;
-use vommuan\filemanager\Module;
 use vommuan\filemanager\models\ImageThumbnail;
+use vommuan\filemanager\Module;
+use Yii;
+use yii\base\ErrorException;
+use yii\imagine\Image;
 
 /**
  * Image handler
@@ -168,7 +169,7 @@ class ImageHandler extends BaseHandler
 	 */
 	public function getVariant($alias)
 	{
-		return $this->_imageThumbnail->getUrl($alias);
+		return Yii::getAlias('@web/' . $this->_imageThumbnail->getUrl($alias));
 	}
 	
 	/**
