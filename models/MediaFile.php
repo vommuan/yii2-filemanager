@@ -203,7 +203,7 @@ class MediaFile extends ActiveRecord
 	public function getFileVariant($alias = 'origin')
 	{
 		if ('origin' == $alias) {
-			return $this->url;
+			return Yii::getAlias('@web/' . $this->url);
 		} else {
 			return $this->handler->getVariant($alias);
 		}
