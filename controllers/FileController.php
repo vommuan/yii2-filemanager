@@ -3,11 +3,11 @@
 namespace vommuan\filemanager\controllers;
 
 use vommuan\filemanager\assets\FileGalleryAsset;
-use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\models\UpdateFileForm;
 use vommuan\filemanager\models\UploadFileForm;
+use vommuan\filemanager\Module;
 use Yii;
 use yii\base\UserException;
 use yii\filters\VerbFilter;
@@ -33,15 +33,6 @@ class FileController extends Controller
                 ],
             ],
         ];
-    }
-
-    public function beforeAction($action)
-    {
-        if (defined('YII_DEBUG') && YII_DEBUG) {
-            Yii::$app->assetManager->forceCopy = true;
-        }
-
-        return parent::beforeAction($action);
     }
 
     public function actionIndex()
