@@ -2,12 +2,13 @@
 
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\Module;
 
 ?>
 
 <?= FileUploadUI::widget([
-	'model' => $uploadModel,
+	'model' => new UploadFileForm(),
 	'attribute' => 'file',
 	'options' => [
 		'id' => $widgetId . '-fileupload',

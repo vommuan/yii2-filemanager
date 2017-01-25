@@ -1,5 +1,6 @@
 <?php
 
+use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\Module;
 use yii\helpers\Url;
 use yii\widgets\ListView;
@@ -20,7 +21,7 @@ $galleryItemsId = $widgetId . '_gallery-items';
 
 <div class="gallery" data-base-url="<?= $baseUrl;?>" data-multiple="<?= $multiple;?>">
 	<?= ListView::widget([
-		'dataProvider' => $dataProvider,
+		'dataProvider' => (new MediaFileSearch())->search(),
 		'emptyText' => $this->render('gallery__empty-text', [
 			'pagerParams' => $pagerParams,
 			'galleryItemsId' => $galleryItemsId,
