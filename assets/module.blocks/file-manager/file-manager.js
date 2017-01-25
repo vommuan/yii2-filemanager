@@ -44,7 +44,7 @@ function FileManager() {
 		_gallery = _widget.find('.gallery').eq(0);
 		_pager = (new GalleryPager()).init(_gallery);
 		_summary = (new GallerySummary()).init(_gallery, _pager);
-		_multiple = _gallery.data('multiple');
+		_multiple = _gallery.closest('.file-manager').data('multiple');
 		
 		initSelectedFiles();
 		

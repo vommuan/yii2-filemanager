@@ -14,7 +14,7 @@ function FileGallery() {
 	}
 	
 	function click(item) {
-		if (_gallery.data('multiple')) {
+		if (_gallery.closest('.file-manager').data('multiple')) {
 			item.toggleClass('media-file__link_checked');
 		} else if (item.hasClass('media-file__link_checked')) {
 			item.removeClass('media-file__link_checked');

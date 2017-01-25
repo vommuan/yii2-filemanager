@@ -62,7 +62,7 @@ function ImageContainer() {
 			return;
 		}
 		
-		var multiple = _gallery.data('multiple');
+		var multiple = _gallery.closest('.file-manager').data('multiple');
 		
 		if (multiple) {
 			var files = JSON.parse(input.val());

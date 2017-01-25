@@ -14,7 +14,7 @@ FileManagerAsset::register($this);
 
 ?>
 
-<div class="file-manager">
+<div class="file-manager" data-multiple="<?= $multiple;?>">
 	<div class="file-manager__header">
 		<?= PageHeader::widget([
 			'icon' => 'picture',
