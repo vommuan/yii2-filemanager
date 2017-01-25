@@ -20,7 +20,7 @@ $galleryItemsId = $widgetId . '_gallery-items';
 
 ?>
 
-<div class="col-xs-12 col-sm-8 gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>" data-multiple="<?= $multiple;?>">
+<div class="gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>" data-multiple="<?= $multiple;?>">
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
 		'emptyText' => $this->render('gallery__empty-text', [

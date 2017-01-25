@@ -30,12 +30,16 @@ FileManagerAsset::register($this);
 	</div>
 
 	<div class="row file-manager__content">
-		<?= $this->render('_gallery', [
-			'dataProvider' => $dataProvider,
-			'widgetId' => $widgetId,
-			'multiple' => $multiple,
-		]);?>
+		<div class="col-xs-12 col-sm-8">
+			<?= $this->render('_gallery', [
+				'dataProvider' => $dataProvider,
+				'widgetId' => $widgetId,
+				'multiple' => $multiple,
+			]);?>
+		</div>
 		
-		<div class="col-xs-12 col-sm-4 file-details"></div>
+		<div class="col-xs-12 col-sm-4">
+			<div class="file-details"></div>
+		</div>
 	</div>
 </div>
