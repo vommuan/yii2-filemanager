@@ -19,7 +19,6 @@ FileInputAsset::register($this);
 				</div>
 				<div class="modal-body">
 					<?= FileManager::widget([
-						'parentWidgetId' => $widgetId,
 						'multiple' => $multiple,
 					]);?>
 				</div>

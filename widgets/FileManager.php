@@ -11,15 +11,19 @@ use yii\base\Widget;
  */
 class FileManager extends Widget
 {
-	public $parentWidgetId = '';
-	
+	/**
+	 * @var string 
+	 */
 	public $multiple = 'false';
 	
+	/**
+	 * @inheritdoc
+	 */
 	public function run()
 	{
 		return $this->render('file-manager/layout', [
 			'dataProvider' => (new MediaFileSearch())->search(),
-			'modalId' => $this->parentWidgetId,
+			'widgetId' => $this->id,
 			'multiple' => $this->multiple,
 			'uploadModel' => new UploadFileForm(),
 		]);

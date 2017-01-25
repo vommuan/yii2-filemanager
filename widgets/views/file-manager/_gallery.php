@@ -16,7 +16,7 @@ $pagerParams = [
 	'lastPageLabel' => '&#8677;',
 ];
 
-$galleryItemsId = $modalId . '_gallery-items';
+$galleryItemsId = $widgetId . '_gallery-items';
 
 ?>
 

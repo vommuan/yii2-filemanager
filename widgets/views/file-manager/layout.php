@@ -5,7 +5,7 @@ use vommuan\filemanager\Module;
 use vommuan\filemanager\widgets\PageHeader;
 
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $modalId string */
+/* @var $widgetId string */
 /* @var $multiple string */
 /* @var $this yii\web\View */
 /* @var $uploadModel vommuan\filemanager\models\UploadFileForm */
@@ -25,14 +25,14 @@ FileManagerAsset::register($this);
 	<div class="file-manager__upload-form">
 		<?= $this->render('_upload-form', [
 			'uploadModel' => $uploadModel,
-			'modalId' => $modalId,
+			'widgetId' => $widgetId,
 		]);?>
 	</div>
 
 	<div class="row file-manager__content">
 		<?= $this->render('_gallery', [
 			'dataProvider' => $dataProvider,
-			'modalId' => $modalId,
+			'widgetId' => $widgetId,
 			'multiple' => $multiple,
 		]);?>
 		
