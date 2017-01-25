@@ -5,116 +5,72 @@ function FileManager() {
 	var _input;
 	var _imageContainer;
 	var _modalView;
-	var _gallery;
-	var _pager;
-	var _summary;
-	var _selectedFiles;
-	var _multiple = false;
 	
-	function markFiles() {
-		_selectedFiles.forEach(function(item) {
-			var checkedItem = _gallery.find('.media-file[data-key="' + item + '"] .media-file__link').eq(0);
-			selectFile(checkedItem);
-		});
-	}
+	var _gallery;
+	var _fileGallery;
+	var _fileDetails;
+	var _ajaxRequest = null;
 	
 	function initSelectedFiles() {
-		unselectFiles();
-		
-		if (undefined == _input || '' == _input.val()) {
-			_selectedFiles = [];
-			return;
-		}
-		
-		if (_multiple) {
-			_selectedFiles = JSON.parse(_input.val());
-		} else {
-			_selectedFiles = [Number(_input.val())];
-		}
-		
-		markFiles();
+		_fileGallery.initSelectedFiles(_input);
 	}
 	
-	function init(initConfig) {
-		_widget = initConfig.widget;
-		_input = initConfig.input;
-		_imageContainer = initConfig.imageContainer;
-		_modalView = initConfig.modalView;
+	function init(config) {
+		_widget = config.widget;
+		_input = config.input;
+		_imageContainer = config.imageContainer;
+		_modalView = config.modalView;
 		
 		_gallery = _widget.find('.gallery').eq(0);
-		_pager = (new GalleryPager()).init(_gallery);
-		_summary = (new GallerySummary()).init(_gallery, _pager);
-		_multiple = _gallery.data('multiple');
+		_fileDetails = _widget.find('.file-details').eq(0);
+		_fileGallery = new FileGallery().init(_gallery);
 		
 		initSelectedFiles();
 		
-		_widget.on('click', '.pagination a', paginationClick);
-		_widget.on('click', '.media-file__link', mediaFileLinkClick);
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
+		_widget.on('media-file-click', '.media-file', loadDetails);
 		
 		return this;
 	}
 	
-	function paginationClick(event) {
-		event.preventDefault();
-		
-		var link = $(event.currentTarget);
-		
-		_gallery.find('.gallery__items').load(link.attr('href'), markFiles);
-		_pager.click(link);
+	function setAjaxLoader() {
+		_fileDetails.html(
+			$('<div/>', {
+				'class': 'loading',
+				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
+			})
+		);
 	}
 	
-	function toggleSelectedFiles(item) {
-		var imageId = item.closest('.media-file').data('key');
-		
-		if (_multiple) {
-			var imageIdIndex = _selectedFiles.indexOf(imageId);
-			
-			if (-1 == imageIdIndex) { // not found
-				_selectedFiles.push(imageId);
-			} else {
-				_selectedFiles.splice(imageIdIndex, 1);
-			}
-		} else {
-			_selectedFiles[0] = imageId;
+	function loadDetails(event) {
+		if (_ajaxRequest) {
+			_ajaxRequest.abort();
+			_ajaxRequest = null;
 		}
-	}
-	
-	function selectFile(item) {
-		(new FileGallery()).init(_gallery).click(item);
-	}
-	
-	function unselectFiles() {
-		(new FileGallery()).init(_gallery).uncheckAll();
-	}
-	
-	function mediaFileLinkClick(event) {
-		event.preventDefault();
+		
+		var requestParams = {
+			type: "GET",
+			url: _gallery.data('base-url') + '/details',
+			beforeSend: setAjaxLoader,
+			success: function(html) {
+				_fileDetails.html(html);
+				cropperInit();
+			}
+		};
 		
 		var item = $(event.currentTarget);
 		
-		selectFile(item);
-		toggleSelectedFiles(item);
-	}
-
-	function uploadFromNextPage() {
-		$.ajax({
-			type: "POST",
-			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.data('base-url') + '/next-page-file',
-			success: function(response) {
-				if (!response.success) {
-					return;
-				}
-				
-				_gallery.find('.gallery-items').eq(0).append(response.html);
-				
-				unselectFiles();
-				markFiles();
-			}
-		});
+		if (_fileGallery.isChecked(item)) {
+			requestParams.data = "id=" + item.closest('.media-file').data("key");
+			_ajaxRequest = $.ajax(requestParams);
+		} else if (_fileGallery.getCheckedItems().length) {
+			requestParams.data = "id=" + _fileGallery.getCheckedItems().filter(':last').data("key");
+			_ajaxRequest = $.ajax(requestParams);
+		} else {
+			_fileDetails.empty();
+		}
 	}
 
 	function deleteFileClick(event) {
@@ -131,7 +87,7 @@ function FileManager() {
 					return false;
 				}
 				
-				_gallery.closest('.file-manager__content').find('.file-details').empty();
+				_fileDetails.empty();
 			},
 			success: function(response) {
 				if (!response.success) {
@@ -140,9 +96,9 @@ function FileManager() {
 				
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
-					uploadFromNextPage();
-					_pager.update(response.pagination);
-					_summary.update(response.pagination);
+					_fileGallery.uploadFromNextPage();
+					_fileGallery.getPager().update(response.pagination);
+					_fileGallery.getSummary().update(response.pagination);
 				});
 			}
 		});
@@ -156,19 +112,19 @@ function FileManager() {
 			return;
 		}
 		
-		if (false == _multiple) {
-			_input.val(_selectedFiles[0]);
+		if (_fileGallery.isMultiple()) {
+			_input.val(JSON.stringify(_fileGallery.getSelectedFiles()));
 		} else {
-			_input.val(JSON.stringify(_selectedFiles));
+			_input.val(_fileGallery.getSelectedFiles()[0]);
 		}
 		
-		_input.trigger("fileInsert", _selectedFiles);
+		_input.trigger("fileInsert", _fileGallery.getSelectedFiles());
 		
 		if (_imageContainer) {
 			_imageContainer.empty();
 			
 			_imageContainer.load(_gallery.data('base-url') + '/insert-files-load', {
-				'selectedFiles': JSON.stringify(_selectedFiles),
+				'selectedFiles': JSON.stringify(_fileGallery.getSelectedFiles()),
 				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});
 		}
@@ -186,10 +142,10 @@ function FileManager() {
             url: submitForm.attr("action"),
             data: submitForm.serialize(),
             beforeSend: function() {
-                (new FileGallery()).init(_gallery).setAjaxLoader();
+                _fileGallery.setAjaxLoader();
             },
             success: function(html) {
-                _gallery.closest('.file-manager__content').find('.file-details').html(html);
+                _fileDetails.html(html);
                 cropperInit();
             }
         });
