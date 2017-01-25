@@ -62,16 +62,14 @@ function ImageContainer() {
 			return;
 		}
 		
-		var multiple = _gallery.closest('.file-manager').data('multiple');
-		
-		if (multiple) {
+		if (_gallery.data('multiple')) {
 			var files = JSON.parse(input.val());
 		} else {
 			var files = [Number(input.val())];
 		}
 		
 		if (files.length && _container) {
-			_container.load(_gallery.data('insert-files-load'), {
+			_container.load(_gallery.data('base-url') + '/insert-files-load', {
 				'selectedFiles': JSON.stringify(files),
 				'imageOptions': _form.find('[role="clear-input"]').eq(0).data('image-options')
 			}, function(data) {

@@ -4,9 +4,7 @@ use vommuan\filemanager\Module;
 use yii\helpers\Url;
 use yii\widgets\ListView;
 
-$detailsUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/details']);
-$insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/insert-files-load']);
-$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
+$baseUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file']);
 
 $pagerParams = [
 	'hideOnSinglePage' => false,
@@ -20,7 +18,7 @@ $galleryItemsId = $widgetId . '_gallery-items';
 
 ?>
 
-<div class="gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>">
+<div class="gallery" data-base-url="<?= $baseUrl;?>" data-multiple="<?= $multiple;?>">
 	<?= ListView::widget([
 		'dataProvider' => $dataProvider,
 		'emptyText' => $this->render('gallery__empty-text', [

@@ -44,7 +44,7 @@ function FileManager() {
 		_gallery = _widget.find('.gallery').eq(0);
 		_pager = (new GalleryPager()).init(_gallery);
 		_summary = (new GallerySummary()).init(_gallery, _pager);
-		_multiple = _gallery.closest('.file-manager').data('multiple');
+		_multiple = _gallery.data('multiple');
 		
 		initSelectedFiles();
 		
@@ -103,7 +103,7 @@ function FileManager() {
 		$.ajax({
 			type: "POST",
 			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.data('next-page-file-url'),
+			url: _gallery.data('base-url') + '/next-page-file',
 			success: function(response) {
 				if (!response.success) {
 					return;
@@ -167,7 +167,7 @@ function FileManager() {
 		if (_imageContainer) {
 			_imageContainer.empty();
 			
-			_imageContainer.load(_gallery.data('insert-files-load'), {
+			_imageContainer.load(_gallery.data('base-url') + '/insert-files-load', {
 				'selectedFiles': JSON.stringify(_selectedFiles),
 				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});

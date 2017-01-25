@@ -14,7 +14,7 @@ function FileGallery() {
 	}
 	
 	function click(item) {
-		if (_gallery.closest('.file-manager').data('multiple')) {
+		if (_gallery.data('multiple')) {
 			item.toggleClass('media-file__link_checked');
 		} else if (item.hasClass('media-file__link_checked')) {
 			item.removeClass('media-file__link_checked');
@@ -54,7 +54,7 @@ function FileGallery() {
 		
 		var requestParams = {
 			type: "GET",
-			url: _gallery.data("details-url"),
+			url: _gallery.data('base-url') + '/details',
 			beforeSend: setAjaxLoader,
 			success: function(html) {
 				_fileDetails.html(html);
