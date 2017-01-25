@@ -2,9 +2,9 @@
 
 namespace vommuan\filemanager\widgets;
 
-use yii\base\Widget;
-use vommuan\filemanager\models\UploadFileForm;
 use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\models\UploadFileForm;
+use yii\base\Widget;
 
 /**
  * File gallery
@@ -17,11 +17,11 @@ class FileManager extends Widget
 	
 	public function run()
 	{
-		return $this->render('file-manager/file-manager', [
-			'uploadModel' => new UploadFileForm(),
+		return $this->render('file-manager/layout', [
 			'dataProvider' => (new MediaFileSearch())->search(),
 			'modalId' => $this->parentWidgetId,
 			'multiple' => $this->multiple,
+			'uploadModel' => new UploadFileForm(),
 		]);
 	}
 }

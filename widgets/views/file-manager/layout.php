@@ -1,13 +1,16 @@
 <?php
 
+use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\widgets\PageHeader;
-use vommuan\filemanager\assets\FileManagerAsset;
 
-/* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $modalId string */
+/* @var $multiple string */
+/* @var $this yii\web\View */
+/* @var $uploadModel vommuan\filemanager\models\UploadFileForm */
 
-$this->params['moduleBundle'] = FileManagerAsset::register($this);
+FileManagerAsset::register($this);
 
 ?>
 
@@ -20,14 +23,14 @@ $this->params['moduleBundle'] = FileManagerAsset::register($this);
 	</div>
 
 	<div class="file-manager__upload-form">
-		<?= $this->render('file-manager__upload-form', [
+		<?= $this->render('_upload-form', [
 			'uploadModel' => $uploadModel,
 			'modalId' => $modalId,
 		]);?>
 	</div>
 
 	<div class="row file-manager__content">
-		<?= $this->render('gallery', [
+		<?= $this->render('_gallery', [
 			'dataProvider' => $dataProvider,
 			'modalId' => $modalId,
 			'multiple' => $multiple,

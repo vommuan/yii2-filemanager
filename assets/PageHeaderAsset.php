@@ -1,4 +1,5 @@
 <?php
+
 namespace vommuan\filemanager\assets;
 
 use yii\web\AssetBundle;
