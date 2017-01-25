@@ -34,12 +34,17 @@ class FileController extends Controller
             ],
         ];
     }
+    
+    protected function rbacCheck()
+    {
+		if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+	}
 
     public function actionIndex()
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         return $this->render('index');
     }
@@ -98,9 +103,7 @@ class FileController extends Controller
      */
     public function actionUpload()
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $mediaFile = (new UploadFileForm())->getHandler();
         
@@ -137,9 +140,7 @@ class FileController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = new UpdateFileForm([
 			'mediaFile' => MediaFile::findOne($id),
@@ -165,9 +166,7 @@ class FileController extends Controller
      */
     public function actionDelete($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = MediaFile::findOne($id);
 		
@@ -190,9 +189,7 @@ class FileController extends Controller
      */
     public function actionDetails($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = new UpdateFileForm([
 			'mediaFile' => MediaFile::findOne($id)
