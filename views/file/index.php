@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $widgetId = 'standalone-filemanager';
 
-$this->registerJs("(new FileManager()).init({
+$this->registerJs("new FileManager({
 	'widget': $('#{$widgetId}')
 });");
 

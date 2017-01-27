@@ -9,7 +9,7 @@ function FileInputWidget() {
 		initConfig.modalView = this;
 		
 		if (undefined == _fileManager) {
-			_fileManager = (new FileManager()).init(initConfig);
+			_fileManager = new FileManager(initConfig);
 		}
 		
 		return this;

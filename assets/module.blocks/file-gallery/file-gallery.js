@@ -2,10 +2,12 @@
  * File gallery handler
  */
 function FileGallery() {
+	'use strict';
+	
 	var _gallery;
 	var _pager;
 	var _summary;
-	var _selectedFiles;
+	var _selectedFiles = [];
 	var _multiple = false;
 	
 	function initSelectedFiles(event) {
@@ -14,7 +16,6 @@ function FileGallery() {
 		uncheckAll();
 		
 		if (undefined == input || '' == input.val()) {
-			_selectedFiles = [];
 			return;
 		}
 		
@@ -119,7 +120,7 @@ function FileGallery() {
 	}
 	
 	function isChecked(item) {
-		return item.find('.media-file__link_checked').length;
+		return !!item.find('.media-file__link_checked').length;
 	}
 	
 	function getCheckedItems() {
@@ -130,30 +131,26 @@ function FileGallery() {
 		return _multiple;
 	}
 	
-	function getSummary() {
-		return _summary;
-	}
-	
-	function getPager() {
-		return _pager;
-	}
-	
 	function getSelectedFiles() {
 		return _selectedFiles;
 	}
 	
+	function deleteItem(id, pagination) {
+		_gallery.find('[data-key="' + id + '"]').fadeOut(function() {
+			$(this).remove();
+			uploadFromNextPage();
+			_pager.update(pagination);
+			_summary.update(pagination);
+		});
+	}
+	
 	return {
+		'deleteItem': deleteItem,
 		'getCheckedItems': getCheckedItems,
-		'getPager': getPager,
 		'getSelectedFiles': getSelectedFiles,
-		'getSummary': getSummary,
 		'init': init,
 		'initSelectedFiles': initSelectedFiles,
 		'isChecked': isChecked,
-		'isMultiple': isMultiple,
-		'markFiles': markFiles,
-		'toggleSelectedFiles': toggleSelectedFiles,
-		'uncheckAll': uncheckAll,
-		'uploadFromNextPage': uploadFromNextPage
+		'isMultiple': isMultiple
 	}
 }

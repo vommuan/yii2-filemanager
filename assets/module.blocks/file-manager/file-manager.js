@@ -1,38 +1,25 @@
-function FileManager() {
+function FileManager(config) {
 	'use strict';
 	
-	var _widget;
-	var _input;
-	var _imageContainer;
-	var _modalView;
-	
-	var _manager;
-	var _gallery;
-	var _fileDetails;
-	
-	var _ajaxRequest = null;
-	
-	function init(config) {
-		_widget = config.widget;
-		_input = config.input;
-		_imageContainer = config.imageContainer;
-		_modalView = config.modalView;
+	var widget = config.widget,
+		input = config.input,
+		imageContainer = config.imageContainer,
+		modalView = config.modalView,
 		
-		_manager = _widget.find('.file-manager').eq(0);
-		_gallery = new FileGallery().init(_widget.find('.gallery').eq(0));
-		_fileDetails = _widget.find('.file-details').eq(0);
+		manager = widget.find('.file-manager').eq(0),
+		gallery = new FileGallery().init(widget.find('.gallery').eq(0)),
+		fileDetails = widget.find('.file-details').eq(0),
 		
-		_widget.on('show.bs.modal', {'input': _input}, _gallery.initSelectedFiles);
-		_widget.on('click', '[role="delete"]', deleteFileClick);
-		_widget.on('click', '.insert-btn', insertButtonClick);
-		_widget.on('submit', '.control-form', submitButtonClick);
-		_widget.on('media-file-click', '.media-file', loadDetails);
-		
-		return this;
-	}
+		ajaxRequest = null;
+	
+	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
+	widget.on('click', '[role="delete"]', deleteFileClick);
+	widget.on('click', '.insert-btn', insertButtonClick);
+	widget.on('submit', '.control-form', submitButtonClick);
+	widget.on('media-file-click', '.media-file', loadDetails);
 	
 	function setAjaxLoader() {
-		_fileDetails.html(
+		fileDetails.html(
 			$('<div/>', {
 				'class': 'loading',
 				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
@@ -41,31 +28,31 @@ function FileManager() {
 	}
 	
 	function loadDetails(event) {
-		if (_ajaxRequest) {
-			_ajaxRequest.abort();
-			_ajaxRequest = null;
+		if (ajaxRequest) {
+			ajaxRequest.abort();
+			ajaxRequest = null;
 		}
 		
 		var requestParams = {
 			type: 'GET',
-			url: _manager.data('base-url') + '/details',
+			url: manager.data('base-url') + '/details',
 			beforeSend: setAjaxLoader,
 			success: function(html) {
-				_fileDetails.html(html);
+				fileDetails.html(html);
 				cropperInit();
 			}
 		};
 		
 		var item = $(event.currentTarget);
 		
-		if (_gallery.isChecked(item)) {
+		if (gallery.isChecked(item)) {
 			requestParams.data = 'id=' + item.data('key');
-			_ajaxRequest = $.ajax(requestParams);
-		} else if (_gallery.getCheckedItems().length) {
-			requestParams.data = 'id=' + _gallery.getCheckedItems().filter(':last').data('key');
-			_ajaxRequest = $.ajax(requestParams);
+			ajaxRequest = $.ajax(requestParams);
+		} else if (gallery.getCheckedItems().length) {
+			requestParams.data = 'id=' + gallery.getCheckedItems().filter(':last').data('key');
+			ajaxRequest = $.ajax(requestParams);
 		} else {
-			_fileDetails.empty();
+			fileDetails.empty();
 		}
 	}
 
@@ -83,19 +70,14 @@ function FileManager() {
 					return false;
 				}
 				
-				_fileDetails.empty();
+				fileDetails.empty();
 			},
 			success: function(response) {
 				if (!response.success) {
 					return;
 				}
 				
-				$('[data-key="' + response.id + '"]').fadeOut(function() {
-					$(this).remove();
-					_gallery.uploadFromNextPage();
-					_gallery.getPager().update(response.pagination);
-					_gallery.getSummary().update(response.pagination);
-				});
+				gallery.deleteItem(response.id, response.pagination);
 			}
 		});
 	}
@@ -103,29 +85,29 @@ function FileManager() {
 	function insertButtonClick(event) {
 		event.preventDefault();
 		
-		if (undefined == _input || undefined == _modalView) {
+		if (undefined == input || undefined == modalView) {
 			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
 			return;
 		}
 		
-		if (_gallery.isMultiple()) {
-			_input.val(JSON.stringify(_gallery.getSelectedFiles()));
+		if (gallery.isMultiple()) {
+			input.val(JSON.stringify(gallery.getSelectedFiles()));
 		} else {
-			_input.val(_gallery.getSelectedFiles()[0]);
+			input.val(gallery.getSelectedFiles()[0]);
 		}
 		
-		_input.trigger('fileInsert', _gallery.getSelectedFiles());
+		input.trigger('fileInsert', gallery.getSelectedFiles());
 		
-		if (_imageContainer) {
-			_imageContainer.empty();
+		if (imageContainer) {
+			imageContainer.empty();
 			
-			_imageContainer.load(_manager.data('base-url') + '/insert-files-load', {
-				'selectedFiles': JSON.stringify(_gallery.getSelectedFiles()),
-				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
+			imageContainer.load(manager.data('base-url') + '/insert-files-load', {
+				'selectedFiles': JSON.stringify(gallery.getSelectedFiles()),
+				'imageOptions': widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});
 		}
 		
-		_modalView.hide();
+		modalView.hide();
 	}
 	
 	function submitButtonClick(event) {
@@ -138,16 +120,12 @@ function FileManager() {
             url: submitForm.attr('action'),
             data: submitForm.serialize(),
             beforeSend: function() {
-                _gallery.setAjaxLoader();
+                gallery.setAjaxLoader();
             },
             success: function(html) {
-                _fileDetails.html(html);
+                fileDetails.html(html);
                 cropperInit();
             }
         });
 	}
-	
-	return {
-		'init': init
-	};
 }
