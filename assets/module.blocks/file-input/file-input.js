@@ -21,7 +21,6 @@ function FileInputWidget() {
 			return this;
 		}
 		
-		_fileManager.initSelectedFiles();
 		_widget.modal('show');
 		
 		return this;
@@ -33,7 +32,7 @@ function FileInputWidget() {
 			return this;
 		}
 		
-		_widget.modal("hide");
+		_widget.modal('hide');
 		
 		return this;
 	}
@@ -50,6 +49,7 @@ function ImageContainer() {
 	
 	var _form;
 	var _widget;
+	var _manager;
 	var _gallery;
 	var _container;
 	var _defaultImageUrl;
@@ -69,7 +69,7 @@ function ImageContainer() {
 		}
 		
 		if (files.length && _container) {
-			_container.load(_gallery.data('base-url') + '/insert-files-load', {
+			_container.load(_manager.data('base-url') + '/insert-files-load', {
 				'selectedFiles': JSON.stringify(files),
 				'imageOptions': _form.find('[role="clear-input"]').eq(0).data('image-options')
 			}, function(data) {
@@ -81,6 +81,7 @@ function ImageContainer() {
 	function init(form) {
 		_form = form;
 		_widget = $(_form.find('[role="filemanager-launch"]').data('target'));
+		_manager = _widget.find('.file-manager').eq(0);
 		_gallery = _widget.find('.gallery').eq(0)
 		
 		_container = $(_form.find('[role="clear-input"]').eq(0).data('image-container'));
@@ -155,7 +156,7 @@ function InputForm() {
 		event.preventDefault();
 		
 		var clearButton = $(event.currentTarget);
-		var input = $("#" + clearButton.data('clear-element-id'));
+		var input = $('#' + clearButton.data('clear-element-id'));
 		
 		clearInput(input);
 		_imageContainer.setDefault();

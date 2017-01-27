@@ -8,7 +8,9 @@ function FileGallery() {
 	var _selectedFiles;
 	var _multiple = false;
 	
-	function initSelectedFiles(input) {
+	function initSelectedFiles(event) {
+		var input = event.data.input;
+		
 		uncheckAll();
 		
 		if (undefined == input || '' == input.val()) {
@@ -141,7 +143,6 @@ function FileGallery() {
 	}
 	
 	return {
-		'click': click,
 		'getCheckedItems': getCheckedItems,
 		'getPager': getPager,
 		'getSelectedFiles': getSelectedFiles,

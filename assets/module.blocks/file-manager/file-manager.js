@@ -12,10 +12,6 @@ function FileManager() {
 	
 	var _ajaxRequest = null;
 	
-	function initSelectedFiles() {
-		_gallery.initSelectedFiles(_input);
-	}
-	
 	function init(config) {
 		_widget = config.widget;
 		_input = config.input;
@@ -26,8 +22,7 @@ function FileManager() {
 		_gallery = new FileGallery().init(_widget.find('.gallery').eq(0));
 		_fileDetails = _widget.find('.file-details').eq(0);
 		
-		initSelectedFiles();
-		
+		_widget.on('show.bs.modal', {'input': _input}, _gallery.initSelectedFiles);
 		_widget.on('click', '[role="delete"]', deleteFileClick);
 		_widget.on('click', '.insert-btn', insertButtonClick);
 		_widget.on('submit', '.control-form', submitButtonClick);
@@ -153,7 +148,6 @@ function FileManager() {
 	}
 	
 	return {
-		'init': init,
-		'initSelectedFiles': initSelectedFiles
+		'init': init
 	};
 }
