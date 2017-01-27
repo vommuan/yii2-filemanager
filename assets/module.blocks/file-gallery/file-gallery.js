@@ -102,7 +102,7 @@ function FileGallery() {
 		$.ajax({
 			type: "POST",
 			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.data('base-url') + '/next-page-file',
+			url: _gallery.closest('.file-manager').data('base-url') + '/next-page-file',
 			success: function(response) {
 				if (!response.success) {
 					return;

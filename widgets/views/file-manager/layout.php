@@ -3,6 +3,7 @@
 use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\Module;
 use vommuan\filemanager\widgets\PageHeader;
+use yii\helpers\Url;
 
 /* @var $multiple string */
 /* @var $this yii\web\View */
@@ -10,9 +11,11 @@ use vommuan\filemanager\widgets\PageHeader;
 
 FileManagerAsset::register($this);
 
+$baseUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file']);
+
 ?>
 
-<div class="file-manager">
+<div class="file-manager" data-base-url="<?= $baseUrl;?>">
 	<div class="file-manager__header">
 		<?= PageHeader::widget([
 			'icon' => 'picture',

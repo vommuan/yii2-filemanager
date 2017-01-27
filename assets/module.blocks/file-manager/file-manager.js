@@ -6,13 +6,14 @@ function FileManager() {
 	var _imageContainer;
 	var _modalView;
 	
+	var _manager;
 	var _gallery;
-	var _fileGallery;
 	var _fileDetails;
+	
 	var _ajaxRequest = null;
 	
 	function initSelectedFiles() {
-		_fileGallery.initSelectedFiles(_input);
+		_gallery.initSelectedFiles(_input);
 	}
 	
 	function init(config) {
@@ -21,9 +22,9 @@ function FileManager() {
 		_imageContainer = config.imageContainer;
 		_modalView = config.modalView;
 		
-		_gallery = _widget.find('.gallery').eq(0);
+		_manager = _widget.find('.file-manager').eq(0);
+		_gallery = new FileGallery().init(_widget.find('.gallery').eq(0));
 		_fileDetails = _widget.find('.file-details').eq(0);
-		_fileGallery = new FileGallery().init(_gallery);
 		
 		initSelectedFiles();
 		
@@ -51,8 +52,8 @@ function FileManager() {
 		}
 		
 		var requestParams = {
-			type: "GET",
-			url: _gallery.data('base-url') + '/details',
+			type: 'GET',
+			url: _manager.data('base-url') + '/details',
 			beforeSend: setAjaxLoader,
 			success: function(html) {
 				_fileDetails.html(html);
@@ -62,11 +63,11 @@ function FileManager() {
 		
 		var item = $(event.currentTarget);
 		
-		if (_fileGallery.isChecked(item)) {
-			requestParams.data = "id=" + item.closest('.media-file').data("key");
+		if (_gallery.isChecked(item)) {
+			requestParams.data = 'id=' + item.data('key');
 			_ajaxRequest = $.ajax(requestParams);
-		} else if (_fileGallery.getCheckedItems().length) {
-			requestParams.data = "id=" + _fileGallery.getCheckedItems().filter(':last').data("key");
+		} else if (_gallery.getCheckedItems().length) {
+			requestParams.data = 'id=' + _gallery.getCheckedItems().filter(':last').data('key');
 			_ajaxRequest = $.ajax(requestParams);
 		} else {
 			_fileDetails.empty();
@@ -77,11 +78,11 @@ function FileManager() {
 		event.preventDefault();
 		
 		var deleteLink = $(event.currentTarget);
-		var confirmMessage = deleteLink.data("message");
+		var confirmMessage = deleteLink.data('message');
 
 		$.ajax({
-			type: "POST",
-			url: deleteLink.attr("href"),
+			type: 'POST',
+			url: deleteLink.attr('href'),
 			beforeSend: function() {
 				if (!confirm(confirmMessage)) {
 					return false;
@@ -96,9 +97,9 @@ function FileManager() {
 				
 				$('[data-key="' + response.id + '"]').fadeOut(function() {
 					$(this).remove();
-					_fileGallery.uploadFromNextPage();
-					_fileGallery.getPager().update(response.pagination);
-					_fileGallery.getSummary().update(response.pagination);
+					_gallery.uploadFromNextPage();
+					_gallery.getPager().update(response.pagination);
+					_gallery.getSummary().update(response.pagination);
 				});
 			}
 		});
@@ -112,19 +113,19 @@ function FileManager() {
 			return;
 		}
 		
-		if (_fileGallery.isMultiple()) {
-			_input.val(JSON.stringify(_fileGallery.getSelectedFiles()));
+		if (_gallery.isMultiple()) {
+			_input.val(JSON.stringify(_gallery.getSelectedFiles()));
 		} else {
-			_input.val(_fileGallery.getSelectedFiles()[0]);
+			_input.val(_gallery.getSelectedFiles()[0]);
 		}
 		
-		_input.trigger("fileInsert", _fileGallery.getSelectedFiles());
+		_input.trigger('fileInsert', _gallery.getSelectedFiles());
 		
 		if (_imageContainer) {
 			_imageContainer.empty();
 			
-			_imageContainer.load(_gallery.data('base-url') + '/insert-files-load', {
-				'selectedFiles': JSON.stringify(_fileGallery.getSelectedFiles()),
+			_imageContainer.load(_manager.data('base-url') + '/insert-files-load', {
+				'selectedFiles': JSON.stringify(_gallery.getSelectedFiles()),
 				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});
 		}
@@ -138,11 +139,11 @@ function FileManager() {
         var submitForm = $(event.currentTarget);
 
         $.ajax({
-            type: "POST",
-            url: submitForm.attr("action"),
+            type: 'POST',
+            url: submitForm.attr('action'),
             data: submitForm.serialize(),
             beforeSend: function() {
-                _fileGallery.setAjaxLoader();
+                _gallery.setAjaxLoader();
             },
             success: function(html) {
                 _fileDetails.html(html);
