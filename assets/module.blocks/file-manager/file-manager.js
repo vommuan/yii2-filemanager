@@ -7,7 +7,7 @@ function FileManager(config) {
 		modalView = config.modalView,
 		
 		manager = widget.find('.file-manager').eq(0),
-		gallery = new FileGallery().init(widget.find('.gallery').eq(0)),
+		gallery = new FileGallery(widget.find('.gallery').eq(0)),
 		fileDetails = widget.find('.file-details').eq(0),
 		
 		ajaxRequest = null;
@@ -16,7 +16,7 @@ function FileManager(config) {
 	widget.on('click', '[role="delete"]', deleteFileClick);
 	widget.on('click', '.insert-btn', insertButtonClick);
 	widget.on('submit', '.control-form', submitButtonClick);
-	widget.on('media-file-click', '.media-file', loadDetails);
+	widget.on('selectItem.fm', '.media-file', loadDetails);
 	
 	function setAjaxLoader() {
 		fileDetails.html(
@@ -45,11 +45,11 @@ function FileManager(config) {
 		
 		var item = $(event.currentTarget);
 		
-		if (gallery.isChecked(item)) {
+		if (gallery.isSelected(item)) {
 			requestParams.data = 'id=' + item.data('key');
 			ajaxRequest = $.ajax(requestParams);
-		} else if (gallery.getCheckedItems().length) {
-			requestParams.data = 'id=' + gallery.getCheckedItems().filter(':last').data('key');
+		} else if (gallery.getSelectedItems().length) {
+			requestParams.data = 'id=' + gallery.getSelectedItems().filter(':last').data('key');
 			ajaxRequest = $.ajax(requestParams);
 		} else {
 			fileDetails.empty();
@@ -90,19 +90,19 @@ function FileManager(config) {
 			return;
 		}
 		
-		if (gallery.isMultiple()) {
-			input.val(JSON.stringify(gallery.getSelectedFiles()));
+		if (gallery.multiple) {
+			input.val(JSON.stringify(gallery.getSelectedFilesId()));
 		} else {
-			input.val(gallery.getSelectedFiles()[0]);
+			input.val(gallery.getSelectedFilesId()[0]);
 		}
 		
-		input.trigger('fileInsert', gallery.getSelectedFiles());
+		input.trigger('fileInsert', gallery.getSelectedFilesId());
 		
 		if (imageContainer) {
 			imageContainer.empty();
 			
 			imageContainer.load(manager.data('base-url') + '/insert-files-load', {
-				'selectedFiles': JSON.stringify(gallery.getSelectedFiles()),
+				'selectedFiles': JSON.stringify(gallery.getSelectedFilesId()),
 				'imageOptions': widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
 			});
 		}
