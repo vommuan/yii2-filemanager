@@ -1,3 +1,7 @@
+.mode .mode__block_hide {
+	display: none;
+}
+
 .template-upload {
 	padding: 0;
 }

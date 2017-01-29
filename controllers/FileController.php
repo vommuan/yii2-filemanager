@@ -213,4 +213,11 @@ class FileController extends Controller
 			'imageOptions' => $imageOptions,
 		]);
 	}
+	
+	public function actionEdit()
+	{
+		return $this->renderAjax('edit', [
+			'mediaFile' => MediaFile::findOne(Yii::$app->request->post('id')),
+		]);
+	}
 }

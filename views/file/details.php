@@ -61,11 +61,18 @@ $form = ActiveForm::begin([
 			echo $form->field($model, 'description')->textarea();
 			?>
 			
-			<?= Html::hiddenInput('url', $model->mediaFile->url);// What for? Is it legacy code? ?>
-
-			<?= Html::hiddenInput('id', $model->mediaFile->id);// What for? Is it legacy code? ?>
+			<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary file-details-form__insert-button']);?>
 			
-			<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary insert-btn file-details-form__insert-button']);?>
+			<?php
+			if ('image' == $model->mediaFile->baseType) :?>
+				<?= Html::button(Module::t('main', 'Edit'), [
+					'class' => 'btn btn-default file-details-form__edit-button',
+					'data' => [
+						'key' => $model->mediaFile->id,
+					],
+				]);?>
+				<?php
+			endif;?>
 
 			<?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success file-details-form__save-button']);?>
 			
@@ -74,9 +81,8 @@ $form = ActiveForm::begin([
 					'delete',
 					'id' => $model->mediaFile->id
 				], [
-					'class' => 'btn btn-danger',
+					'class' => 'btn btn-danger file-details-form__delete-button',
 					'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-					'role' => 'delete',
 				]
 			);?>
 			

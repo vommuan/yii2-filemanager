@@ -13,10 +13,12 @@ function FileManager(config) {
 		ajaxRequest = null;
 	
 	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
-	widget.on('click', '[role="delete"]', deleteFileClick);
-	widget.on('click', '.insert-btn', insertButtonClick);
+	widget.on('click', '.file-details-form__insert-button', insertButtonClick);
+	widget.on('click', '.file-details-form__edit-button', loadImageEditForm);
+	widget.on('click', '.file-details-form__delete-button', deleteFileClick);
 	widget.on('submit', '.control-form', submitButtonClick);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
+	widget.on('click', '.main-controls__cancel-button', loadGalleryBlock);
 	
 	function setAjaxLoader() {
 		fileDetails.html(
@@ -25,61 +27,6 @@ function FileManager(config) {
 				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
 			})
 		);
-	}
-	
-	function loadDetails(event) {
-		if (ajaxRequest) {
-			ajaxRequest.abort();
-			ajaxRequest = null;
-		}
-		
-		var requestParams = {
-			type: 'GET',
-			url: manager.data('base-url') + '/details',
-			beforeSend: setAjaxLoader,
-			success: function(html) {
-				fileDetails.html(html);
-				cropperInit();
-			}
-		};
-		
-		var item = $(event.currentTarget);
-		
-		if (gallery.isSelected(item)) {
-			requestParams.data = 'id=' + item.data('key');
-			ajaxRequest = $.ajax(requestParams);
-		} else if (gallery.getSelectedItems().length) {
-			requestParams.data = 'id=' + gallery.getSelectedItems().filter(':last').data('key');
-			ajaxRequest = $.ajax(requestParams);
-		} else {
-			fileDetails.empty();
-		}
-	}
-
-	function deleteFileClick(event) {
-		event.preventDefault();
-		
-		var deleteLink = $(event.currentTarget);
-		var confirmMessage = deleteLink.data('message');
-
-		$.ajax({
-			type: 'POST',
-			url: deleteLink.attr('href'),
-			beforeSend: function() {
-				if (!confirm(confirmMessage)) {
-					return false;
-				}
-				
-				fileDetails.empty();
-			},
-			success: function(response) {
-				if (!response.success) {
-					return;
-				}
-				
-				gallery.deleteItem(response.id, response.pagination);
-			}
-		});
 	}
 	
 	function insertButtonClick(event) {
@@ -110,6 +57,48 @@ function FileManager(config) {
 		modalView.hide();
 	}
 	
+	function loadImageEditForm(event) {
+		event.preventDefault();
+		
+		var button = $(event.currentTarget);
+		
+		manager.find('.mode__block').toggleClass('mode__block_hide');
+		
+		manager.find('.mode__block_edit').load(manager.data('base-url') + '/edit', {'id': button.data('key')}, function () {
+			cropperInit();
+		});
+	}
+	
+	function loadGalleryBlock(event) {
+		manager.find('.mode__block').toggleClass('mode__block_hide');
+	}
+
+	function deleteFileClick(event) {
+		event.preventDefault();
+		
+		var deleteLink = $(event.currentTarget);
+		var confirmMessage = deleteLink.data('message');
+
+		$.ajax({
+			type: 'POST',
+			url: deleteLink.attr('href'),
+			beforeSend: function() {
+				if (!confirm(confirmMessage)) {
+					return false;
+				}
+				
+				fileDetails.empty();
+			},
+			success: function(response) {
+				if (!response.success) {
+					return;
+				}
+				
+				gallery.deleteItem(response.id, response.pagination);
+			}
+		});
+	}
+	
 	function submitButtonClick(event) {
 		event.preventDefault();
         
@@ -119,13 +108,40 @@ function FileManager(config) {
             type: 'POST',
             url: submitForm.attr('action'),
             data: submitForm.serialize(),
-            beforeSend: function() {
-                gallery.setAjaxLoader();
-            },
+            beforeSend: setAjaxLoader,
             success: function(html) {
                 fileDetails.html(html);
                 cropperInit();
             }
         });
+	}
+	
+	function loadDetails(event) {
+		if (ajaxRequest) {
+			ajaxRequest.abort();
+			ajaxRequest = null;
+		}
+		
+		var requestParams = {
+			type: 'GET',
+			url: manager.data('base-url') + '/details',
+			beforeSend: setAjaxLoader,
+			success: function(html) {
+				fileDetails.html(html);
+				cropperInit();
+			}
+		};
+		
+		var item = $(event.currentTarget);
+		
+		if (gallery.isSelected(item)) {
+			requestParams.data = 'id=' + item.data('key');
+			ajaxRequest = $.ajax(requestParams);
+		} else if (gallery.getSelectedItems().length) {
+			requestParams.data = 'id=' + gallery.getSelectedItems().filter(':last').data('key');
+			ajaxRequest = $.ajax(requestParams);
+		} else {
+			fileDetails.empty();
+		}
 	}
 }

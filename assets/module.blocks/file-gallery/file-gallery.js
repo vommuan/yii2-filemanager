@@ -12,6 +12,11 @@ function FileGallery(galleryBlock) {
 	galleryBlock.on('click', '.pagination a', paginationClick);
 	galleryBlock.on('click', '.media-file__link', itemClick);
 	
+	function reloadParams(manager) {
+		galleryBlock = manager.find('.gallery').eq(0);
+		multiple = galleryBlock.data('multiple');
+	}
+	
 	function initSelectedFiles(event) {
 		var input = event.data.input;
 		
@@ -136,6 +141,7 @@ function FileGallery(galleryBlock) {
 		get multiple() {
 			return multiple;
 		},
-		'isSelected': isSelected
+		'isSelected': isSelected,
+		'reloadParams': reloadParams
 	}
 }
