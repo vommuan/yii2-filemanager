@@ -30,6 +30,26 @@ class MediaFile extends ActiveRecord
 	public $rotate = 0;
 	
 	/**
+	 * @var double X coordinate for left high corner of cropping area
+	 */
+	public $cropX = 0;
+	
+	/**
+	 * @var double Y coordinate for left high corner of cropping area
+	 */
+	public $cropY = 0;
+	
+	/**
+	 * @var double Width of cropping area
+	 */
+	public $cropWidth;
+	
+	/**
+	 * @var double Height of cropping area
+	 */
+	public $cropHeight;
+	
+	/**
 	 * @var vommuan\filemanager\models\handlers\BaseHandler or child class
 	 */
 	protected $handler;
@@ -91,6 +111,8 @@ class MediaFile extends ActiveRecord
             [['url', 'alt', 'description'], 'string'],
             [['size'], 'integer'],
             [['rotate'], 'integer', 'min' => -360, 'max' => 360],
+            [['cropX', 'cropY'], 'number', 'min' => 0],
+			[['cropWidth', 'cropHeight'], 'number', 'min' => 1],
         ];
     }
     

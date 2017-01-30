@@ -12,13 +12,15 @@ function cropperInit() {
 	})
 	
 	$('.crop-image').cropper({
-		autoCrop: false,
-		dragMode: 'none',
 		toggleDragModeOnDblclick: false,
 		movable: false,
 		zoomable: false,
 		crop: function(event) {
 			$(event.currentTarget).closest('.cropper').find('.cropper__rotate-input').eq(0).val(event.rotate);
+			$(event.currentTarget).closest('.cropper').find('.cropper__crop-x-input').eq(0).val(event.x);
+			$(event.currentTarget).closest('.cropper').find('.cropper__crop-y-input').eq(0).val(event.y);
+			$(event.currentTarget).closest('.cropper').find('.cropper__crop-width-input').eq(0).val(event.width);
+			$(event.currentTarget).closest('.cropper').find('.cropper__crop-height-input').eq(0).val(event.height);
 		}
 	});
 }
