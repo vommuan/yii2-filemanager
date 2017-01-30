@@ -25,29 +25,9 @@ $form = ActiveForm::begin([
 ]);?>
 	<div class="row">
 		<div class="col-xs-12">
-			<?php
-			if ('image' == $model->mediaFile->baseType) :?>
-				<div class="cropper">
-					<div class="thumbnail cropper__image-block">
-						<?= Html::img($model->mediaFile->getFileVariant() . '?' . $model->mediaFile->updated_at, ['class' => 'crop-image']) ?>
-					</div>
-					<div class="cropper__control-block controls">
-						<button class="btn btn-primary controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left')?>">
-							<span class="fa fa-rotate-left"></span>
-						</button>
-						<button class="btn btn-primary controls__rotate controls__rotate_right" title="<?= Module::t('main', 'Rotate right')?>">
-							<span class="fa fa-rotate-right"></span>
-						</button>
-					</div>
-					<?= $form->field($model, 'rotate')->hiddenInput(['class' => 'cropper__rotate-input'])->label(false);?>
-				</div>
-				<?php
-			else :?>
-				<div class="thumbnail">
-					<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at) ?>
-				</div>
-				<?php
-			endif;?>
+			<div class="thumbnail pull-left">
+				<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at);?>
+			</div>
 		</div>
 	</div>
 
@@ -90,7 +70,7 @@ $form = ActiveForm::begin([
 			if ($message = Yii::$app->session->getFlash('mediaFileUpdateResult')) :?>
 				<div class="text-success"><?= $message;?></div>
 				<?php
-			endif; ?>
+			endif;?>
 		</div>
 	</div>
 <?php 

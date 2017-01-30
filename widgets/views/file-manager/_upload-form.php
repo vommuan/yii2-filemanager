@@ -2,7 +2,7 @@
 
 use dosamigos\fileupload\FileUploadUI;
 use vommuan\filemanager\models\MediaFileSearch;
-use vommuan\filemanager\models\UploadFileForm;
+use vommuan\filemanager\models\forms\UploadFileForm;
 use vommuan\filemanager\Module;
 
 ?>

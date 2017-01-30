@@ -1,6 +1,6 @@
 <?php
 
-namespace vommuan\filemanager\models;
+namespace vommuan\filemanager\models\forms;
 
 use yii\base\Model;
 use yii\web\UploadedFile;

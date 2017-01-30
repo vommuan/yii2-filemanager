@@ -16,9 +16,10 @@ function FileManager(config) {
 	widget.on('click', '.file-details-form__insert-button', insertButtonClick);
 	widget.on('click', '.file-details-form__edit-button', loadImageEditForm);
 	widget.on('click', '.file-details-form__delete-button', deleteFileClick);
-	widget.on('submit', '.control-form', submitButtonClick);
+	widget.on('submit', '.file-details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
-	widget.on('click', '.main-controls__cancel-button', loadGalleryBlock);
+	widget.on('click', '.main-controls__cancel-button', showGalleryBlock);
+	widget.on('submit', '.image-edit-form', saveEditedImage);
 	
 	function setAjaxLoader() {
 		fileDetails.html(
@@ -64,13 +65,37 @@ function FileManager(config) {
 		
 		manager.find('.mode__block').toggleClass('mode__block_hide');
 		
-		manager.find('.mode__block_edit').load(manager.data('base-url') + '/edit', {'id': button.data('key')}, function () {
-			cropperInit();
+		$.ajax({
+			type: 'GET',
+			url: manager.data('base-url') + '/edit',
+			data: 'id=' + button.data('key'),
+			success: function(response) {
+				manager.find('.mode__block_edit').html(response);
+				cropperInit();
+			}
 		});
 	}
 	
-	function loadGalleryBlock(event) {
+	function showGalleryBlock(event) {
+		event.preventDefault();
+		
 		manager.find('.mode__block').toggleClass('mode__block_hide');
+	}
+	
+	function saveEditedImage(event) {
+		event.preventDefault();
+        
+        var form = $(event.currentTarget);
+
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function(response) {
+                manager.find('.mode__block_edit').html(response);
+                cropperInit();
+            }
+        });
 	}
 
 	function deleteFileClick(event) {
@@ -99,19 +124,18 @@ function FileManager(config) {
 		});
 	}
 	
-	function submitButtonClick(event) {
+	function saveFileDetails(event) {
 		event.preventDefault();
         
-        var submitForm = $(event.currentTarget);
+        var form = $(event.currentTarget);
 
         $.ajax({
             type: 'POST',
-            url: submitForm.attr('action'),
-            data: submitForm.serialize(),
+            url: form.attr('action'),
+            data: form.serialize(),
             beforeSend: setAjaxLoader,
             success: function(html) {
                 fileDetails.html(html);
-                cropperInit();
             }
         });
 	}
@@ -128,7 +152,6 @@ function FileManager(config) {
 			beforeSend: setAjaxLoader,
 			success: function(html) {
 				fileDetails.html(html);
-				cropperInit();
 			}
 		};
 		

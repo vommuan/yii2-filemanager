@@ -5,8 +5,9 @@ namespace vommuan\filemanager\controllers;
 use vommuan\filemanager\assets\FileGalleryAsset;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
-use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\models\UploadFileForm;
+use vommuan\filemanager\models\forms\EditImageForm;
+use vommuan\filemanager\models\forms\UpdateFileForm;
+use vommuan\filemanager\models\forms\UploadFileForm;
 use vommuan\filemanager\Module;
 use Yii;
 use yii\base\UserException;
@@ -161,6 +162,7 @@ class FileController extends Controller
 
     /**
      * Delete model with files
+     * 
      * @param $id
      * @return array
      */
@@ -214,10 +216,25 @@ class FileController extends Controller
 		]);
 	}
 	
-	public function actionEdit()
+	/**
+	 * Loading edit image form
+	 * 
+	 * @param integer $id Media file identificator
+	 */
+	public function actionEdit($id)
 	{
+		$this->rbacCheck();
+		
+		$model = new EditImageForm([
+			'mediaFile' => MediaFile::findOne($id),
+		]);
+		
+		if ($model->load(Yii::$app->request->post()) && $model->edit()) {
+            Yii::$app->session->setFlash('imageEditResult', Module::t('main', 'Changes saved!'));
+        }
+
 		return $this->renderAjax('edit', [
-			'mediaFile' => MediaFile::findOne(Yii::$app->request->post('id')),
+			'model' => $model,
 		]);
 	}
 }
