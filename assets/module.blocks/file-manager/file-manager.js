@@ -1,202 +1,171 @@
-function FileManager() {
+function FileManager(config) {
 	'use strict';
 	
-	var _widget;
-	var _input;
-	var _imageContainer;
-	var _modalView;
-	var _gallery;
-	var _pager;
-	var _summary;
-	var _selectedFiles;
-	var _multiple = false;
+	var widget = config.widget,
+		input = config.input,
+		imageContainer = config.imageContainer,
+		modalView = config.modalView,
+		cropperOptions = widget.data('cropper-options'),
+		
+		manager = widget.find('.file-manager').eq(0),
+		gallery = new FileGallery(widget.find('.gallery').eq(0)),
+		fileDetails = widget.find('.file-details').eq(0),
+		
+		ajaxRequest = null;
 	
-	function markFiles() {
-		_selectedFiles.forEach(function(item) {
-			var checkedItem = _gallery.find('.media-file[data-key="' + item + '"] .media-file__link').eq(0);
-			selectFile(checkedItem);
-		});
+	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
+	widget.on('click', '.file-details-form__insert-button', insertButtonClick);
+	widget.on('click', '.file-details-form__edit-button', loadImageEditForm);
+	widget.on('click', '.file-details-form__delete-button', deleteFileClick);
+	widget.on('submit', '.file-details-form', saveFileDetails);
+	widget.on('selectItem.fm', '.media-file', loadDetails);
+	widget.on('click', '.main-controls__cancel-button', showGalleryBlock);
+	widget.on('submit', '.image-edit-form', saveEditedImage);
+	
+	function setAjaxLoader() {
+		fileDetails.html(
+			$('<div/>', {
+				'class': 'loading',
+				'html': '<span class="glyphicon glyphicon-refresh spin"></span>'
+			})
+		);
 	}
 	
-	function initSelectedFiles() {
-		unselectFiles();
+	function insertButtonClick(event) {
+		event.preventDefault();
 		
-		if (undefined == _input || '' == _input.val()) {
-			_selectedFiles = [];
+		if (undefined == input || undefined == modalView) {
+			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
 			return;
 		}
 		
-		if (_multiple) {
-			_selectedFiles = JSON.parse(_input.val());
+		if (gallery.multiple) {
+			input.val(JSON.stringify(gallery.getSelectedFilesId()));
 		} else {
-			_selectedFiles = [Number(_input.val())];
+			input.val(gallery.getSelectedFilesId()[0]);
 		}
 		
-		markFiles();
-	}
-	
-	function init(initConfig) {
-		_widget = initConfig.widget;
-		_input = initConfig.input;
-		_imageContainer = initConfig.imageContainer;
-		_modalView = initConfig.modalView;
+		input.trigger('fileInsert', gallery.getSelectedFilesId());
 		
-		_gallery = _widget.find('.gallery').eq(0);
-		_pager = (new GalleryPager()).init(_gallery);
-		_summary = (new GallerySummary()).init(_gallery, _pager);
-		_multiple = _gallery.data('multiple');
-		
-		initSelectedFiles();
-		
-		_widget.on('click', '.pagination a', paginationClick);
-		_widget.on('click', '.media-file__link', mediaFileLinkClick);
-		_widget.on('click', '[role="delete"]', deleteFileClick);
-		_widget.on('click', '.insert-btn', insertButtonClick);
-		_widget.on('submit', '.control-form', submitButtonClick);
-		
-		return this;
-	}
-	
-	function paginationClick(event) {
-		event.preventDefault();
-		
-		var link = $(event.currentTarget);
-		
-		_gallery.find('.gallery__items').load(link.attr('href'), markFiles);
-		_pager.click(link);
-	}
-	
-	function toggleSelectedFiles(item) {
-		var imageId = item.closest('.media-file').data('key');
-		
-		if (_multiple) {
-			var imageIdIndex = _selectedFiles.indexOf(imageId);
+		if (imageContainer) {
+			imageContainer.empty();
 			
-			if (-1 == imageIdIndex) { // not found
-				_selectedFiles.push(imageId);
-			} else {
-				_selectedFiles.splice(imageIdIndex, 1);
-			}
-		} else {
-			_selectedFiles[0] = imageId;
+			imageContainer.load(manager.data('base-url') + '/insert-files-load', {
+				'selectedFiles': JSON.stringify(gallery.getSelectedFilesId()),
+				'imageOptions': widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
+			});
 		}
+		
+		modalView.hide();
 	}
 	
-	function selectFile(item) {
-		(new FileGallery()).init(_gallery).click(item);
-	}
-	
-	function unselectFiles() {
-		(new FileGallery()).init(_gallery).uncheckAll();
-	}
-	
-	function mediaFileLinkClick(event) {
+	function loadImageEditForm(event) {
 		event.preventDefault();
 		
-		var item = $(event.currentTarget);
+		var button = $(event.currentTarget);
 		
-		selectFile(item);
-		toggleSelectedFiles(item);
-	}
-
-	function uploadFromNextPage() {
+		manager.find('.mode__block').toggleClass('mode__block_hide');
+		
 		$.ajax({
-			type: "POST",
-			data: 'page=' + _pager.getCurrentPage(),
-			url: _gallery.data('next-page-file-url'),
+			type: 'GET',
+			url: manager.data('base-url') + '/edit',
+			data: 'id=' + button.data('key'),
 			success: function(response) {
-				if (!response.success) {
-					return;
-				}
-				
-				_gallery.find('.gallery-items').eq(0).append(response.html);
-				
-				unselectFiles();
-				markFiles();
+				manager.find('.mode__block_edit').html(response);
+				cropperInit(cropperOptions);
 			}
 		});
+	}
+	
+	function showGalleryBlock(event) {
+		event.preventDefault();
+		
+		manager.find('.mode__block').toggleClass('mode__block_hide');
+	}
+	
+	function saveEditedImage(event) {
+		event.preventDefault();
+        
+        var form = $(event.currentTarget);
+
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function(response) {
+                manager.find('.mode__block_edit').html(response);
+                cropperInit(cropperOptions);
+            }
+        });
 	}
 
 	function deleteFileClick(event) {
 		event.preventDefault();
 		
 		var deleteLink = $(event.currentTarget);
-		var confirmMessage = deleteLink.data("message");
+		var confirmMessage = deleteLink.data('message');
 
 		$.ajax({
-			type: "POST",
-			url: deleteLink.attr("href"),
+			type: 'POST',
+			url: deleteLink.attr('href'),
 			beforeSend: function() {
 				if (!confirm(confirmMessage)) {
 					return false;
 				}
 				
-				_gallery.closest('.file-manager__content').find('.file-details').empty();
+				fileDetails.empty();
 			},
 			success: function(response) {
 				if (!response.success) {
 					return;
 				}
 				
-				$('[data-key="' + response.id + '"]').fadeOut(function() {
-					$(this).remove();
-					uploadFromNextPage();
-					_pager.update(response.pagination);
-					_summary.update(response.pagination);
-				});
+				gallery.deleteItem(response.id, response.pagination);
 			}
 		});
 	}
 	
-	function insertButtonClick(event) {
-		event.preventDefault();
-		
-		if (undefined == _input || undefined == _modalView) {
-			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
-			return;
-		}
-		
-		if (false == _multiple) {
-			_input.val(_selectedFiles[0]);
-		} else {
-			_input.val(JSON.stringify(_selectedFiles));
-		}
-		
-		_input.trigger("fileInsert", _selectedFiles);
-		
-		if (_imageContainer) {
-			_imageContainer.empty();
-			
-			_imageContainer.load(_gallery.data('insert-files-load'), {
-				'selectedFiles': JSON.stringify(_selectedFiles),
-				'imageOptions': _widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
-			});
-		}
-		
-		_modalView.hide();
-	}
-	
-	function submitButtonClick(event) {
+	function saveFileDetails(event) {
 		event.preventDefault();
         
-        var submitForm = $(event.currentTarget);
+        var form = $(event.currentTarget);
 
         $.ajax({
-            type: "POST",
-            url: submitForm.attr("action"),
-            data: submitForm.serialize(),
-            beforeSend: function() {
-                (new FileGallery()).init(_gallery).setAjaxLoader();
-            },
+            type: 'POST',
+            url: form.attr('action'),
+            data: form.serialize(),
+            beforeSend: setAjaxLoader,
             success: function(html) {
-                _gallery.closest('.file-manager__content').find('.file-details').html(html);
-                cropperInit();
+                fileDetails.html(html);
             }
         });
 	}
 	
-	return {
-		'init': init,
-		'initSelectedFiles': initSelectedFiles
-	};
+	function loadDetails(event) {
+		if (ajaxRequest) {
+			ajaxRequest.abort();
+			ajaxRequest = null;
+		}
+		
+		var requestParams = {
+			type: 'GET',
+			url: manager.data('base-url') + '/details',
+			beforeSend: setAjaxLoader,
+			success: function(html) {
+				fileDetails.html(html);
+			}
+		};
+		
+		var item = $(event.currentTarget);
+		
+		if (gallery.isSelected(item)) {
+			requestParams.data = 'id=' + item.data('key');
+			ajaxRequest = $.ajax(requestParams);
+		} else if (gallery.getSelectedItems().length) {
+			requestParams.data = 'id=' + gallery.getSelectedItems().filter(':last').data('key');
+			ajaxRequest = $.ajax(requestParams);
+		} else {
+			fileDetails.empty();
+		}
+	}
 }

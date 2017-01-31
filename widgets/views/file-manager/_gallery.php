@@ -1,12 +1,8 @@
 <?php
 
+use vommuan\filemanager\models\MediaFileSearch;
 use vommuan\filemanager\Module;
-use yii\helpers\Url;
 use yii\widgets\ListView;
-
-$detailsUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/details']);
-$insertFilesLoad = Url::to(['/' . Module::getInstance()->uniqueId . '/file/insert-files-load']);
-$nextPageFileUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file/next-page-file']);
 
 $pagerParams = [
 	'hideOnSinglePage' => false,
@@ -16,13 +12,13 @@ $pagerParams = [
 	'lastPageLabel' => '&#8677;',
 ];
 
-$galleryItemsId = $modalId . '_gallery-items';
+$galleryItemsId = $widgetId . '_gallery-items';
 
 ?>
 
-<div class="col-xs-12 col-sm-8 gallery" data-details-url="<?= $detailsUrl;?>" data-insert-files-load="<?= $insertFilesLoad;?>" data-next-page-file-url="<?= $nextPageFileUrl;?>" data-multiple="<?= $multiple;?>">
+<div class="gallery" data-multiple="<?= $multiple;?>">
 	<?= ListView::widget([
-		'dataProvider' => $dataProvider,
+		'dataProvider' => (new MediaFileSearch())->search(),
 		'emptyText' => $this->render('gallery__empty-text', [
 			'pagerParams' => $pagerParams,
 			'galleryItemsId' => $galleryItemsId,

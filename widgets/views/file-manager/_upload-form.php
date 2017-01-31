@@ -1,20 +1,21 @@
 <?php
 
 use dosamigos\fileupload\FileUploadUI;
-use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFileSearch;
+use vommuan\filemanager\models\forms\UploadFileForm;
+use vommuan\filemanager\Module;
 
 ?>
 
 <?= FileUploadUI::widget([
-	'model' => $uploadModel,
+	'model' => new UploadFileForm(),
 	'attribute' => 'file',
 	'options' => [
-		'id' => (!empty($modalId) ? $modalId . '-' : '') . 'fileupload',
+		'id' => $widgetId . '-fileupload',
 	],
 	'clientOptions' => [
 		'autoUpload' => true,
-		'filesContainer' => !empty($modalId) ? '#' . $modalId . '_gallery-items' : '.gallery-items',
+		'filesContainer' => '#' . $widgetId . '_gallery-items',
 		'prependFiles' => true,
 	],
 	'clientEvents' => [

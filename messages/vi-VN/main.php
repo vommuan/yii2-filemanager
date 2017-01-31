@@ -18,14 +18,19 @@
  */
 return [
     'Alias' => '',
+    'Back to gallery' => '',
+    'Can\'t to save so small image.' => '',
     'Default' => '',
+    'Edit' => '',
     'File name' => '',
     'ID' => '',
+    'Incorrect cropper borders. Please, check it.' => '',
     'Media File' => '',
     'Permission denied.' => '',
+    'Rotate left' => '',
+    'Rotate right' => '',
     'Size' => '',
     'This file already exists.' => '',
-    'Upload' => '',
     'Alt attribute' => 'Thuộc tính alt',
     'Changes not saved.' => 'Thay đổi không được lưu lại.',
     'Changes saved!' => 'Thay đổi đã được lưu lại!',
@@ -46,6 +51,5 @@ return [
     'Thumbnails sizes has been resized successfully!' => 'Kích thước hình thu nhỏ đã đưuọc thay đổi thành công!',
     'Type' => 'Kiểu',
     'Updated' => 'Cập nhật',
-    'Upload manager' => 'Quản lí tải lên',
     'Url' => 'Đường dẫn',
 ];

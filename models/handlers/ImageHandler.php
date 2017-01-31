@@ -51,7 +51,7 @@ class ImageHandler extends BaseHandler
 	 * @return integer size of file
 	 * @throws yii\base\ErrorException if setting `Module::maxImageSizes` has error
 	 */
-	protected function cropImage()
+	protected function autoCropImage()
 	{
 		$maxSizes = Module::getInstance()->maxImageSizes;
 		$ignoreRotate = Module::getInstance()->ignoreImageRotate;
@@ -109,13 +109,27 @@ class ImageHandler extends BaseHandler
 		return filesize($this->absoluteFileName);
 	}
 	
+	protected function cropImage()
+	{
+		Image::crop(
+			$this->absoluteFileName,
+			round($this->activeRecord->cropWidth),
+			round($this->activeRecord->cropHeight),
+			[$this->activeRecord->cropX, $this->activeRecord->cropY]
+		)->save($this->absoluteFileName);
+		
+		$this->refreshFileVariants();
+		
+		return filesize($this->absoluteFileName);
+	}
+	
 	/**
 	 * @inheritdoc
 	 */
 	protected function afterFileSave()
 	{
 		if (isset(Module::getInstance()->maxImageSizes)) {
-			$this->activeRecord->size = $this->cropImage();
+			$this->activeRecord->size = $this->autoCropImage();
 		}
 	}
 	
@@ -129,6 +143,10 @@ class ImageHandler extends BaseHandler
 		if (parent::beforeSave($insert)) {
 			if (isset($this->activeRecord->rotate) && 0 != $this->activeRecord->rotate) {
 				$this->activeRecord->size = $this->rotateImage();
+			}
+			
+			if (isset($this->activeRecord->cropX) && isset($this->activeRecord->cropY) && isset($this->activeRecord->cropWidth) && isset($this->activeRecord->cropHeight)) {
+				$this->activeRecord->size = $this->cropImage();
 			}
 			
 			return true;

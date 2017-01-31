@@ -1,7 +1,8 @@
 <?php
 
-namespace vommuan\filemanager\models;
+namespace vommuan\filemanager\models\forms;
 
+use vommuan\filemanager\models\MediaFile;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
