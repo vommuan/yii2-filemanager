@@ -50,8 +50,8 @@ class EditImageForm extends Model
 	{
 		return [
 			[['rotate'], 'integer', 'min' => -360, 'max' => 360],
-			[['cropX', 'cropY'], 'number', 'min' => 0],
-			[['cropWidth', 'cropHeight'], 'number', 'min' => 1],
+			[['cropX', 'cropY'], 'number', 'min' => 0, 'message' => Module::t('main', 'Incorrect cropper borders. Please, check it.')],
+			[['cropWidth', 'cropHeight'], 'number', 'min' => 1, 'message' => Module::t('main', 'Can\'t to save so small image.')],
 		];
 	}
 	

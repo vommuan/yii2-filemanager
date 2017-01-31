@@ -18,14 +18,19 @@
  */
 return [
     'Alias' => '',
+    'Back to gallery' => '',
+    'Can\'t to save so small image.' => '',
     'Default' => '',
+    'Edit' => '',
     'File name' => '',
     'ID' => '',
+    'Incorrect cropper borders. Please, check it.' => '',
     'Media File' => '',
     'Permission denied.' => '',
+    'Rotate left' => '',
+    'Rotate right' => '',
     'Size' => '',
     'This file already exists.' => '',
-    'Upload' => '',
     'Alt attribute' => 'ALT属性',
     'Changes not saved.' => '修改没有保存。',
     'Changes saved!' => '修改已保存!',
@@ -46,6 +51,5 @@ return [
     'Thumbnails sizes has been resized successfully!' => '缩略图大小已成功修改!',
     'Type' => '类型',
     'Updated' => '更新',
-    'Upload manager' => '上传管理',
     'Url' => '链接地址',
 ];

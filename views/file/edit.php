@@ -33,9 +33,6 @@ use yii\widgets\ActiveForm;
 				<div class="col-xs-12 col-sm-6 pull-right text-right main-controls">
 					<?= Html::button(Module::t('main', 'Back to gallery'), [
 						'class' => 'btn btn-default main-controls__cancel-button',
-						'data' => [
-							'message' => Module::t('main', 'Are you sure you want to cancel changes?'),
-						],
 					]);?>
 					
 					<?= Html::submitButton(
