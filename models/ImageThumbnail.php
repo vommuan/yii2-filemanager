@@ -111,7 +111,7 @@ class ImageThumbnail extends Model
 		
 		$fileSizes = array_slice(getimagesize($filePath), 0, 2);
 		
-		if ($fileSizes[0] > $sizes[0] && $fileSizes[1] > $sizes[1]) {
+		if ($fileSizes[0] >= $sizes[0] && $fileSizes[1] >= $sizes[1]) {
 			return $sizes;
 		}
 		
