@@ -5,6 +5,7 @@ function FileManager(config) {
 		input = config.input,
 		imageContainer = config.imageContainer,
 		modalView = config.modalView,
+		cropperOptions = widget.data('cropper-options'),
 		
 		manager = widget.find('.file-manager').eq(0),
 		gallery = new FileGallery(widget.find('.gallery').eq(0)),
@@ -71,7 +72,7 @@ function FileManager(config) {
 			data: 'id=' + button.data('key'),
 			success: function(response) {
 				manager.find('.mode__block_edit').html(response);
-				cropperInit();
+				cropperInit(cropperOptions);
 			}
 		});
 	}
@@ -93,7 +94,7 @@ function FileManager(config) {
             data: form.serialize(),
             success: function(response) {
                 manager.find('.mode__block_edit').html(response);
-                cropperInit();
+                cropperInit(cropperOptions);
             }
         });
 	}

@@ -9,7 +9,7 @@ FileInputAsset::register($this);
 <div class="input-widget-form">
 	<?= $input;?>
 
-	<div class="filemanager-modal modal fade" id="<?= $widgetId;?>">
+	<div class="filemanager-modal modal fade" id="<?= $widgetId;?>" data-cropper-options='<?= $cropperOptions;?>'>
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">

@@ -91,7 +91,7 @@ class FileInput extends InputWidget
     /**
      * @var string JavaScript function, which will be called before insert file data to input.
      * Argument data contains file data.
-     * data example: [alt: "Witch with cat", description: "123", url: "/uploads/2014/12/vedma-100x100.jpeg", id: "45"]
+     * data example: [alt: "Witch with cat", description: "123", url: "/uploads/2014/12/cats-100x100.jpeg", id: "45"]
      */
     public $callbackBeforeInsert = '';
 
@@ -101,6 +101,11 @@ class FileInput extends InputWidget
      * @boolean One or more insert images
      */
     public $multiple = false;
+    
+    /**
+     * @array Options for bower/cropper
+     */
+    public $cropperOptions = [];
     
     protected function initOptions()
     {
@@ -174,6 +179,7 @@ class FileInput extends InputWidget
 			'input' => $this->renderInput(),
 			'widgetId' => $this->id,
 			'multiple' => $this->multiple,
+			'cropperOptions' => Json::encode($this->cropperOptions),
         ]);
     }
 }
