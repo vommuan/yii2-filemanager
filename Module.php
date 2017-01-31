@@ -1,11 +1,24 @@
 <?php
+
 namespace vommuan\filemanager;
 
 use Yii;
 
 class Module extends \yii\base\Module
 {
+    /**
+     * @inheritdoc
+     */
     public $controllerNamespace = 'vommuan\filemanager\controllers';
+    
+    /**
+     * @inheritdoc
+     */
+    public $defaultRoute = 'file';
+   
+    /**
+     * @inheritdoc
+     */
     public $layout = 'main';
 
     /**

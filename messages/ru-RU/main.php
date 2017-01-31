@@ -17,9 +17,11 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'This file already exists.' => 'Такой файл уже есть.',
+    'Can\'t to save so small image.' => 'Невозможно сохранить такое маленькое изображение.',
+    'Incorrect cropper borders. Please, check it.' => 'Некорректные границы обрезки. Пожалуйста, проверьте их.',
     'Alias' => 'Алиас',
     'Alt attribute' => 'Атрибут alt',
+    'Back to gallery' => 'Назад к галерее',
     'Changes not saved.' => 'Изменения не сохранены.',
     'Changes saved!' => 'Изменения сохранены!',
     'Created' => 'Создан',
@@ -28,6 +30,7 @@ return [
     'Description' => 'Описание',
     'Do not forget every time you change thumbnails presets to make them resize.' => 'Не забывайте при каждом изменении предустановок миниатюр делать их ресайз.',
     'Do resize thumbnails' => 'Сделать ресайз миниатюр',
+    'Edit' => 'Редактировать',
     'File manager' => 'Файловый менеджер',
     'File name' => 'Имя файла',
     'Files' => 'Файлы',
@@ -38,14 +41,15 @@ return [
     'Now using next thumbnails presets' => 'Используемые сейчас наборы миниатюр',
     'Original' => 'Оригинальный',
     'Permission denied.' => 'Доступ запрещен.',
+    'Rotate left' => 'Повернуть налево',
+    'Rotate right' => 'Повернуть направо',
     'Save' => 'Сохранить',
     'Settings' => 'Настройки',
     'Size' => 'Размер',
+    'This file already exists.' => 'Такой файл уже есть.',
     'Thumbnails settings' => 'Настройки миниатюр',
     'Thumbnails sizes has been resized successfully!' => 'Размеры миниатюр успешно изменены!',
     'Type' => 'Тип',
     'Updated' => 'Обновлён',
-    'Upload' => 'Загрузить',
-    'Upload manager' => 'Менеджер загрузок',
     'Url' => 'Ссылка',
 ];

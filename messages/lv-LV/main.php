@@ -18,14 +18,19 @@
  */
 return [
     'Alias' => '',
+    'Back to gallery' => '',
+    'Can\'t to save so small image.' => '',
     'Default' => '',
+    'Edit' => '',
     'File name' => '',
     'ID' => '',
+    'Incorrect cropper borders. Please, check it.' => '',
     'Media File' => '',
     'Permission denied.' => '',
+    'Rotate left' => '',
+    'Rotate right' => '',
     'Size' => '',
     'This file already exists.' => '',
-    'Upload' => '',
     'Alt attribute' => 'Alt atribūts',
     'Changes not saved.' => 'Izmaiņas netika saglabātas!',
     'Changes saved!' => 'Izmaiņas sekmīgi saglabātas.',
@@ -46,6 +51,5 @@ return [
     'Thumbnails sizes has been resized successfully!' => 'Sīkattēlu izmēri tika sekmīgi izmainīti!',
     'Type' => 'Tips',
     'Updated' => 'Atjaunināts',
-    'Upload manager' => 'Augšupielādes',
     'Url' => 'URL saite',
 ];

@@ -1,4 +1,5 @@
 <?php
+
 namespace vommuan\filemanager\widgets;
 
 use yii\base\Widget;
@@ -7,6 +8,7 @@ use yii\base\Widget;
  * Page header widget
  * 
  * Usage:
+ * 
  * ```php
  * <?= PageHeader::widget([
  *     'icon' => 'picture',
@@ -26,6 +28,9 @@ class PageHeader extends Widget
 	 */
 	public $title;
 	
+	/**
+	 * @inheritdoc
+	 */
 	public function run()
 	{
 		return $this->render('page-header', [

@@ -3,11 +3,12 @@
 namespace vommuan\filemanager\controllers;
 
 use vommuan\filemanager\assets\FileGalleryAsset;
-use vommuan\filemanager\Module;
 use vommuan\filemanager\models\MediaFile;
 use vommuan\filemanager\models\MediaFileSearch;
-use vommuan\filemanager\models\UpdateFileForm;
-use vommuan\filemanager\models\UploadFileForm;
+use vommuan\filemanager\models\forms\EditImageForm;
+use vommuan\filemanager\models\forms\UpdateFileForm;
+use vommuan\filemanager\models\forms\UploadFileForm;
+use vommuan\filemanager\Module;
 use Yii;
 use yii\base\UserException;
 use yii\filters\VerbFilter;
@@ -34,21 +35,17 @@ class FileController extends Controller
             ],
         ];
     }
-
-    public function beforeAction($action)
+    
+    protected function rbacCheck()
     {
-        if (defined('YII_DEBUG') && YII_DEBUG) {
-            Yii::$app->assetManager->forceCopy = true;
-        }
-
-        return parent::beforeAction($action);
-    }
+		if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
+			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
+		}
+	}
 
     public function actionIndex()
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         return $this->render('index');
     }
@@ -107,9 +104,7 @@ class FileController extends Controller
      */
     public function actionUpload()
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $mediaFile = (new UploadFileForm())->getHandler();
         
@@ -146,9 +141,7 @@ class FileController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = new UpdateFileForm([
 			'mediaFile' => MediaFile::findOne($id),
@@ -169,14 +162,13 @@ class FileController extends Controller
 
     /**
      * Delete model with files
+     * 
      * @param $id
      * @return array
      */
     public function actionDelete($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = MediaFile::findOne($id);
 		
@@ -199,9 +191,7 @@ class FileController extends Controller
      */
     public function actionDetails($id)
     {
-        if (Module::getInstance()->rbac && (!Yii::$app->user->can('filemanagerManageFiles') && !Yii::$app->user->can('filemanagerManageOwnFiles'))) {
-			throw new ForbiddenHttpException(Module::t('main', 'Permission denied.'));
-		}
+        $this->rbacCheck();
         
         $model = new UpdateFileForm([
 			'mediaFile' => MediaFile::findOne($id)
@@ -223,6 +213,28 @@ class FileController extends Controller
 		return $this->renderAjax('insert-files-load', [
 			'mediaFiles' => MediaFile::findAll($filesId),
 			'imageOptions' => $imageOptions,
+		]);
+	}
+	
+	/**
+	 * Loading edit image form
+	 * 
+	 * @param integer $id Media file identificator
+	 */
+	public function actionEdit($id)
+	{
+		$this->rbacCheck();
+		
+		$model = new EditImageForm([
+			'mediaFile' => MediaFile::findOne($id),
+		]);
+		
+		if ($model->load(Yii::$app->request->post()) && $model->edit()) {
+            Yii::$app->session->setFlash('imageEditResult', Module::t('main', 'Changes saved!'));
+        }
+
+		return $this->renderAjax('edit', [
+			'model' => $model,
 		]);
 	}
 }

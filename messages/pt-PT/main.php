@@ -18,14 +18,19 @@
  */
 return [
     'Alias' => '',
+    'Back to gallery' => '',
+    'Can\'t to save so small image.' => '',
     'Default' => '',
+    'Edit' => '',
     'File name' => '',
     'ID' => '',
+    'Incorrect cropper borders. Please, check it.' => '',
     'Media File' => '',
     'Permission denied.' => '',
+    'Rotate left' => '',
+    'Rotate right' => '',
     'Size' => '',
     'This file already exists.' => '',
-    'Upload' => '',
     'Alt attribute' => 'attributo alt',
     'Changes not saved.' => 'Alterações não foram guardadas.',
     'Changes saved!' => 'Alterações guardadas!',
@@ -46,6 +51,5 @@ return [
     'Thumbnails sizes has been resized successfully!' => 'As miniaturas foram redimensionadas com sucesso!',
     'Type' => 'Typo',
     'Updated' => 'Atualizado',
-    'Upload manager' => 'Enviar ficheiros',
     'Url' => 'Url',
 ];
