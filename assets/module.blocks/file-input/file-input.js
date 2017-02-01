@@ -73,7 +73,7 @@ function ImageContainer() {
 				'selectedFiles': JSON.stringify(files),
 				'imageOptions': _form.find('[role="clear-input"]').eq(0).data('image-options')
 			}, function(data) {
-				_container.trigger('initFiles');
+				_container.trigger('initFiles.fm', files);
 			});
 		}
 	}
