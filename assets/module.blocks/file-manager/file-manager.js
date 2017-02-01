@@ -45,7 +45,7 @@ function FileManager(config) {
 			input.val(gallery.getSelectedFilesId()[0]);
 		}
 		
-		input.trigger('fileInsert', gallery.getSelectedFilesId());
+		input.trigger('beforeInsert.fm', gallery.getSelectedFilesId());
 		
 		if (imageContainer) {
 			imageContainer.empty();
@@ -53,6 +53,8 @@ function FileManager(config) {
 			imageContainer.load(manager.data('base-url') + '/insert-files-load', {
 				'selectedFiles': JSON.stringify(gallery.getSelectedFilesId()),
 				'imageOptions': widget.closest('.input-widget-form').find('[role="clear-input"]').eq(0).data('image-options')
+			}, function () {
+				imageContainer.trigger('afterInsert.fm', gallery.getSelectedFilesId());
 			});
 		}
 		

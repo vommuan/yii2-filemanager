@@ -171,7 +171,7 @@ class FileInput extends InputWidget
     {
         if (!empty($this->callbackBeforeInsert)) {
             $this->view->registerJs(
-				"$('#{$this->options['id']}').on('fileInsert', {$this->callbackBeforeInsert});"
+				"$('#{$this->options['id']}').on('beforeInsert.fm', {$this->callbackBeforeInsert});"
 			);
         }
 
