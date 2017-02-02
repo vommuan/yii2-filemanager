@@ -9,15 +9,7 @@ use yii\widgets\LinkPager;
 <div class="gallery__items gallery-items" id="<?= $galleryItemsId;?>"></div>
 <div class="gallery__summary">
 	<div class="summary">
-		<?= Module::t(
-			'main',
-			'Showing files <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b>.',
-			[
-				'begin' => 0,
-				'end' => 0,
-				'totalCount' => 0,
-			]
-		);?>
+		<?= Module::t('main', 'Showing files <b>0</b> of <b>0</b>.');?>
 	</div>
 </div>
 <div class="gallery__pager">

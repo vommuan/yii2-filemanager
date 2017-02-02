@@ -189,9 +189,9 @@ function GalleryPager() {
 	}
 	
 	function update(pagination) {
-		if (countPages() < pagination.pages) {
+		if (countPages() < pagination.pageCount) {
 			addPage();
-		} else if (pagination.pages < countPages()) {
+		} else if (pagination.pageCount < countPages()) {
 			deletePage();
 		}
 	}

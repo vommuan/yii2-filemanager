@@ -108,7 +108,7 @@ function FileManager(config) {
 
 		$.ajax({
 			type: 'POST',
-			url: deleteLink.attr('href'),
+			url: deleteLink.attr('href') + '&page=' + gallery.pager.getCurrentPage(),
 			beforeSend: function() {
 				if (!confirm(confirmMessage)) {
 					return false;

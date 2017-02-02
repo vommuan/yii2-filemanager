@@ -35,7 +35,15 @@ function FileGallery(galleryBlock) {
 		
 		var link = $(event.currentTarget);
 		
-		galleryBlock.find('.gallery__items').load(link.attr('href'), selectItems);
+		$.ajax({
+			type: 'POST',
+			url: link.attr('href'),
+			success: function(response) {
+				galleryBlock.find('.gallery__items').html(response.items);
+				summary.update(response.pagination);
+			}
+		});
+		
 		pager.click(link);
 	}
 	
@@ -133,9 +141,12 @@ function FileGallery(galleryBlock) {
 		'getSelectedFilesId': getSelectedFilesId,
 		'getSelectedItems': getSelectedItems,
 		'initSelectedFiles': initSelectedFiles,
+		'isSelected': isSelected,
 		get multiple() {
 			return multiple;
 		},
-		'isSelected': isSelected
+		get pager() {
+			return pager;
+		}
 	}
 }
