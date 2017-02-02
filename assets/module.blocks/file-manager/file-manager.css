@@ -28,7 +28,7 @@
 	border: 1px solid #ddd;
 }
 
-#standalone-filemanager .file-details-form .file-details-form__insert-button {
+#standalone-filemanager .insert-button {
 	display: none;
 }
 
