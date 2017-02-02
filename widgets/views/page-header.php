@@ -14,5 +14,5 @@ PageHeaderAsset::register($this);
 		endif;?>
 	</div>
 	
-	<h1 class="page-header__title"><?= $title;?></h1>
+	<div class="page-header__title"><?= $title;?></div>
 </div>

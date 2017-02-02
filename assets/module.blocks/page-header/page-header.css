@@ -3,3 +3,8 @@
 	display: inline-block;
 	font-size: 36px;
 }
+
+.modal .page-header__icon,
+.modal .page-header__title {
+	font-size: 30px;
+}

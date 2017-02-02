@@ -51,12 +51,40 @@ class FileController extends Controller
     }
     
     /**
+     * Ajax responce for pagination update
+     */
+    protected function getPagination()
+    {
+		$dataProvider = (new MediaFileSearch())->search();
+        $dataProvider->prepare();
+        
+        $begin = $dataProvider->pagination->page * $dataProvider->pagination->pageSize + 1;
+        $end = $begin + $dataProvider->count - 1;
+        
+		if ($begin > $end) {
+			$begin = $end;
+		}
+        
+        return [
+			'begin'      => $begin,
+			'end'        => $end,
+			'pageCount'  => $dataProvider->pagination->pageCount,
+			'totalCount' => $dataProvider->totalCount,
+		];
+	}
+    
+    /**
      * 
      */
     public function actionPage($page = 1) {
-		return $this->renderAjax('page', [
-			'dataProvider' => (new MediaFileSearch())->search(),
-		]);
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return [
+			'items' => $this->renderAjax('page', [
+				'dataProvider' => (new MediaFileSearch())->search(),
+			]),
+			'pagination' => $this->getPagination(),
+		];
 	}
     
     /**
@@ -83,21 +111,6 @@ class FileController extends Controller
 		}
 	}
     
-    /**
-     * Ajax responce for pagination update
-     */
-    protected function getPagination()
-    {
-		$dataProvider = (new MediaFileSearch())->search();
-        $dataProvider->prepare();
-        
-        return [
-			'pages'       => $dataProvider->pagination->pageCount,
-			'files'       => $dataProvider->totalCount,
-			'filesOnPage' => MediaFileSearch::PAGE_SIZE,
-		];
-	}
-
     /**
      * Provides upload file
      * @return mixed

@@ -14,10 +14,10 @@ function FileManager(config) {
 		ajaxRequest = null;
 	
 	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
-	widget.on('click', '.file-details-form__insert-button', insertButtonClick);
-	widget.on('click', '.file-details-form__edit-button', loadImageEditForm);
-	widget.on('click', '.file-details-form__delete-button', deleteFileClick);
-	widget.on('submit', '.file-details-form', saveFileDetails);
+	widget.on('click', '.insert-button', insertButtonClick);
+	widget.on('click', '.details-form__edit-link', loadImageEditForm);
+	widget.on('click', '.details-form__delete-link', deleteFileClick);
+	widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
 	widget.on('click', '.main-controls__cancel-button', showGalleryBlock);
 	widget.on('submit', '.image-edit-form', saveEditedImage);
@@ -64,14 +64,13 @@ function FileManager(config) {
 	function loadImageEditForm(event) {
 		event.preventDefault();
 		
-		var button = $(event.currentTarget);
+		var editLink = $(event.currentTarget);
 		
 		manager.find('.mode__block').toggleClass('mode__block_hide');
 		
 		$.ajax({
 			type: 'GET',
-			url: manager.data('base-url') + '/edit',
-			data: 'id=' + button.data('key'),
+			url: editLink.attr('href'),
 			success: function(response) {
 				manager.find('.mode__block_edit').html(response);
 				cropperInit(cropperOptions);
@@ -109,7 +108,7 @@ function FileManager(config) {
 
 		$.ajax({
 			type: 'POST',
-			url: deleteLink.attr('href'),
+			url: deleteLink.attr('href') + '&page=' + gallery.pager.getCurrentPage(),
 			beforeSend: function() {
 				if (!confirm(confirmMessage)) {
 					return false;

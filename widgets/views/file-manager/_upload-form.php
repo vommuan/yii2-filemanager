@@ -19,6 +19,12 @@ use vommuan\filemanager\Module;
 		'prependFiles' => true,
 	],
 	'clientEvents' => [
+		'fileuploadadd' => 'function(event, data) {
+			var manager = $(event.currentTarget).closest(".file-manager"),
+				pager = new GalleryPager().init(manager.find(".gallery").eq(0));
+			
+			data.url = manager.data("base-url") + "/upload?page=" + pager.getCurrentPage();
+		}',
 		'fileuploadstart' => 'function(event) {
 			$(".gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
 				$(this).fadeOut(function() {
@@ -29,9 +35,9 @@ use vommuan\filemanager\Module;
 		'fileuploadcompleted' => 'function(event, data) {
 			var gallery = $("[data-key=\'" + data.result.files[0].id + "\']").closest(".gallery");
 			
-			var pager = (new GalleryPager()).init(gallery);
+			var pager = new GalleryPager().init(gallery);
 			pager.update(data.result.files[0].pagination);
-			(new GallerySummary()).init(gallery, pager).update(data.result.files[0].pagination);
+			new GallerySummary().init(gallery, pager).update(data.result.files[0].pagination);
 		}',
 	],
 	'url' => ['/' . Module::getInstance()->uniqueId . '/file/upload'],

@@ -20,13 +20,38 @@ $form = ActiveForm::begin([
 	],
 	'enableClientValidation' => false,
 	'options' => [
-		'class' => 'control-form file-details-form',
+		'class' => 'control-form details-form',
 	],
 ]);?>
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-xs-12 col-md-6">
 			<div class="thumbnail pull-left">
 				<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at);?>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<?php
+			if ('image' == $model->mediaFile->baseType) :?>
+				<div>
+					<?= Html::a(
+						Module::t('main', 'Edit'), 
+						['edit', 'id' => $model->mediaFile->id],
+						['class' => 'text-primary details-form__edit-link']
+					);?>
+				</div>
+				<?php
+			endif;?>
+			
+			<div>
+				<?= Html::a(
+					Module::t('main', 'Delete forever'), [
+						'delete',
+						'id' => $model->mediaFile->id,
+					], [
+						'class' => 'text-danger details-form__delete-link',
+						'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+					]
+				);?>
 			</div>
 		</div>
 	</div>
@@ -40,31 +65,8 @@ $form = ActiveForm::begin([
 
 			echo $form->field($model, 'description')->textarea();
 			?>
-			
-			<?= Html::button(Module::t('main', 'Insert'), ['class' => 'btn btn-primary file-details-form__insert-button']);?>
-			
-			<?php
-			if ('image' == $model->mediaFile->baseType) :?>
-				<?= Html::button(Module::t('main', 'Edit'), [
-					'class' => 'btn btn-default file-details-form__edit-button',
-					'data' => [
-						'key' => $model->mediaFile->id,
-					],
-				]);?>
-				<?php
-			endif;?>
 
-			<?= Html::submitButton(Module::t('main', 'Save'), ['class' => 'btn btn-success file-details-form__save-button']);?>
-			
-			<?= Html::a(
-				Module::t('main', 'Delete'), [
-					'delete',
-					'id' => $model->mediaFile->id
-				], [
-					'class' => 'btn btn-danger file-details-form__delete-button',
-					'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-				]
-			);?>
+			<?= Html::submitButton(Module::t('main', 'Save description'), ['class' => 'btn btn-success details-form__save-button']);?>
 			
 			<?php 
 			if ($message = Yii::$app->session->getFlash('mediaFileUpdateResult')) :?>

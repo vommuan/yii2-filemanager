@@ -26,6 +26,7 @@ $galleryItemsId = $widgetId . '_gallery-items';
 		'layout' => $this->render('gallery__layout', [
 			'galleryItemsId' => $galleryItemsId,
 		]),
+		'summary' => Module::t('main', 'Showing files <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b>.'),
 		'pager' => $pagerParams,
 		'itemOptions' => ['tag' => false],
 		'itemView' => function ($model, $key, $index, $widget) {
