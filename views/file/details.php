@@ -32,27 +32,28 @@ $form = ActiveForm::begin([
 		<div class="col-xs-12 col-md-6">
 			<?php
 			if ('image' == $model->mediaFile->baseType) :?>
-				<div>
-					<?= Html::a(
-						Module::t('main', 'Edit'), 
-						['edit', 'id' => $model->mediaFile->id],
-						['class' => 'text-primary details-form__edit-link']
-					);?>
-				</div>
+				<?= Html::a(
+					'<span class="glyphicon glyphicon-pencil"></span>', [
+						'edit',
+						'id' => $model->mediaFile->id,
+					], [
+						'class' => 'btn btn-primary details-form__edit-link',
+						'title' => Module::t('main', 'Edit'),
+					]
+				);?>
 				<?php
 			endif;?>
 			
-			<div>
-				<?= Html::a(
-					Module::t('main', 'Delete forever'), [
-						'delete',
-						'id' => $model->mediaFile->id,
-					], [
-						'class' => 'text-danger details-form__delete-link',
-						'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-					]
-				);?>
-			</div>
+			<?= Html::a(
+				'<span class="glyphicon glyphicon-remove"></span>', [
+					'delete',
+					'id' => $model->mediaFile->id,
+				], [
+					'class' => 'btn btn-danger details-form__delete-link',
+					'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+					'title' => Module::t('main', 'Delete forever'),
+				]
+			);?>
 		</div>
 	</div>
 
