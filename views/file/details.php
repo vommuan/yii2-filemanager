@@ -60,9 +60,9 @@ $form = ActiveForm::begin([
 	<div class="row">
 		<div class="col-xs-12">
 			<?php
-			if ('image' == $model->mediaFile->baseType) {
+			/*if ('image' == $model->mediaFile->baseType) {
 				echo $form->field($model, 'alt')->textInput();
-			}
+			}*/
 
 			echo $form->field($model, 'description')->textarea();
 			?>
