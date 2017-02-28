@@ -1,0 +1,46 @@
+.header-bar {
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+
+.title .title__icon,
+.title .title__text {
+	display: inline-block;
+	font-size: 30px;
+}
+
+.main-controls .main-controls__control {
+	display: inline-block;
+	border: 1px solid transparent;
+	border-radius: 0;
+	padding: 6px 15px;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.main-controls .main-controls__control_cancel {
+	border-color: #0f96e7;
+	background: #fff;
+	color: #333;
+}
+
+.main-controls .main-controls__control_cancel:hover {
+    border-color: #057AC1;
+    background-color: #f6f6f6;
+    color: #222;
+}
+
+.main-controls .main-controls__control_save {
+	border-color: #0f96e7;
+    background-color: #0f96e7;
+    color: #fff;
+}
+
+.main-controls .main-controls__control_save:hover {
+    border-color: #057AC1;
+    background-color: #057AC1;
+}

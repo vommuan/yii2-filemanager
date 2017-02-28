@@ -50,9 +50,29 @@ class EditImageForm extends Model
 	{
 		return [
 			[['rotate'], 'integer', 'min' => -360, 'max' => 360],
-			[['cropX', 'cropY'], 'number', 'min' => 0, 'message' => Module::t('main', 'Incorrect cropper borders. Please, check it.')],
+			[['cropX', 'cropY'], 'number'],
 			[['cropWidth', 'cropHeight'], 'number', 'min' => 1, 'message' => Module::t('main', 'Can\'t to save so small image.')],
 		];
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeValidate()
+	{
+		if (!parent::beforeValidate()) {
+			return false;
+		}
+		
+		if ($this->cropX < 0) {
+			$this->cropX = 0;
+		}
+		
+		if ($this->cropY < 0) {
+			$this->cropY = 0;
+		}
+		
+		return true;
 	}
 	
 	/**

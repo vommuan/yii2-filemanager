@@ -19,7 +19,7 @@ function FileManager(config) {
 	widget.on('click', '.details-form__delete-link', deleteFileClick);
 	widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
-	widget.on('click', '.main-controls__cancel-button', toggleViewMode);
+	widget.on('click', '.main-controls__control_cancel', toggleViewMode);
 	widget.on('submit', '.image-edit-form', saveEditedImage);
 	
 	function setAjaxLoader() {
@@ -79,13 +79,13 @@ function FileManager(config) {
 	}
 	
 	function saveEditedImage(event) {
-		event.preventDefault();
-        
         var form = $(event.currentTarget);
-
+		
         $.post(form.attr('action'), form.serialize(), function (response) {
 			toggleViewMode();
 		});
+		
+		event.preventDefault();
 	}
 
 	function deleteFileClick(event) {

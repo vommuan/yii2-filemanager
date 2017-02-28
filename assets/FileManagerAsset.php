@@ -10,6 +10,8 @@ class FileManagerAsset extends AssetBundle
     
     public $css = [
         'file-manager.css',
+        'header-bar.css',
+        'spin-icon.css',
     ];
     
     public $js = [
