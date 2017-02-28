@@ -19,7 +19,7 @@ function FileManager(config) {
 	widget.on('click', '.details-form__delete-link', deleteFileClick);
 	widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
-	widget.on('click', '.main-controls__cancel-button', showGalleryBlock);
+	widget.on('click', '.main-controls__cancel-button', toggleViewMode);
 	widget.on('submit', '.image-edit-form', saveEditedImage);
 	
 	function setAjaxLoader() {
@@ -61,27 +61,21 @@ function FileManager(config) {
 		modalView.hide();
 	}
 	
-	function loadImageEditForm(event) {
-		event.preventDefault();
-		
-		var editLink = $(event.currentTarget);
-		
+	function toggleViewMode() {
 		manager.find('.mode__block').toggleClass('mode__block_hide');
-		
-		$.ajax({
-			type: 'GET',
-			url: editLink.attr('href'),
-			success: function(response) {
-				manager.find('.mode__block_edit').html(response);
-				cropperInit(cropperOptions);
-			}
-		});
 	}
 	
-	function showGalleryBlock(event) {
-		event.preventDefault();
+	function loadImageEditForm(event) {
+		var editLink = $(event.currentTarget);
 		
-		manager.find('.mode__block').toggleClass('mode__block_hide');
+		toggleViewMode();
+		
+		$.post(editLink.attr('href'), function (response) {
+			manager.find('.mode__block_edit').html(response);
+			cropperInit(cropperOptions);
+		});
+		
+		event.preventDefault();
 	}
 	
 	function saveEditedImage(event) {
@@ -89,15 +83,9 @@ function FileManager(config) {
         
         var form = $(event.currentTarget);
 
-        $.ajax({
-            type: 'POST',
-            url: form.attr('action'),
-            data: form.serialize(),
-            success: function(response) {
-                manager.find('.mode__block_edit').html(response);
-                cropperInit(cropperOptions);
-            }
-        });
+        $.post(form.attr('action'), form.serialize(), function (response) {
+			toggleViewMode();
+		});
 	}
 
 	function deleteFileClick(event) {

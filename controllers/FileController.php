@@ -243,9 +243,9 @@ class FileController extends Controller
 		]);
 		
 		if ($model->load(Yii::$app->request->post()) && $model->edit()) {
-            Yii::$app->session->setFlash('imageEditResult', Module::t('main', 'Changes saved!'));
+            return '';
         }
-
+		
 		return $this->renderAjax('edit', [
 			'model' => $model,
 		]);

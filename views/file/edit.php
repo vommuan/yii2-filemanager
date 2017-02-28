@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
 		<div class="cropper">
 			<div class="row cropper__control-block">
 				<div class="col-xs-12 col-sm-6 pull-right text-right main-controls">
-					<?= Html::button(Module::t('main', 'Back to gallery'), [
+					<?= Html::button(Module::t('main', 'Cancel'), [
 						'class' => 'btn btn-default main-controls__cancel-button',
 					]);?>
 					
@@ -49,12 +49,6 @@ use yii\widgets\ActiveForm;
 					</button>
 				</div>
 			</div>
-			
-			<?php 
-			if ($message = Yii::$app->session->getFlash('imageEditResult')) :?>
-				<div class="text-success"><?= $message;?></div>
-				<?php
-			endif;?>
 			
 			<?= $form->field($model, 'rotate')->hiddenInput(['class' => 'cropper__rotate-input'])->label(false);?>
 			<?= $form->field($model, 'cropX')->hiddenInput(['class' => 'cropper__crop-x-input'])->label(false);?>
