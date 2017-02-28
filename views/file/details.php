@@ -50,7 +50,7 @@ $form = ActiveForm::begin([
 					'id' => $model->mediaFile->id,
 				], [
 					'class' => 'btn btn-danger details-form__delete-link',
-					'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+					'data-message' => Yii::t('yii', 'Are you sure you want to delete this file?'),
 					'title' => Module::t('main', 'Delete forever'),
 				]
 			);?>

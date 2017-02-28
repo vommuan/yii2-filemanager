@@ -44,10 +44,10 @@ $form = ActiveForm::begin([
 		<div class="cropper">
 			<div class="row cropper__control-block">
 				<div class="col-xs-12 pull-left controls">
-					<button class="btn btn-default controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left');?>">
+					<button class="controls__rotate controls__rotate_left" title="<?= Module::t('main', 'Rotate left');?>">
 						<span class="fa fa-rotate-left"></span>
 					</button>
-					<button class="btn btn-default controls__rotate controls__rotate_right" title="<?= Module::t('main', 'Rotate right');?>">
+					<button class="controls__rotate controls__rotate_right" title="<?= Module::t('main', 'Rotate right');?>">
 						<span class="fa fa-rotate-right"></span>
 					</button>
 				</div>
@@ -59,7 +59,7 @@ $form = ActiveForm::begin([
 			<?= $form->field($model, 'cropWidth')->hiddenInput(['class' => 'cropper__crop-width-input'])->label(false);?>
 			<?= $form->field($model, 'cropHeight')->hiddenInput(['class' => 'cropper__crop-height-input'])->label(false);?>
 			
-			<div class="thumbnail cropper__image-block">
+			<div class="cropper__image-block">
 				<?= Html::img($model->mediaFile->getFileVariant() . '?' . $model->mediaFile->updated_at, ['class' => 'crop-image']);?>
 			</div>
 		</div>

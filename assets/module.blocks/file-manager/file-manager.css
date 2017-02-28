@@ -44,3 +44,45 @@
 	padding: 0;
 	list-style: none;
 }
+
+.cropper {
+	position: relative;
+}
+
+.cropper__control-block {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 10;
+}
+
+.controls button {
+	display: inline-block;
+	border: none;
+	border-radius: 1px;
+	padding: 2px 8px;
+	font-size: 20px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	background: #333;
+	opacity: 0.8;
+	color: #fff;
+}
+
+.controls button:hover {
+	background: #fff;
+	color: #333;
+}
+
+.cropper__image-block {
+	max-height: 70vh;
+}
+
+.cropper__image-block img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
