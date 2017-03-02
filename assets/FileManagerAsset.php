@@ -20,6 +20,7 @@ class FileManagerAsset extends AssetBundle
     
     public $depends = [
         'vommuan\filemanager\assets\FileGalleryAsset',
+        'vommuan\filemanager\assets\DetailsFormAsset',
         'vommuan\filemanager\assets\CropImageAsset',
         'vommuan\filemanager\assets\FontAwesomeAsset',
         'yii\bootstrap\BootstrapAsset',

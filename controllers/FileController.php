@@ -160,10 +160,10 @@ class FileController extends Controller
 			'mediaFile' => MediaFile::findOne($id),
         ]);
         
-        $message = Module::t('main', 'Changes not saved.');
+        $message = Module::t('main', 'Changes not saved');
 		
         if ($model->load(Yii::$app->request->post()) && $model->update()) {
-            $message = Module::t('main', 'Changes saved!');
+            $message = Module::t('main', 'Changes saved');
         }
 
         Yii::$app->session->setFlash('mediaFileUpdateResult', $message);

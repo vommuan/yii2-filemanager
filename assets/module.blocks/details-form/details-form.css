@@ -1,0 +1,11 @@
+.description-title {
+	overflow: hidden;
+}
+
+.description-title .description-title__label {
+	float: left;
+}
+
+.description-title .description-title__status {
+	float: right;
+}

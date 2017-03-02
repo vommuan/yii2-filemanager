@@ -60,20 +60,16 @@ $form = ActiveForm::begin([
 	<div class="row">
 		<div class="col-xs-12">
 			<?php
-			if ('image' == $model->mediaFile->baseType) {
-				echo $form->field($model, 'alt')->textInput(); // Lavel "Description"
-			}
+			if ('image' == $model->mediaFile->baseType) : ?>
+				<?= $form->field($model, 'alt', [
+					'template' => $this->render('_descriptionField'),
+				])->textarea(); // Label: "Description" ?>
+				<?php
+			endif; ?>
 
-			// echo $form->field($model, 'description')->textarea();
-			?>
+			<?php // echo $form->field($model, 'description')->textarea(); ?>
 
 			<?= Html::submitButton(Module::t('main', 'Save description'), ['class' => 'btn btn-success details-form__save-button']);?>
-			
-			<?php 
-			if ($message = Yii::$app->session->getFlash('mediaFileUpdateResult')) :?>
-				<div class="text-success"><?= $message;?></div>
-				<?php
-			endif;?>
 		</div>
 	</div>
 <?php 
