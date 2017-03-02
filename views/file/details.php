@@ -60,11 +60,11 @@ $form = ActiveForm::begin([
 	<div class="row">
 		<div class="col-xs-12">
 			<?php
-			/*if ('image' == $model->mediaFile->baseType) {
-				echo $form->field($model, 'alt')->textInput();
-			}*/
+			if ('image' == $model->mediaFile->baseType) {
+				echo $form->field($model, 'alt')->textInput(); // Lavel "Description"
+			}
 
-			echo $form->field($model, 'description')->textarea();
+			// echo $form->field($model, 'description')->textarea();
 			?>
 
 			<?= Html::submitButton(Module::t('main', 'Save description'), ['class' => 'btn btn-success details-form__save-button']);?>

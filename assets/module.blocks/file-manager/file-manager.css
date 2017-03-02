@@ -56,7 +56,7 @@
 	z-index: 10;
 }
 
-.controls button {
+.cropper__control-block .controls button {
 	display: inline-block;
 	border: none;
 	border-radius: 1px;
@@ -72,7 +72,7 @@
 	color: #fff;
 }
 
-.controls button:hover {
+.cropper__control-block .controls button:hover {
 	background: #fff;
 	color: #333;
 }
