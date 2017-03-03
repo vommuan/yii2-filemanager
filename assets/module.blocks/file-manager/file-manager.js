@@ -17,7 +17,8 @@ function FileManager(config) {
 	widget.on('click', '.insert-button', insertButtonClick);
 	widget.on('click', '.details-form__edit-link', loadImageEditForm);
 	widget.on('click', '.details-form__delete-link', deleteFileClick);
-	widget.on('submit', '.details-form', saveFileDetails);
+	widget.on('blur', '.description-field__input .form-control', saveFileDetails);
+	//widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
 	widget.on('click', '.main-controls__control_cancel', toggleViewMode);
 	widget.on('submit', '.image-edit-form', saveEditedImage);
@@ -115,19 +116,13 @@ function FileManager(config) {
 	}
 	
 	function saveFileDetails(event) {
-		event.preventDefault();
-        
-        var form = $(event.currentTarget);
+        var form = $(event.currentTarget).closest('.details-form');
 
-        $.ajax({
-            type: 'POST',
-            url: form.attr('action'),
-            data: form.serialize(),
-            beforeSend: setAjaxLoader,
-            success: function(html) {
-                fileDetails.html(html);
-            }
-        });
+        setAjaxLoader();
+        
+        $.post(form.attr('action'), form.serialize(), function(response) {
+			fileDetails.html(response);
+		});
 	}
 	
 	function loadDetails(event) {

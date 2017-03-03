@@ -9,3 +9,7 @@
 .description-title .description-title__status {
 	float: right;
 }
+
+.description-field__input textarea {
+	resize: none;
+}
