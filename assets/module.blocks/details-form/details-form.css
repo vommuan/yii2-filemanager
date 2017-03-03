@@ -1,3 +1,67 @@
+.thumbnail-block {
+	margin-bottom: 20px;
+	width: 128px;
+}
+
+.thumbnail-block .thumbnail-block__image img {
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.thumbnail-block .thumbnail-block__controls {
+	overflow: hidden;
+	margin: 0 -10px;
+}
+
+.thumbnail-block .thumbnail-block__controls .controls__column {
+	float: left;
+	padding: 0 10px;
+	width: 50%;
+}
+
+.controls__column .controls-item {
+	width: 100%;
+}
+
+.controls-item {
+	display: inline-block;
+	border: 1px solid transparent;
+	border-radius: 1px;
+	padding: 6px 0;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.controls-item_edit,
+.controls-item_edit:focus {
+	border-color: #4caf50;
+	background: #fff;
+	color: #4caf50;
+}
+
+.controls-item_edit:hover,
+.controls-item_edit:active {
+	background: #4caf50;
+	color: #fff;
+}
+
+.controls-item_delete,
+.controls-item_delete:focus {
+	border-color: #f44336;
+	background: #fff;
+	color: #f44336;
+}
+
+.controls-item_delete:hover,
+.controls-item_delete:active {
+	background: #f44336;
+	color: #fff;
+}
+
 .description-title {
 	overflow: hidden;
 }
@@ -8,6 +72,7 @@
 
 .description-title .description-title__status {
 	float: right;
+	color: #4caf50;
 }
 
 .description-field__input textarea {

@@ -15,8 +15,8 @@ function FileManager(config) {
 	
 	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
 	widget.on('click', '.insert-button', insertButtonClick);
-	widget.on('click', '.details-form__edit-link', loadImageEditForm);
-	widget.on('click', '.details-form__delete-link', deleteFileClick);
+	widget.on('click', '.controls-item_edit', loadImageEditForm);
+	widget.on('click', '.controls-item_delete', deleteFileClick);
 	widget.on('blur', '.description-field__input .form-control', saveFileDetails);
 	//widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
