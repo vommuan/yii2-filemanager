@@ -14,7 +14,7 @@ class MediaFileSearch extends MediaFile
     /**
      * Number of files on one page
      */
-    const PAGE_SIZE = 18;
+    const PAGE_SIZE = 15;
     
     /**
      * Filter files by owner if it was configured

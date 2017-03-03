@@ -1,6 +1,12 @@
 .header-bar {
-	overflow: hidden;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 20px;
+}
+
+.header-bar__title {
+	margin-right: 20px;
 }
 
 .title .title__icon,
@@ -9,17 +15,38 @@
 	font-size: 30px;
 }
 
+.header-bar__upload-form {
+	flex-grow: 1;
+	margin-right: 20px;
+}
+
+.fileupload-buttonbar {
+	display: flex;
+}
+
+.fileupload-buttonbar .fileupload-buttonbar__buttons {
+	margin-right: 20px;
+}
+
+.fileupload-buttonbar .fileupload-progress {
+	flex-grow: 1;
+}
+
+.fileupload-progress .progress {
+	margin-bottom: 0;
+}
+
+.header-bar__close-button {
+	align-self: flex-start;
+}
+
+#standalone-filemanager .header-bar__close-button {
+	display: none;
+}
+
 .main-controls .main-controls__control {
-	display: inline-block;
-	border: 1px solid transparent;
-	border-radius: 1px;
 	padding: 6px 15px;
 	font-size: 14px;
-	font-weight: normal;
-	line-height: 1.42857143;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: middle;
 }
 
 .main-controls .main-controls__control_cancel {

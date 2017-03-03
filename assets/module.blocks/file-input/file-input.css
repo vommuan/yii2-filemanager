@@ -1,5 +1,6 @@
 .filemanager-modal .modal-dialog {
 	width: 90%;
+	max-width: 1170px;
 }
 
 .modal .page-header {

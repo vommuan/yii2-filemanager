@@ -3,7 +3,15 @@
 }
 
 .gallery-items__item {
+	float: left;
 	padding: 0;
+	width: 33.333333%;
+}
+
+@media (min-width: 600px) {
+	.gallery-items__item {
+		width: 20%;
+	}
 }
 
 .checker {

@@ -32,8 +32,6 @@ function FileManager(config) {
 	}
 	
 	function insertButtonClick(event) {
-		event.preventDefault();
-		
 		if (undefined == input || undefined == modalView) {
 			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
 			return;
@@ -57,6 +55,8 @@ function FileManager(config) {
 				imageContainer.trigger('afterInsert.fm', gallery.getSelectedFilesId());
 			});
 		}
+		
+		event.preventDefault();
 		
 		modalView.hide();
 	}

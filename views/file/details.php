@@ -25,7 +25,7 @@ $bundle = FileGalleryAsset::register($this);
 						'edit',
 						'id' => $model->mediaFile->id,
 					], [
-						'class' => 'controls-item controls-item_edit',
+						'class' => 'controls-item controls-item_main controls-item_edit',
 						'title' => Module::t('main', 'Edit'),
 					]
 				);?>
@@ -38,7 +38,7 @@ $bundle = FileGalleryAsset::register($this);
 					'delete',
 					'id' => $model->mediaFile->id,
 				], [
-					'class' => 'controls-item controls-item_delete',
+					'class' => 'controls-item controls-item_main controls-item_delete',
 					'data-message' => Yii::t('yii', 'Are you sure you want to delete this file?'),
 					'title' => Module::t('main', 'Delete forever'),
 				]

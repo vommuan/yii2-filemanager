@@ -1,6 +1,6 @@
 .thumbnail-block {
 	margin-bottom: 20px;
-	width: 128px;
+	width: 38.196601%;
 }
 
 .thumbnail-block .thumbnail-block__image img {
@@ -19,45 +19,34 @@
 	width: 50%;
 }
 
-.controls__column .controls-item {
+.controls__column .controls-item_main {
 	width: 100%;
-}
-
-.controls-item {
-	display: inline-block;
-	border: 1px solid transparent;
-	border-radius: 1px;
 	padding: 6px 0;
 	font-size: 14px;
-	font-weight: normal;
-	line-height: 1.42857143;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: middle;
 }
 
-.controls-item_edit,
-.controls-item_edit:focus {
+.controls .controls-item_edit,
+.controls .controls-item_edit:focus {
 	border-color: #4caf50;
 	background: #fff;
 	color: #4caf50;
 }
 
-.controls-item_edit:hover,
-.controls-item_edit:active {
+.controls .controls-item_edit:hover,
+.controls .controls-item_edit:active {
 	background: #4caf50;
 	color: #fff;
 }
 
-.controls-item_delete,
-.controls-item_delete:focus {
+.controls .controls-item_delete,
+.controls .controls-item_delete:focus {
 	border-color: #f44336;
 	background: #fff;
 	color: #f44336;
 }
 
-.controls-item_delete:hover,
-.controls-item_delete:active {
+.controls .controls-item_delete:hover,
+.controls .controls-item_delete:active {
 	background: #f44336;
 	color: #fff;
 }

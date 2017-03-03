@@ -9,6 +9,7 @@ class FileManagerAsset extends AssetBundle
     public $sourcePath = '@filemanager/assets/module.blocks/file-manager';
     
     public $css = [
+        'controls-item.css',
         'file-manager.css',
         'header-bar.css',
         'spin-icon.css',
