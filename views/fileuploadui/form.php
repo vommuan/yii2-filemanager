@@ -14,7 +14,7 @@ $context = $this->context;
 	<div class="fileupload-buttonbar">
 		<div class="fileupload-buttonbar__buttons">
 			<!-- The fileinput-button span is used to style the file input field as button -->
-			<span class="btn btn-primary fileinput-button">
+			<span class="fileinput-button controls-item">
 				<span><?= Module::t('main', 'Upload files');?></span>
 
 				<?php

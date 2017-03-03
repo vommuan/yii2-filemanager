@@ -28,6 +28,13 @@
 	margin-right: 20px;
 }
 
+.fileupload-buttonbar .fileinput-button {
+	border-color: #0f96e7;
+	padding: 6px 12px;
+	background-color: #0f96e7;
+	color: #fff;
+}
+
 .fileupload-buttonbar .fileupload-progress {
 	flex-grow: 1;
 }
