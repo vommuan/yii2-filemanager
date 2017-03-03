@@ -18,7 +18,6 @@ function FileManager(config) {
 	widget.on('click', '.controls-item_edit', loadImageEditForm);
 	widget.on('click', '.controls-item_delete', deleteFileClick);
 	widget.on('blur', '.description-field__input .form-control', saveFileDetails);
-	//widget.on('submit', '.details-form', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
 	widget.on('click', '.main-controls__control_cancel', toggleViewMode);
 	widget.on('submit', '.image-edit-form', saveEditedImage);

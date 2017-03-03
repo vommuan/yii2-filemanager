@@ -11,23 +11,28 @@
 }
 
 .media-file .media-file__link {
+	display: block;
 	position: relative;
 	margin-bottom: 0;
+}
+
+.media-file .media-file__link img {
+	display: block;
+	border: 1px solid #fff;
+	width: 100%;
 }
 
 .media-file .media-file__link:hover {
 	opacity: 0.9;
 }
 
-.media-file .media-file__link_checked {
-	outline: #5ba6f7 solid 3px;
-	outline-offset: -3px;
-}
-
 .media-file .media-file__link_checked .checker {
-	display: inline-block;
+	display: block;
 	position: absolute;
-	top: 0;
-	right: 3px;
-	font-size: 2em;
+	top: 1px;
+	right: 1px;
+	padding: 3px 6px;
+	background: #333;
+	opacity: 0.8;
+	color: #fff;
 }
