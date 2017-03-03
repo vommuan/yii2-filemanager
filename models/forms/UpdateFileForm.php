@@ -1,8 +1,8 @@
 <?php
+
 namespace vommuan\filemanager\models\forms;
 
 use yii\base\Model;
-use vommuan\filemanager\Module;
 
 /**
  * Form for update file information
@@ -13,7 +13,7 @@ use vommuan\filemanager\Module;
 class UpdateFileForm extends Model
 {
 	/**
-	 * @var MediaFile
+	 * @var vommuan\filemanager\models\MediaFile
 	 */
 	public $mediaFile;
 	
@@ -33,7 +33,8 @@ class UpdateFileForm extends Model
 	public function rules()
 	{
 		return [
-			[['alt', 'description'], 'string'],
+			[['alt'], 'string', 'max' => 200],
+			[['description'], 'string', 'max' => 1000],
 		];
 	}
 	
@@ -43,8 +44,8 @@ class UpdateFileForm extends Model
     public function attributeLabels()
     {
         return [
-            'alt' => Module::t('main', 'Alt attribute'),
-            'description' => Module::t('main', 'Description'),
+            'alt' => $this->mediaFile->getAttributeLabel('alt'),
+            'description' => $this->mediaFile->getAttributeLabel('description'),
         ];
     }
 	
@@ -57,9 +58,9 @@ class UpdateFileForm extends Model
 	{
 		if (isset($this->_alt)) {
 			return $this->_alt;
-		} else {
-			return $this->mediaFile->alt;
 		}
+		
+		return $this->mediaFile->alt;
 	}
 	
 	/**
@@ -71,9 +72,9 @@ class UpdateFileForm extends Model
 	{
 		if (isset($this->_description)) {
 			return $this->_description;
-		} else {
-			return $this->mediaFile->description;
 		}
+		
+		return $this->mediaFile->description;
 	}
 	
 	/**

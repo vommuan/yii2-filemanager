@@ -15,11 +15,11 @@ function FileManager(config) {
 	
 	widget.on('show.bs.modal', {'input': input}, gallery.initSelectedFiles);
 	widget.on('click', '.insert-button', insertButtonClick);
-	widget.on('click', '.details-form__edit-link', loadImageEditForm);
-	widget.on('click', '.details-form__delete-link', deleteFileClick);
-	widget.on('submit', '.details-form', saveFileDetails);
+	widget.on('click', '.controls-item_edit', loadImageEditForm);
+	widget.on('click', '.controls-item_delete', deleteFileClick);
+	widget.on('blur', '.description-field__input .form-control', saveFileDetails);
 	widget.on('selectItem.fm', '.media-file', loadDetails);
-	widget.on('click', '.main-controls__cancel-button', showGalleryBlock);
+	widget.on('click', '.main-controls__control_cancel', toggleViewMode);
 	widget.on('submit', '.image-edit-form', saveEditedImage);
 	
 	function setAjaxLoader() {
@@ -32,8 +32,6 @@ function FileManager(config) {
 	}
 	
 	function insertButtonClick(event) {
-		event.preventDefault();
-		
 		if (undefined == input || undefined == modalView) {
 			console.error('Error. FileManager.insertButtonClick(): check all defined variables.');
 			return;
@@ -58,46 +56,36 @@ function FileManager(config) {
 			});
 		}
 		
+		event.preventDefault();
+		
 		modalView.hide();
 	}
 	
-	function loadImageEditForm(event) {
-		event.preventDefault();
-		
-		var editLink = $(event.currentTarget);
-		
+	function toggleViewMode() {
 		manager.find('.mode__block').toggleClass('mode__block_hide');
-		
-		$.ajax({
-			type: 'GET',
-			url: editLink.attr('href'),
-			success: function(response) {
-				manager.find('.mode__block_edit').html(response);
-				cropperInit(cropperOptions);
-			}
-		});
 	}
 	
-	function showGalleryBlock(event) {
-		event.preventDefault();
+	function loadImageEditForm(event) {
+		var editLink = $(event.currentTarget);
 		
-		manager.find('.mode__block').toggleClass('mode__block_hide');
+		toggleViewMode();
+		
+		$.post(editLink.attr('href'), function (response) {
+			manager.find('.mode__block_edit').html(response);
+			cropperInit(cropperOptions);
+		});
+		
+		event.preventDefault();
 	}
 	
 	function saveEditedImage(event) {
-		event.preventDefault();
-        
         var form = $(event.currentTarget);
-
-        $.ajax({
-            type: 'POST',
-            url: form.attr('action'),
-            data: form.serialize(),
-            success: function(response) {
-                manager.find('.mode__block_edit').html(response);
-                cropperInit(cropperOptions);
-            }
-        });
+		
+        $.post(form.attr('action'), form.serialize(), function (response) {
+			toggleViewMode();
+		});
+		
+		event.preventDefault();
 	}
 
 	function deleteFileClick(event) {
@@ -127,19 +115,13 @@ function FileManager(config) {
 	}
 	
 	function saveFileDetails(event) {
-		event.preventDefault();
-        
-        var form = $(event.currentTarget);
+        var form = $(event.currentTarget).closest('.details-form');
 
-        $.ajax({
-            type: 'POST',
-            url: form.attr('action'),
-            data: form.serialize(),
-            beforeSend: setAjaxLoader,
-            success: function(html) {
-                fileDetails.html(html);
-            }
-        });
+        setAjaxLoader();
+        
+        $.post(form.attr('action'), form.serialize(), function(response) {
+			fileDetails.html(response);
+		});
 	}
 	
 	function loadDetails(event) {

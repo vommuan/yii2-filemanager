@@ -1,0 +1,69 @@
+.thumbnail-block {
+	margin-bottom: 20px;
+	width: 38.196601%;
+}
+
+.thumbnail-block .thumbnail-block__image img {
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.thumbnail-block .thumbnail-block__controls {
+	overflow: hidden;
+	margin: 0 -10px;
+}
+
+.thumbnail-block .thumbnail-block__controls .controls__column {
+	float: left;
+	padding: 0 10px;
+	width: 50%;
+}
+
+.controls__column .controls-item_main {
+	width: 100%;
+	padding: 6px 0;
+	font-size: 14px;
+}
+
+.controls .controls-item_edit,
+.controls .controls-item_edit:focus {
+	border-color: #4caf50;
+	background: #fff;
+	color: #4caf50;
+}
+
+.controls .controls-item_edit:hover,
+.controls .controls-item_edit:active {
+	background: #4caf50;
+	color: #fff;
+}
+
+.controls .controls-item_delete,
+.controls .controls-item_delete:focus {
+	border-color: #f44336;
+	background: #fff;
+	color: #f44336;
+}
+
+.controls .controls-item_delete:hover,
+.controls .controls-item_delete:active {
+	background: #f44336;
+	color: #fff;
+}
+
+.description-title {
+	overflow: hidden;
+}
+
+.description-title .description-title__label {
+	float: left;
+}
+
+.description-title .description-title__status {
+	float: right;
+	color: #4caf50;
+}
+
+.description-field__input textarea {
+	resize: none;
+}

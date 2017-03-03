@@ -17,28 +17,38 @@ $baseUrl = Url::to(['/' . Module::getInstance()->uniqueId . '/file']);
 
 <div class="file-manager mode" data-base-url="<?= $baseUrl;?>">
 	<div class="mode__block">
-		<div class="file-manager__header">
-			<?= PageHeader::widget([
-				'icon' => 'picture',
-				'title' => Module::t('main', 'Files'),
-			]);?>
-		</div>
-
-		<div class="file-manager__upload-form">
-			<?= $this->render('_upload-form', [
-				'widgetId' => $widgetId,
-			]);?>
-		</div>
-
-		<div class="row file-manager__content">
-			<div class="col-xs-12 col-sm-8">
-				<?= $this->render('_gallery', [
+		<div class="file-manager__header header-bar">
+			<div class="header-bar__title title">
+				<div class="title__icon">
+					<span class="glyphicon glyphicon-picture"></span>
+				</div>
+				
+				<div class="title__text"><?= Module::t('main', 'Files');?></div>
+			</div>
+			<div class="header-bar__upload-form">
+				<?= $this->render('_upload-form', [
 					'widgetId' => $widgetId,
-					'multiple' => $multiple,
 				]);?>
 			</div>
-			<div class="col-xs-12 col-sm-4">
+			<div class="header-bar__close-button">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</div>
+
+		<div class="file-manager__content">
+			<?= $this->render('_gallery', [
+				'widgetId' => $widgetId,
+				'multiple' => $multiple,
+			]);?>
+			<div class="details-bar">
 				<div class="file-details"></div>
+				<div class="attache-button">
+					<button class="btn insert-button">
+						<?= Module::t('main', 'Save');?>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>

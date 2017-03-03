@@ -108,7 +108,9 @@ class MediaFile extends ActiveRecord
         return [
             [['filename', 'type', 'url', 'size'], 'required'],
             [['filename', 'type'], 'string', 'max' => 255],
-            [['url', 'alt', 'description'], 'string'],
+            [['url'], 'string'],
+            [['alt'], 'string', 'max' => 200],
+			[['description'], 'string', 'max' => 1000],
             [['size'], 'integer'],
             [['rotate'], 'integer', 'min' => -360, 'max' => 360],
             [['cropX', 'cropY'], 'number', 'min' => 0],
@@ -122,15 +124,14 @@ class MediaFile extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Module::t('main', 'ID'),
             'filename' => Module::t('main', 'File name'),
             'type' => Module::t('main', 'Type'),
             'url' => Module::t('main', 'Url'),
-            'alt' => Module::t('main', 'Alt attribute'),
+            'alt' => Module::t('main', 'Description'),
             'size' => Module::t('main', 'Size'),
-            'description' => Module::t('main', 'Description'),
-            'created_at' => Module::t('main', 'Created'),
-            'updated_at' => Module::t('main', 'Updated'),
+            // 'description' => Module::t('main', 'Description'),
+            'created_at' => Module::t('main', 'Created at'),
+            'updated_at' => Module::t('main', 'Updated at'),
         ];
     }
     

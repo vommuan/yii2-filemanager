@@ -19,6 +19,52 @@
 	margin-bottom: 0;
 }
 
+.file-manager__content {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+}
+
+.details-bar {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.attache-button .insert-button {
+	width: 100%;
+	border-radius: 1px;
+	border-color: #0f96e7;
+	background-color: #0f96e7;
+	color: #fff;
+}
+
+.attache-button .insert-button:hover {
+	border-color: #138dd6;
+	background-color: #138dd6;
+	color: #fff;
+}
+
+@media (min-width: 768px) {
+	.file-manager__content {
+		flex-direction: row;
+	}
+	
+	.gallery {
+		padding-right: 10px;
+		width: 61.803399%;
+	}
+	
+	.details-bar {
+		padding-left: 10px;
+		width: 38.196601%;
+	}
+	
+	.attache-button {
+		padding-bottom: 100px;
+	}
+}
+
 .gallery .gallery__items {
 	overflow: hidden;
 }
@@ -45,40 +91,38 @@
 	list-style: none;
 }
 
-/*------------------------------------*\
-    #SPIN ICONS
-\*------------------------------------*/
-.spin {
-	-webkit-animation: spin 1s infinite linear;
-	-moz-animation: spin 1s infinite linear;
-	-o-animation: spin 1s infinite linear;
-	animation: spin 1s infinite linear;
-	-webkit-transform-origin: 50% 50%;
-	transform-origin: 50% 50%;
-	-ms-transform-origin: 50% 50%;
+.cropper {
+	position: relative;
 }
 
-@-moz-keyframes spin {
-  from {
-    -moz-transform: rotate(0deg);
-  }
-  to {
-    -moz-transform: rotate(360deg);
-  }
+.cropper__control-block {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 10;
 }
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
+
+.cropper__control-block .controls .controls-item {
+	border: none;
+	border-radius: 1px;
+	padding: 2px 8px;
+	font-size: 20px;
+	background: #333;
+	opacity: 0.8;
+	color: #fff;
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.cropper__control-block .controls button:hover {
+	background: #fff;
+	color: #333;
+}
+
+.cropper__image-block {
+	max-height: 70vh;
+}
+
+.cropper__image-block img {
+	display: block;
+	max-width: 100%;
+	height: auto;
 }

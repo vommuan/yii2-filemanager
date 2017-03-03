@@ -134,7 +134,7 @@ class Module extends \yii\base\Module
         return [
 			'default' => [
 				'name' => Module::t('main', 'Default'),
-				'size' => [128, 128],
+				'size' => [200, 200],
 			],
 		];
     }

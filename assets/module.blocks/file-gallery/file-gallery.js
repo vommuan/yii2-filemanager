@@ -35,13 +35,10 @@ function FileGallery(galleryBlock) {
 		
 		var link = $(event.currentTarget);
 		
-		$.ajax({
-			type: 'POST',
-			url: link.attr('href'),
-			success: function(response) {
-				galleryBlock.find('.gallery__items').html(response.items);
-				summary.update(response.pagination);
-			}
+		$.post(link.attr('href'), function(response) {
+			galleryBlock.find('.gallery__items').html(response.items);
+			summary.update(response.pagination);
+			selectItems();
 		});
 		
 		pager.click(link);
