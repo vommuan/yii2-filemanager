@@ -17,14 +17,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Are you sure you want to delete this file?' => 'Вы уверены, что хотите удалить этот файл?',
+    'Alias' => 'Алиас',
+    'Can\'t to save so small image.' => 'Невозможно сохранить такое маленькое изображение.',
     'Cancel' => 'Отмена',
     'Changes not saved' => 'Изменения не сохранены',
     'Changes saved' => 'Изменения сохранены',
-    'Created at' => 'Создано',
-    'Updated at' => 'Обновлено',
-    'Alias' => 'Алиас',
-    'Can\'t to save so small image.' => 'Невозможно сохранить такое маленькое изображение.',
     'Created' => 'Создан',
+    'Created at' => 'Создано',
     'Default' => 'По умолчанию',
     'Delete forever' => 'Удалить навсегда',
     'Description' => 'Описание',
@@ -52,6 +52,7 @@ return [
     'Thumbnails sizes has been resized successfully!' => 'Размеры миниатюр успешно изменены!',
     'Type' => 'Тип',
     'Updated' => 'Обновлён',
+    'Updated at' => 'Обновлено',
     'Upload files' => 'Загрузить файлы',
     'Url' => 'Ссылка',
 ];

@@ -18,6 +18,7 @@
  */
 return [
     'Alias' => '',
+    'Are you sure you want to delete this file?' => '',
     'Can\'t to save so small image.' => '',
     'Cancel' => '',
     'Changes not saved' => '',
