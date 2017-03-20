@@ -13,7 +13,7 @@ $bundle = FileGalleryAsset::register($this);
 ?>
 
 <div class="thumbnail-block">
-	<div class="thumbnail-block__image">
+	<div class="thumbnail-block__image" data-key="<?= $model->mediaFile->id ?>">
 		<?= Html::img($model->mediaFile->getIcon($bundle->baseUrl) . '?' . $model->mediaFile->updated_at);?>
 	</div>
 	<div class="thumbnail-block__controls controls">

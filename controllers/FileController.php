@@ -121,8 +121,10 @@ class FileController extends Controller
         
         $mediaFile = (new UploadFileForm())->getHandler();
         
+        $response = [];
+        
         try {
-			if (! $mediaFile->save()) {
+			if (!$mediaFile->save()) {
 				throw new UserException(Module::t('main', 'This file already exists.'));
 			}
 			
@@ -249,5 +251,29 @@ class FileController extends Controller
 		return $this->renderAjax('edit', [
 			'model' => $model,
 		]);
+	}
+	
+	/**
+	 * Get thumbnail's url by media file id
+	 * 
+	 * @return string
+	 */
+	public function actionThumbUrl()
+	{
+		$mediaFileId = Yii::$app->request->post('id', null);
+		
+		if (empty($mediaFileId)) {
+			return '';
+		}
+		
+		$mediaFile = MediaFile::findOne($mediaFileId);
+		
+		if (!isset($mediaFile)) {
+			return '';
+		}
+		
+		$bundle = FileGalleryAsset::register($this->view);
+		
+		return $mediaFile->getIcon($bundle->baseUrl) . '?' . $mediaFile->updated_at;
 	}
 }
