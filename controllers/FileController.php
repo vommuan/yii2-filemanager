@@ -121,8 +121,10 @@ class FileController extends Controller
         
         $mediaFile = (new UploadFileForm())->getHandler();
         
+        $response = [];
+        
         try {
-			if (! $mediaFile->save()) {
+			if (!$mediaFile->save()) {
 				throw new UserException(Module::t('main', 'This file already exists.'));
 			}
 			
