@@ -6,6 +6,7 @@ function FileManager(config) {
 		imageContainer = config.imageContainer,
 		modalView = config.modalView,
 		cropperOptions = widget.data('cropper-options'),
+		editedImageId = null,
 		
 		manager = widget.find('.file-manager').eq(0),
 		gallery = new FileGallery(widget.find('.gallery').eq(0)),
@@ -67,6 +68,7 @@ function FileManager(config) {
 	
 	function loadImageEditForm(event) {
 		var editLink = $(event.currentTarget);
+		editedImageId = editLink.closest('.thumbnail-block').find('.thumbnail-block__image').eq(0).data('key');
 		
 		toggleViewMode();
 		
@@ -82,10 +84,25 @@ function FileManager(config) {
         var form = $(event.currentTarget);
 		
         $.post(form.attr('action'), form.serialize(), function (response) {
+			updateThumbnails();
 			toggleViewMode();
 		});
 		
 		event.preventDefault();
+	}
+	
+	function updateThumbnails() {
+		$.post(manager.data('base-url') + '/thumb-url', {'id': editedImageId}, function (url) {
+			if ('' == url) {
+				var mediaFile = widget.find('.gallery .media-file[data-key="' + editedImageId + '"]');
+				
+				mediaFile.find('.media-file__link').eq(0).trigger('click');
+				mediaFile.remove();
+			} else {
+				widget.find('.gallery .media-file[data-key="' + editedImageId + '"] img').attr('src', url);
+				fileDetails.find('.thumbnail-block__image img').attr('src', url);
+			}
+		});
 	}
 
 	function deleteFileClick(event) {

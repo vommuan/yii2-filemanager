@@ -252,4 +252,28 @@ class FileController extends Controller
 			'model' => $model,
 		]);
 	}
+	
+	/**
+	 * Get thumbnail's url by media file id
+	 * 
+	 * @return string
+	 */
+	public function actionThumbUrl()
+	{
+		$mediaFileId = Yii::$app->request->post('id', null);
+		
+		if (empty($mediaFileId)) {
+			return '';
+		}
+		
+		$mediaFile = MediaFile::findOne($mediaFileId);
+		
+		if (!isset($mediaFile)) {
+			return '';
+		}
+		
+		$bundle = FileGalleryAsset::register($this->view);
+		
+		return $mediaFile->getIcon($bundle->baseUrl) . '?' . $mediaFile->updated_at;
+	}
 }
