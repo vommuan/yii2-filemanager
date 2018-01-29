@@ -23,7 +23,7 @@ class m160714_113715_owner_modify extends Migration
 			'updated_at' => $this->integer(),
 		], $tableOptions);
 
-		$this->addForeignKey('fk_mediafile_id', '{{%filemanager_owner}}', 'mediafile_id', '{{%filemanager_mediafile}}', 'id', 'CASCADE', 'CASCADE');
+		$this->addForeignKey('fk_owner_mediafile_id', '{{%filemanager_owner}}', 'mediafile_id', '{{%filemanager_mediafile}}', 'id', 'CASCADE', 'CASCADE');
 		
 		// owners converter
 		$oldOwners = (new Query())
