@@ -23,7 +23,7 @@ use vommuan\filemanager\Module;
 			var manager = $(event.currentTarget).closest(".file-manager"),
 				pager = new GalleryPager().init(manager.find(".gallery").eq(0));
 			
-			data.url = manager.data("base-url") + "/upload?page=" + pager.getCurrentPage();
+			data.url = manager.data("base-url") + "/upload&page=" + pager.getCurrentPage();
 		}',
 		'fileuploadstart' => 'function(event) {
 			$(".gallery").find(".gallery-items__item:gt(' . (MediaFileSearch::PAGE_SIZE - 1) . ')").each(function() {
