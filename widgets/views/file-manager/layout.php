@@ -2,7 +2,6 @@
 
 use vommuan\filemanager\assets\FileManagerAsset;
 use vommuan\filemanager\Module;
-use vommuan\filemanager\widgets\PageHeader;
 use yii\helpers\Url;
 
 /* @var $multiple string */

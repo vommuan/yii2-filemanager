@@ -20,6 +20,11 @@ class Module extends \yii\base\Module
      * @inheritdoc
      */
     public $layout = 'main';
+    
+    /**
+     * @var string Path to parent page layout
+     */
+    public $parentLayout = '@app/views/layouts/main.php';
 
     /**
      * Set `true` if you want to rename files if the name is already in use 
