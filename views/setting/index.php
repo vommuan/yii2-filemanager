@@ -10,7 +10,7 @@ use vommuan\filemanager\assets\SettingAsset;
 SettingAsset::register($this);
 
 $this->title = Module::t('main', 'Settings');
-$this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 'url' => ['default/index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('main', 'File manager'), 'url' => ['file/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
