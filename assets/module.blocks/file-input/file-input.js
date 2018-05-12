@@ -93,7 +93,7 @@ function ImageContainer() {
 	}
 	
 	function setDefault() {
-		if (!$(_container).length) {
+        if (!$(_container).length) {
 			return;
 		}
 		
