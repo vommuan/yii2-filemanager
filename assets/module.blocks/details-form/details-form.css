@@ -1,5 +1,9 @@
 .thumbnail-block {
 	margin-bottom: 20px;
+}
+
+.thumbnail-block .thumbnail-block__image {
+	float: left;
 	width: 38.196601%;
 }
 
@@ -8,7 +12,14 @@
 	width: 100%;
 }
 
+.thumbnail-block__link {
+	float: left;
+	padding: 20px;
+	width: 60%;
+}
+
 .thumbnail-block .thumbnail-block__controls {
+	clear: both;
 	overflow: hidden;
 	margin: 0 -10px;
 }
@@ -49,6 +60,10 @@
 .controls .controls-item_delete:active {
 	background: #f44336;
 	color: #fff;
+}
+
+.details-form {
+	clear: both;
 }
 
 .description-title {
